@@ -1,0 +1,111 @@
+                                    AUTONOMOUS CAMPUS OPERATING SYSTEM
+                                  Entity Relationship Diagram (Week 1)
+
++---------------------------+
+|         Students          |
++---------------------------+
+| PK student_id             |
+| roll_number               |
+| first_name                |
+| last_name                 |
+| email                     |
+| phone                     |
+| department                |
+| semester                  |
+| cgpa                      |
+| status                    |
+| created_at                |
++-------------+-------------+
+              |
+      +-------+-------+----------------------+----------------------+
+      |               |                      |                      |
+      |               |                      |                      |
+      |               |                      |                      |
+      ▼               ▼                      ▼                      ▼
+
++------------------+   +------------------+   +------------------+   +----------------------+
+|   Enrollments    |   |      Grades      |   |   Fee_Records    |   |      Documents       |
++------------------+   +------------------+   +------------------+   +----------------------+
+| PK enrollment_id |   | PK grade_id      |   | PK fee_id        |   | PK doc_id           |
+| FK student_id    |   | FK student_id    |   | FK student_id    |   | FK student_id       |
+| FK course_id     |   | FK course_id     |   | amount           |   | type                |
+| semester         |   | component        |   | status           |   | file_path           |
+| enrollment_date  |   | marks            |   | transaction_id   |   | verified_hash       |
++--------+---------+   | date_recorded    |   | reconciled       |   +----------------------+
+         |             | verification_hash|
+         |             +--------+---------+
+         |                      |
+         |                      |
+         ▼                      ▼
+                +--------------------------------+
+                |            Courses             |
+                +--------------------------------+
+                | PK course_id                  |
+                | course_code                  |
+                | course_name                  |
+                | credits                      |
+                | instructor_id               |
+                | semester                    |
+                +--------------------------------+
+
+
++----------------------------+
+|          Users             |
++----------------------------+
+| PK admin_id                |
+| role                       |
+| department                 |
+| permissions                |
++-------------+--------------+
+              |
+              |
+              ▼
++----------------------------+
+|        Audit_Log           |
++----------------------------+
+| PK audit_id                |
+| action                     |
+| actor                      |
+| timestamp                  |
+| affected_rows              |
+| change_hash                |
++----------------------------+
+
+
++----------------------------------+
+|   Admission_Applications         |
++----------------------------------+
+| PK application_id                |
+| applicant_id                     |
+| documents                        |
+| status                           |
+| decision                         |
++----------------------------------+
+
+
++----------------------------------+
+|      Research_Papers             |
++----------------------------------+
+| PK paper_id                      |
+| professor_id                     |
+| title                            |
+| abstract                         |
+| submission_date                  |
++----------------------------------+
+
+Relationship Summary
+Parent Table	Child Table	Relationship
+Students	Enrollments	One-to-Many
+Courses	Enrollments	One-to-Many
+Students	Grades	One-to-Many
+Courses	Grades	One-to-Many
+Students	Fee_Records	One-to-Many
+Students	Documents	One-to-Many
+Users	Audit_Log	One-to-Many
+Notes
+Enrollments is the junction table that resolves the many-to-many relationship between Students and Courses.
+Grades stores assessment results for a specific student in a specific course.
+Documents stores uploaded student documents.
+Fee_Records manages financial transactions linked to students.
+Audit_Log records actions performed by users for security and traceability.
+Admission_Applications and Research_Papers are currently standalone entities based on your Week 1 roadmap.

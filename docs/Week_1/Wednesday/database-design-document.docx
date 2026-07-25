@@ -1,0 +1,324 @@
+Week 1 – Database Schema Design
+1. Introduction
+
+The Autonomous Campus Operating System (ACOS) is a research-based Final Year Project that aims to transform a traditional Campus Management System into an intelligent, secure, and autonomous platform using Agentic AI, LangGraph, and Zero-Trust Architecture.
+
+The database serves as the core component of the system by storing academic, administrative, financial, and document-related information. It provides structured data for AI agents, backend services, and the web application while ensuring data consistency, integrity, and security.
+
+This database is designed using a relational database model and follows normalization principles to minimize redundancy and maintain referential integrity.
+
+2. Database Objectives
+
+The primary objectives of the database are:
+
+Store academic information securely.
+Manage student enrollments and grades.
+Maintain administrative records.
+Record financial transactions.
+Manage student documents.
+Support admission and research management.
+Maintain data integrity through primary and foreign keys.
+Support Zero-Trust security using verification hashes and audit logging.
+3. Database Overview
+
+The database consists of three major modules.
+
+3.1 Academic Module
+
+This module manages academic activities.
+
+Tables included:
+
+Students
+Courses
+Enrollments
+Grades
+
+Functions:
+
+Student information
+Course management
+Student enrollment
+Grade recording
+3.2 Administrative Module
+
+This module manages university administration.
+
+Tables included:
+
+Users
+Audit_Log
+Fee_Records
+
+Functions:
+
+Administrative users
+Role management
+Audit history
+Fee verification
+3.3 Document Management Module
+
+This module manages uploaded documents and research records.
+
+Tables included:
+
+Documents
+Admission_Applications
+Research_Papers
+
+Functions:
+
+Student documents
+Admission applications
+Research paper management
+4. Table Descriptions
+4.1 Students
+
+Purpose:
+
+Stores student information used throughout the system.
+
+Primary Key:
+
+student_id
+
+Important Attributes:
+
+roll_number
+first_name
+last_name
+email
+semester
+cgpa
+status
+4.2 Courses
+
+Purpose:
+
+Stores university course information.
+
+Primary Key:
+
+course_id
+
+Important Attributes:
+
+course_code
+course_name
+credits
+instructor_id
+semester
+4.3 Enrollments
+
+Purpose:
+
+Represents student enrollment in courses.
+
+Primary Key:
+
+enrollment_id
+
+Foreign Keys:
+
+student_id → Students
+course_id → Courses
+4.4 Grades
+
+Purpose:
+
+Stores marks obtained by students.
+
+Primary Key:
+
+grade_id
+
+Foreign Keys:
+
+student_id → Students
+course_id → Courses
+
+Security Field:
+
+verification_hash
+4.5 Users
+
+Purpose:
+
+Stores administrative user information.
+
+Primary Key:
+
+admin_id
+
+Attributes:
+
+role
+department
+permissions
+4.6 Audit_Log
+
+Purpose:
+
+Maintains records of important system activities.
+
+Primary Key:
+
+audit_id
+
+Attributes:
+
+action
+actor
+timestamp
+affected_rows
+change_hash
+4.7 Fee_Records
+
+Purpose:
+
+Stores fee payment information.
+
+Primary Key:
+
+fee_id
+
+Foreign Key:
+
+student_id → Students
+
+Attributes:
+
+amount
+status
+transaction_id
+reconciled
+4.8 Documents
+
+Purpose:
+
+Stores student document metadata.
+
+Primary Key:
+
+doc_id
+
+Foreign Key:
+
+student_id → Students
+
+Attributes:
+
+type
+file_path
+verified_hash
+4.9 Admission_Applications
+
+Purpose:
+
+Stores admission applications submitted by applicants.
+
+Primary Key:
+
+application_id
+
+Attributes:
+
+applicant_id
+documents
+status
+decision
+4.10 Research_Papers
+
+Purpose:
+
+Stores research paper information.
+
+Primary Key:
+
+paper_id
+
+Attributes:
+
+professor_id
+title
+abstract
+submission_date
+5. Entity Relationships
+
+The database follows a relational model using primary and foreign keys.
+
+The major relationships include:
+
+One student can enroll in multiple courses.
+One course can have multiple students.
+Enrollments resolve the many-to-many relationship between students and courses.
+One student can have multiple grade records.
+One student can have multiple fee records.
+One student can upload multiple documents.
+Administrative users generate audit log entries.
+
+These relationships ensure consistency and reduce data duplication.
+
+6. Database Normalization
+
+The schema follows normalization principles.
+
+First Normal Form (1NF)
+Atomic values
+No repeating groups
+Second Normal Form (2NF)
+Non-key attributes depend on the entire primary key
+Third Normal Form (3NF)
+No transitive dependencies
+Reduced redundancy
+Improved maintainability
+7. Security Considerations
+
+The database incorporates several security mechanisms.
+
+Verification Hash
+
+The Grades table contains a verification_hash attribute to support Zero-Trust integrity verification. Any unauthorized modification to grade records can be detected by comparing the stored hash with a newly computed hash.
+
+Change Hash
+
+The Audit_Log table stores a change_hash for critical administrative actions, helping verify the integrity of audit records.
+
+Foreign Key Constraints
+
+Foreign key relationships prevent orphan records and maintain referential integrity across related tables.
+
+Role-Based Access
+
+The Users table defines administrative roles and permissions that can later be enforced by the application using authentication and authorization mechanisms.
+
+8. Future Enhancements
+
+The database is designed to support future expansion.
+
+Planned enhancements include:
+
+PostgreSQL migration for production deployment.
+Integration with SQLAlchemy ORM.
+FastAPI REST API integration.
+JWT-based authentication and role-based access control.
+LangGraph agent integration.
+FAISS vector database for Retrieval-Augmented Generation (RAG).
+Automated audit logging and integrity verification.
+9. Conclusion
+
+The database schema provides a structured foundation for the Autonomous Campus Operating System. It supports academic management, administrative operations, financial records, and document management while maintaining data integrity through relational design. The inclusion of Zero-Trust concepts such as verification hashes and audit logging prepares the system for secure, AI-assisted campus management. The schema is scalable and suitable for integration with FastAPI, SQLAlchemy, React, and LangGraph in subsequent development phases.
+
+Document Summary
+Total Tables: 10
+Academic Tables: 4
+Administrative Tables: 3
+Document Management Tables: 3
+Primary Keys: 10
+Foreign Keys: 6
+Database Type: Relational (SQLite for development)
+Future ORM: SQLAlchemy
+Backend Framework: FastAPI
+Frontend Framework: React
+AI Framework: LangGraph
+Security Model: Zero-Trust Architecture
