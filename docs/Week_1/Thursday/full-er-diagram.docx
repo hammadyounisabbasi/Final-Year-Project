@@ -32,11 +32,11 @@
                   ┌────────────────────────────┐
                   │          Courses           │
                   ├────────────────────────────┤
-                  │ PK course_id              │
-                  │ name                      │
-                  │ credits                   │
-                  │ instructor_id            │
-                  │ semester                 │
+                  │ PK course_id               │
+                  │ name                       │
+                  │ credits                    │
+                  │ instructor_id              │
+                  │ semester                   │
                   └────────────────────────────┘
 
 
