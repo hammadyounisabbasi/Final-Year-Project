@@ -156,3 +156,95 @@ CREATE TABLE Research_Papers ( --store research papers submitted by the faculty
     submission_date DATE NOT NULL
 
 );
+
+-- Cryptographic hash table:
+CREATE TABLE Cryptographic_Hashes (
+
+    hash_id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    original_data_hash VARCHAR(255) NOT NULL,
+
+    record_type VARCHAR(100) NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    signed_by VARCHAR(100) NOT NULL
+
+);
+
+-- Watchdog alert table 
+CREATE TABLE Watchdog_Alerts (
+
+    alert_id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    agent_type VARCHAR(100) NOT NULL,
+
+    alert_level VARCHAR(20) NOT NULL,
+
+    message TEXT NOT NULL,
+
+    resolved BOOLEAN DEFAULT FALSE
+
+);
+
+-- Anti Cheat Event table
+CREATE TABLE Anti_Cheat_Events (
+
+    event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    exam_id INTEGER NOT NULL,
+
+    student_id INTEGER NOT NULL,
+
+    anomaly_score DECIMAL(5,2) NOT NULL,
+
+    flag_reason TEXT NOT NULL,
+
+    FOREIGN KEY(student_id)
+        REFERENCES Students(student_id)
+
+);
+
+-- Table Research document
+CREATE TABLE Research_Documents (
+
+    doc_id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    content TEXT NOT NULL,
+
+    embedding_vector TEXT,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
+
+-- Library Catalog Table
+CREATE TABLE Library_Catalog (
+
+    book_id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    title VARCHAR(255) NOT NULL,
+
+    author VARCHAR(150),
+
+    description TEXT,
+
+    embedding_vector TEXT
+
+);
+
+-- Indexies
+CREATE INDEX idx_student_email
+ON Students(email);
+
+CREATE INDEX idx_course_code
+ON Courses(course_code);
+
+CREATE INDEX idx_grade_student
+ON Grades(student_id);
+
+CREATE INDEX idx_document_student
+ON Documents(student_id);
+
+CREATE INDEX idx_fee_transaction
+ON Fee_Records(transaction_id);

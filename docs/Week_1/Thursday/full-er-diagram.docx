@@ -1,0 +1,156 @@
+                                    AUTONOMOUS CAMPUS OPERATING SYSTEM
+                                      Entity Relationship Diagram
+
+┌──────────────────────────────┐
+│           Students           │
+├──────────────────────────────┤
+│ PK student_id                │
+│ name                         │
+│ roll_number                  │
+│ email                        │
+│ gpa                          │
+│ status                       │
+└──────────────┬───────────────┘
+               │
+      ┌────────┼───────────────┬─────────────────┬─────────────────┐
+      │        │               │                 │                 │
+      ▼        ▼               ▼                 ▼                 ▼
+
+┌────────────────────┐  ┌──────────────────┐ ┌────────────────┐ ┌──────────────────┐
+│    Enrollments     │  │      Grades      │ │  Fee_Records   │ │    Documents     │
+├────────────────────┤  ├──────────────────┤ ├────────────────┤ ├──────────────────┤
+│ PK enrollment_id   │  │ PK grade_id      │ │ PK fee_id      │ │ PK doc_id        │
+│ FK student_id      │  │ FK student_id    │ │ FK student_id  │ │ FK student_id    │
+│ FK course_id       │  │ FK course_id     │ │ amount         │ │ type             │
+│ semester           │  │ component        │ │ status         │ │ file_path        │
+└─────────┬──────────┘  │ marks            │ │ transaction_id │ │ verified_hash    │
+          │             │ verification_hash│ │ reconciled     │ └──────────────────┘
+          │             └────────┬─────────┘ └────────────────┘
+          │                      │
+          ▼                      ▼
+
+                  ┌────────────────────────────┐
+                  │          Courses           │
+                  ├────────────────────────────┤
+                  │ PK course_id              │
+                  │ name                      │
+                  │ credits                   │
+                  │ instructor_id            │
+                  │ semester                 │
+                  └────────────────────────────┘
+
+
+               ┌──────────────────────────────┐
+               │      Anti_Cheat_Events       │
+               ├──────────────────────────────┤
+               │ PK event_id                  │
+               │ exam_id                      │
+               │ FK student_id                │
+               │ anomaly_score                │
+               │ flag_reason                  │
+               └──────────────────────────────┘
+
+
+
+┌──────────────────────────────┐
+│            Users             │
+├──────────────────────────────┤
+│ PK admin_id                  │
+│ role                         │
+│ department                   │
+│ permissions                  │
+└──────────────┬───────────────┘
+               │
+               ▼
+┌──────────────────────────────┐
+│         Audit_Log            │
+├──────────────────────────────┤
+│ PK audit_id                  │
+│ action                       │
+│ actor                        │
+│ timestamp                    │
+│ affected_rows                │
+│ change_hash                  │
+└──────────────────────────────┘
+
+
+
+┌──────────────────────────────┐
+│ Cryptographic_Hashes         │
+├──────────────────────────────┤
+│ PK hash_id                   │
+│ original_data_hash           │
+│ record_type                  │
+│ created_at                   │
+│ signed_by                    │
+└──────────────────────────────┘
+
+
+
+┌──────────────────────────────┐
+│      Watchdog_Alerts         │
+├──────────────────────────────┤
+│ PK alert_id                  │
+│ agent_type                   │
+│ alert_level                  │
+│ message                      │
+│ resolved                     │
+└──────────────────────────────┘
+
+
+
+┌──────────────────────────────┐
+│ Admission_Applications       │
+├──────────────────────────────┤
+│ PK application_id            │
+│ applicant_id                 │
+│ documents                    │
+│ status                       │
+│ decision                     │
+└──────────────────────────────┘
+
+
+
+┌──────────────────────────────┐
+│      Research_Papers         │
+├──────────────────────────────┤
+│ PK paper_id                  │
+│ professor_id                 │
+│ title                        │
+│ abstract                     │
+│ submission_date              │
+└──────────────────────────────┘
+
+
+
+┌──────────────────────────────┐
+│   Research_Documents         │
+├──────────────────────────────┤
+│ PK doc_id                    │
+│ content                      │
+│ embedding_vector             │
+│ created_at                   │
+└──────────────────────────────┘
+
+
+
+┌──────────────────────────────┐
+│     Library_Catalog          │
+├──────────────────────────────┤
+│ PK book_id                   │
+│ title                        │
+│ author                       │
+│ description                  │
+│ embedding_vector             │
+└──────────────────────────────┘
+
+Relationships
+Parent	          Child         	Key
+Students	   Enrollments	     student_id
+Courses     	Enrollments     	course_id
+Students	      Grades        	student_id
+Courses         	Grades      	course_id
+Students        	Fee_Records 	student_id
+Students	       Documents    	student_id
+Students	    Anti_Cheat_Events	student_id
+Users	          Audit_Log     	admin_id (logical relationship)
