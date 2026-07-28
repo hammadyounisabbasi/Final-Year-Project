@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Environment Variables
+.env
+
+# VS Code
+.vscode/
+
+# SQLite
+*.db
+*.sqlite3
+
+# FAISS
+*.faiss
+*.index
+
+# Logs
+logs/
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Python Cache
+.pytest_cache/
+
+# Build
+dist/
+build/
+
+# Node
+node_modules/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Temporary Files
+*.tmp
+*.bak
+backend/vectorstore/faiss_index/
+*.faiss
+*.pkl
