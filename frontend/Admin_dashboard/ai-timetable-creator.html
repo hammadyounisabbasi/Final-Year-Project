@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timetable Studio | Admin Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-shell.css">
+  <script src="admin-shell.js" defer></script>
+  <link rel="stylesheet" href="timetable-chat.css">
+  <script src="timetable-builder.js" defer></script>
+  <script src="timetable-chat.js" defer></script>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+  <header></header>
+  <main class="studio">
+    <!-- Studio Header -->
+    <div class="studio-header">
+      <div class="studio-title-group">
+        <div class="studio-badge-row">
+          <span class="badge badge-accent">Interactive Timetable Generator</span>
+          <span class="badge badge-subtle">Admin Workspace</span>
+        </div>
+        <h1>Automated &amp; Structured Timetable Studio</h1>
+        <p class="subtitle">Design, validate, and publish department-wide master schedules across semesters with live constraint awareness.</p>
+      </div>
+      <div class="header-status-card">
+        <div class="status-indicator">
+          <span class="status-dot online"></span>
+          <span class="status-label">System Active</span>
+        </div>
+        <div class="status-info" id="builder-status">Connecting to live university system…</div>
+      </div>
+    </div>
+
+    <!-- MAIN TIMETABLE GENERATOR BUILDER -->
+    <section class="panel builder-card">
+      <div class="builder-header-bar">
+        <div class="builder-header-info">
+          <div class="step-tag">Step 1 — Master Configuration</div>
+          <h2>Timetable Generation &amp; Cohort Setup</h2>
+          <p class="muted">Select any department, pick multi-semesters (1–8), and configure weekly course hours, faculty, and room allocations.</p>
+        </div>
+        <div class="builder-header-actions">
+          <button id="builder-toggle" class="btn btn-secondary" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+            <span>Toggle Setup</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Progressive Step Indicator -->
+      <nav aria-label="Workflow progress" class="workflow-stepper-wrap">
+        <ol class="stage-track">
+          <li class="active" data-step="1"><span class="step-num">1</span><span class="step-text">Setup Scope</span></li>
+          <li data-step="2"><span class="step-num">2</span><span class="step-text">Courses &amp; Faculty</span></li>
+          <li data-step="3"><span class="step-num">3</span><span class="step-text">Draft Schedule</span></li>
+          <li data-step="4"><span class="step-num">4</span><span class="step-text">Generate AI Slots</span></li>
+          <li data-step="5"><span class="step-num">5</span><span class="step-text">Verify Constraints</span></li>
+          <li data-step="6"><span class="step-num">6</span><span class="step-text">Review &amp; Approve</span></li>
+          <li data-step="7"><span class="step-num">7</span><span class="step-text">Publish to Portals</span></li>
+        </ol>
+      </nav>
+
+      <!-- Builder Setup Form -->
+      <form id="builder-form" novalidate>
+        <!-- 1. Scope Selection (Department, Academic Year, Daily Timings) -->
+        <div class="form-section-group">
+          <div class="section-label-row">
+            <h3>1. Department &amp; Session Timing Scope</h3>
+            <span class="section-hint">Select the target department and define the daily operational window.</span>
+          </div>
+          <div class="builder-fields-grid">
+            <div class="form-field">
+              <label for="builder-department">Department <span class="req">*</span></label>
+              <select id="builder-department" required>
+                <option value="">Choose Department…</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="builder-year">Academic Year <span class="req">*</span></label>
+              <select id="builder-year" required>
+                <option value="">Choose Academic Year…</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="builder-start">Day Starts <span class="req">*</span></label>
+              <input id="builder-start" type="time" required value="08:30">
+            </div>
+            <div class="form-field">
+              <label for="builder-end">Day Ends <span class="req">*</span></label>
+              <input id="builder-end" type="time" required value="15:30">
+            </div>
+            <div class="form-field">
+              <label for="builder-slot">Slot Duration <span class="req">*</span></label>
+              <select id="builder-slot">
+                <option value="30">30 Minutes</option>
+                <option value="45">45 Minutes</option>
+                <option value="60" selected>60 Minutes (1 Hour)</option>
+                <option value="90">90 Minutes (1.5 Hours)</option>
+                <option value="120">120 Minutes (2 Hours)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Working Days Configuration -->
+        <div class="form-section-group">
+          <div class="section-label-row">
+            <h3>2. Working Days</h3>
+            <span class="section-hint">Standard university operational days (Monday–Friday configurable).</span>
+          </div>
+          <fieldset class="choice-fieldset">
+            <legend class="sr-only">Working Days</legend>
+            <div id="builder-days" class="check-chips-grid"></div>
+          </fieldset>
+        </div>
+
+        <!-- 3. Semester Selection (Multi-select 1 to 8) -->
+        <div class="form-section-group">
+          <div class="section-label-row">
+            <div class="title-with-badge">
+              <h3>3. Semester Selection</h3>
+              <span class="counter-badge" id="selected-semesters-count">0 Selected</span>
+            </div>
+            <span class="section-hint">Select any combination from Semester 1 to Semester 8 to dynamically generate course cards.</span>
+          </div>
+          <fieldset class="choice-fieldset">
+            <legend class="sr-only">Semesters</legend>
+            <div id="builder-semesters" class="semester-chips-grid"></div>
+          </fieldset>
+        </div>
+
+        <!-- 4. Course Configuration per Semester (Expandable Sections) -->
+        <div class="form-section-group">
+          <div class="section-label-row">
+            <h3>4. Course Configurations per Selected Semester</h3>
+            <span class="section-hint">Review courses, assign available faculty, select eligible rooms, or manually add required courses.</span>
+          </div>
+          <div id="semester-configurations" class="semester-configurations-container">
+            <div class="empty-state-card">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <h4>No Semesters Selected</h4>
+              <p>Please choose one or more semesters above to configure course allocations and faculty assignments.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Validation errors callout -->
+        <div id="builder-errors" class="builder-errors-banner" role="alert" hidden></div>
+
+        <!-- Builder Submit Bar -->
+        <div class="builder-actions-bar">
+          <div class="builder-action-info">
+            <span class="action-caption">When ready, initialize the draft schedules for selected cohorts:</span>
+          </div>
+          <div class="builder-action-buttons">
+            <button id="builder-submit" class="btn btn-primary btn-lg" type="submit">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              <span>Save Setup &amp; Create Timetable Drafts</span>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- 5. Interactive Draft Workspace & Schedule Grid -->
+      <section id="draft-workspace" class="draft-workspace-panel" hidden>
+        <div class="draft-workspace-header">
+          <div class="draft-title-group">
+            <div class="draft-meta-tags">
+              <span class="tag-label">Generated Schedule</span>
+              <span id="draft-state" class="status-pill draft">DRAFT</span>
+            </div>
+            <h3 id="draft-title">Department Timetable</h3>
+            <p id="draft-message" class="draft-submessage">Select "Generate Timetable" to calculate optimized, conflict-free time slots.</p>
+          </div>
+          
+          <div class="draft-primary-controls">
+            <button id="draft-generate" class="btn btn-generate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Generate Timetable</span>
+            </button>
+            <button id="draft-validate" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Validate Constraints</span>
+            </button>
+            <button id="draft-edit-config" class="btn btn-secondary" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span>Edit Configuration</span>
+            </button>
+            <button id="draft-print" class="btn btn-secondary" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span>Print / PDF</span>
+            </button>
+            <button id="draft-approve" class="btn btn-success" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>Approve &amp; Save</span>
+            </button>
+            <button id="draft-publish" class="btn btn-publish" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Publish to Portals</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cohort Switcher Tabs for Multi-Semester View -->
+        <div class="cohort-switcher-row">
+          <div class="cohort-tabs-label">Switch Semester Timetable:</div>
+          <div id="draft-tabs" class="draft-tabs-scroll"></div>
+        </div>
+
+        <!-- Real-time conflict diagnosis banner -->
+        <div id="draft-conflicts" class="draft-conflicts-container" hidden></div>
+
+        <!-- Interactive Weekly Timetable Grid -->
+        <div class="grid-card-container">
+          <div class="grid-header-note">
+            <span>💡 <strong>Interactive Grid:</strong> Click on any scheduled lecture or lab card in Draft state to adjust timing, day, teacher, or classroom.</span>
+          </div>
+          <div id="timetable-grid" class="timetable-grid-scroll-wrap"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- AI ADVISOR & CONVERSATIONAL PLANNING PANEL (Preserved) -->
+    <div class="ai-assistant-heading">
+      <h2>AI Timetable Assistant &amp; Document Extraction</h2>
+      <p class="muted">Query historical loads, extract course spreadsheets, or ask natural language schedule optimizations.</p>
+    </div>
+
+    <div class="workspace">
+      <!-- AI Scope Selector -->
+      <aside class="panel scope">
+        <h2>Planning Scope</h2>
+        <p class="muted">Analyze live data or ask the assistant for recommendations.</p>
+        <div class="form-field">
+          <label for="department_id">Department</label>
+          <select id="department_id"><option value="">From conversation</option></select>
+        </div>
+        <div class="scope-pair">
+          <div class="form-field">
+            <label for="semester">Semester</label>
+            <select id="semester"><option value="">All</option></select>
+          </div>
+          <div class="form-field">
+            <label for="section">Section</label>
+            <select id="section"><option value="">All</option></select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="academic_year">Academic Year</label>
+          <select id="academic_year"><option value="">Latest enrolled year</option></select>
+        </div>
+        <div class="form-field">
+          <label for="teacher_id">Teacher</label>
+          <select id="teacher_id"><option value="">All suitable teachers</option></select>
+        </div>
+        <div class="form-field">
+          <label for="student_id">Student</label>
+          <select id="student_id"><option value="">All enrolled students</option></select>
+        </div>
+        <button id="generate" class="btn btn-primary full-width">Generate Proposal</button>
+        <button id="analyze" class="btn btn-secondary full-width">Analyze Existing Timetable</button>
+        <div class="scope-note">
+          <b>AI is recommendation-only</b>
+          <p>Structured drafts require validation and explicit publication.</p>
+        </div>
+      </aside>
+
+      <!-- AI Chat Interface -->
+      <section class="panel conversation">
+        <div class="chat-heading">
+          <div class="avatar">AI</div>
+          <div>
+            <h2>Timetable Assistant</h2>
+            <span id="agent-state">Ready</span>
+          </div>
+          <span class="session-tag">Recommendation only</span>
+        </div>
+        <div id="chat" role="log"></div>
+        <div id="typing" hidden><span class="dots">● ● ●</span> Checking your request…</div>
+        <div class="suggestions">
+          <button type="button" data-request="What is the current faculty workload across departments?">Faculty Workload</button>
+          <button type="button" data-request="Help me create Computer Science Semester 1 timetable.">Plan Semester 1</button>
+          <button type="button" data-request="Analyze existing timetable conflicts in the database.">Check Conflicts</button>
+          <button type="button" data-request="Which classrooms and computer labs are available?">Room Availability</button>
+        </div>
+        <div id="attachments"></div>
+        <form id="composer">
+          <label class="sr-only" for="chat-input">Message timetable assistant</label>
+          <textarea id="chat-input" rows="2" placeholder="Ask a question or describe timetable requirements (e.g., 'Plan CS Sem 3 with 3 classes for AI on Mon/Wed/Thu')..."></textarea>
+          <div class="composer-bottom">
+            <div class="attach-actions">
+              <button type="button" class="subtle" data-attach=".pdf,.docx,.xlsx,.csv,.txt,.png,.jpg,.jpeg,.webp">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                <span>Attach File</span>
+              </button>
+              <button type="button" class="subtle" data-attach=".pdf">PDF</button>
+              <button type="button" class="subtle" data-attach=".docx">DOCX</button>
+              <button type="button" class="subtle" data-attach=".xlsx,.csv">Excel/CSV</button>
+              <button type="button" class="subtle" data-attach=".png,.jpg,.jpeg,.webp">Image</button>
+            </div>
+            <button id="send" class="btn btn-primary">
+              <span>Send</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <input id="file-input" type="file" multiple hidden accept=".pdf,.docx,.xlsx,.csv,.txt,.png,.jpg,.jpeg,.webp">
+        </form>
+        <p class="composer-hint">Supported: PDF, DOCX, Excel, CSV, TXT, Images · max 5 MB per file</p>
+      </section>
+    </div>
+
+    <!-- AI RECOMMENDATION PREVIEW (Dashboard-grade) -->
+    <section id="preview" class="panel review preview-dashboard-panel">
+      <!-- Header bar with title, status badge & action buttons -->
+      <div class="review-header-bar">
+        <div class="review-title-group">
+          <div class="review-badge-row">
+            <span class="preview-badge-pill">Assistant Analysis &amp; Recommendations</span>
+            <span id="provider" class="provider-pill">Live Constraints</span>
+          </div>
+          <h2>Live Timetable Recommendation &amp; Verification</h2>
+          <p class="review-subtitle">Review AI-optimized class distributions, verify constraint validation, and export official schedules.</p>
+        </div>
+        <div class="review-actions-group">
+          <button id="regenerate" class="btn btn-secondary" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            <span>Regenerate</span>
+          </button>
+          <button id="download" class="btn btn-primary" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Download PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Execution Pipeline Stepper -->
+      <div class="workflow-stepper-strip">
+        <div class="workflow-label">Pipeline Trace:</div>
+        <div id="workflow" class="workflow-steps-flow"></div>
+      </div>
+
+      <!-- KPI Metrics Overview Grid -->
+      <div id="metrics" class="preview-metrics-grid"></div>
+
+      <!-- Analysis Status & Diagnostics Row -->
+      <div class="diagnostics-row">
+        <div class="status-card-box">
+          <div class="status-card-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>Current Analysis Summary</span>
+          </div>
+          <div id="status" class="status-content">Ready for review.</div>
+        </div>
+        <div class="limitations-card-box">
+          <div class="limitations-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Policy Assumptions &amp; Safeguards</span>
+          </div>
+          <div id="limitations" class="limitations-content">Live database constraints enforced.</div>
+        </div>
+      </div>
+
+      <!-- Conflict & Issue Breakdown -->
+      <div id="issues" class="preview-issues-container"></div>
+
+      <!-- Pending Assistant Proposal Card -->
+      <div id="proposal" class="proposal-card-wrap" hidden>
+        <div class="proposal-header-row">
+          <div class="proposal-info">
+            <span class="proposal-badge">Pending Review</span>
+            <h3>Assistant Schedule Proposal</h3>
+            <p class="muted">The following changes have been deterministically validated and are awaiting approval.</p>
+          </div>
+          <div class="proposal-action-buttons">
+            <button id="reject" class="btn btn-danger-outline" type="button">Reject Proposal</button>
+            <button id="approve" class="btn btn-success" type="button">Approve &amp; Commit Proposal</button>
+          </div>
+        </div>
+        <div id="change-list" class="proposal-change-grid"></div>
+      </div>
+
+      <!-- Table Toolbar & Interactive Filters -->
+      <div class="preview-table-toolbar">
+        <div class="toolbar-title-meta">
+          <h3>Detailed Schedule Matrix</h3>
+          <span class="toolbar-count-tag" id="preview-count-tag">Showing live entries</span>
+        </div>
+        <div class="preview-controls-row">
+          <div class="control-group">
+            <label for="view">Group By:</label>
+            <select id="view">
+              <option value="section" selected>Semester &amp; Section Cohort</option>
+              <option value="department">Academic Department</option>
+              <option value="teacher">Assigned Faculty</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label for="preview-filter">Filter Entries:</label>
+            <select id="preview-filter">
+              <option value="">All matching entries</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendation & Timetable Table -->
+      <div class="preview-table-card">
+        <div class="table-scroll">
+          <table class="preview-data-table">
+            <thead>
+              <tr>
+                <th style="width: 20%;">Cohort / Department</th>
+                <th style="width: 26%;">Course Details</th>
+                <th style="width: 18%;">Assigned Faculty</th>
+                <th style="width: 16%;">Day &amp; Time Slot</th>
+                <th style="width: 10%;">Room / Hall</th>
+                <th style="width: 10%;">Session State</th>
+              </tr>
+            </thead>
+            <tbody id="preview-body"></tbody>
+          </table>
+        </div>
+        <div id="empty" class="preview-empty-state">
+          <div class="empty-icon-wrap">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <h4>No Schedule Entries Generated Yet</h4>
+          <p>Select a scope above or ask the AI Assistant in the chat to create a schedule for any department and semester.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- DIALOG: Edit Session Slot Modal -->
+  <dialog id="session-dialog" class="modal-dialog">
+    <div class="dialog-header">
+      <h2>Edit Draft Session Time &amp; Room</h2>
+      <button type="button" class="dialog-close-btn" onclick="$('session-dialog').close()">×</button>
+    </div>
+    <form id="session-form">
+      <div class="dialog-body">
+        <label>Day of Week
+          <select id="session-day"></select>
+        </label>
+        <div class="time-range-row">
+          <label>Start Time
+            <input id="session-start" type="time" required>
+          </label>
+          <label>End Time
+            <input id="session-end" type="time" required>
+          </label>
+        </div>
+        <label>Assigned Faculty
+          <select id="session-teacher"></select>
+        </label>
+        <label>Assigned Room
+          <select id="session-room"></select>
+        </label>
+        <div class="dialog-notice">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Conflict engine will validate changes. Overlapping or unavailable resources will be rejected and previous valid state preserved.</span>
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <button id="session-cancel" class="btn btn-secondary" type="button">Cancel</button>
+        <button class="btn btn-primary" type="submit">Save &amp; Revalidate</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- DIALOG: Add New Room Modal -->
+  <dialog id="add-room-dialog" class="modal-dialog">
+    <div class="dialog-header">
+      <h2>Add New Room</h2>
+      <button type="button" class="dialog-close-btn" onclick="$('add-room-dialog').close()">×</button>
+    </div>
+    <form id="add-room-form">
+      <div class="dialog-body">
+        <div class="form-grid-2">
+          <label>Room Code <span class="req">*</span>
+            <input id="modal-room-code" placeholder="e.g. CS-204, LAB-B" required>
+          </label>
+          <label>Room Name (Optional)
+            <input id="modal-room-name" placeholder="e.g. AI & Robotics Lab">
+          </label>
+        </div>
+        <div class="form-grid-2">
+          <label>Room Type <span class="req">*</span>
+            <select id="modal-room-type" required>
+              <option value="Classroom" selected>Classroom</option>
+              <option value="Computer Lab">Computer Lab</option>
+              <option value="Laboratory">Laboratory</option>
+              <option value="Seminar Room">Seminar Room</option>
+            </select>
+          </label>
+          <label>Seating Capacity <span class="req">*</span>
+            <input id="modal-room-capacity" type="number" min="1" max="500" value="50" required>
+          </label>
+        </div>
+        <div id="modal-room-error" class="builder-errors-banner" style="margin-top:10px;" hidden></div>
+      </div>
+      <div class="dialog-footer">
+        <button type="button" class="btn btn-secondary" onclick="$('add-room-dialog').close()">Cancel</button>
+        <button id="modal-room-submit" class="btn btn-primary" type="submit">Save Room to System</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- DIALOG: Add Custom Course Modal -->
+  <dialog id="add-course-dialog" class="modal-dialog">
+    <div class="dialog-header">
+      <h2>Add Course to Semester</h2>
+      <button type="button" class="dialog-close-btn" onclick="$('add-course-dialog').close()">×</button>
+    </div>
+    <form id="add-course-form">
+      <input type="hidden" id="modal-target-semester" value="">
+      <div class="dialog-body">
+        <div class="form-grid-2">
+          <label>Course Title / Subject Name <span class="req">*</span>
+            <input id="modal-course-title" placeholder="e.g. Advanced Machine Learning" required>
+          </label>
+          <label>Course Code <span class="req">*</span>
+            <input id="modal-course-code" placeholder="e.g. CS-401" required>
+          </label>
+        </div>
+        <div class="form-grid-3">
+          <label>Credit Hours
+            <input id="modal-course-credits" type="number" min="1" max="6" value="3" required>
+          </label>
+          <label>Weekly Classes
+            <input id="modal-course-sessions" type="number" min="1" max="12" value="3" required>
+          </label>
+          <label>Class Duration
+            <select id="modal-course-duration">
+              <option value="30">30 min</option>
+              <option value="45">45 min</option>
+              <option value="60" selected>60 min</option>
+              <option value="90">90 min</option>
+              <option value="120">120 min</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-grid-2">
+          <label>Course / Room Type
+            <select id="modal-course-type">
+              <option value="Classroom">Classroom (Lecture)</option>
+              <option value="Laboratory">Laboratory (Lab)</option>
+              <option value="Computer Lab">Computer Lab</option>
+              <option value="Seminar Room">Seminar Room</option>
+            </select>
+          </label>
+          <label>Assign Teacher
+            <select id="modal-course-teacher">
+              <option value="">Choose Teacher…</option>
+            </select>
+          </label>
+        </div>
+        <label>Eligible Rooms (Hold Ctrl/Cmd to select multiple)
+          <select id="modal-course-rooms" multiple size="4" required></select>
+        </label>
+      </div>
+      <div class="dialog-footer">
+        <button type="button" class="btn btn-secondary" onclick="$('add-course-dialog').close()">Cancel</button>
+        <button class="btn btn-primary" type="submit">Add Course Card</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- DIALOG: Approval Confirmation Modal -->
+  <dialog id="approval-dialog" class="modal-dialog">
+    <div class="dialog-header">
+      <h2>Approve &amp; Lock Timetable?</h2>
+      <button type="button" class="dialog-close-btn" onclick="$('approval-dialog').close()">×</button>
+    </div>
+    <div class="dialog-body">
+      <p id="approval-summary">Save validated timetable changes? Replacements retain historical records. Approved timetables can then be published to student and teacher portals.</p>
+    </div>
+    <div class="dialog-footer">
+      <button id="cancel-approval" class="btn btn-secondary" type="button">Keep Reviewing</button>
+      <button id="confirm-approval" class="btn btn-primary" type="button">Confirm &amp; Approve</button>
+    </div>
+  </dialog>
+</body>
+</html>

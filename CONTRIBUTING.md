@@ -265,6 +265,10 @@ Contributors must never commit:
 
 Always use `.env.example` for configuration examples.
 
+Keep runtime dependencies in the repository-root `requirements.txt`; test-only tools belong in `requirements-dev.txt`. Do not create a second backend requirements manifest.
+
+Before opening a pull request, run `python -m compileall -q backend/backend/app scripts tests` and `python -m pytest tests/unit -q`. Deployment changes must also keep `DEPLOYMENT.md` and `vercel.json` consistent.
+
 ---
 
 # 12. Dependency Management

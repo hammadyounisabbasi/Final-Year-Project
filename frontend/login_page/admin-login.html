@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login | University of Haripur</title>
+
+    <!-- Google Fonts -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- CSS -->
+
+    <link rel="stylesheet"
+          href="login.css">
+
+  <script src="../shared/config.js"></script>
+</head>
+
+<body class="admin-theme">
+
+    <!-- Background -->
+
+    <div class="background-overlay"></div>
+
+    <main class="login-page">
+
+        <section class="login-card">
+
+            <!-- =========================
+                 HEADER
+            ========================== -->
+
+                       <div class="portal-header">
+
+    <div class="logo-area">
+        <img src="uoh-logo.png" alt="University Logo">
+    </div>
+
+    <div class="heading">
+        <small>Welcome To</small>
+        <h1>University of Haripur</h1>
+        <p>Intelligent Ecosystem (IES)</p>
+        <span>AI Powered • Secure • Intelligent</span>
+    </div>
+
+</div>
+
+            <!-- =========================
+                 LOGIN ICON
+            ========================== -->
+
+            <div class="login-icon">
+
+                <i class="fa-solid fa-graduation-cap"></i>
+
+            </div>
+
+            <!-- =========================
+                 TITLE
+            ========================== -->
+
+            <div class="title">
+
+                <h2>
+
+                    Administrator Login
+
+                </h2>
+
+                <p>
+
+                    Welcome back, future leader!
+
+                </p>
+
+            </div>
+
+            <!-- =========================
+                 LOGIN FORM
+            ========================== -->
+
+            <form id="loginForm">
+
+                <!-- Roll Number -->
+
+                <div class="input-group">
+
+                    <label>
+
+                        Admin ID
+
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-regular fa-user"></i>
+
+                        <input
+                            id="rollNumber"
+                            type="text"
+                            placeholder="Enter your Roll Number"
+                            required>
+
+                    </div>
+
+                </div>
+
+                <!-- Password -->
+
+                <div class="input-group">
+
+                    <label>
+
+                        Password
+
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            id="password"
+                            type="password"
+                            placeholder="Enter your Password"
+                            required>
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="eye-btn">
+
+                            <i class="fa-regular fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Options -->
+
+                <div class="login-options">
+
+                    <label class="remember">
+
+                        <input type="checkbox">
+
+                        Remember Me
+
+                    </label>
+
+                    <a href="#">
+
+                        Forgot Password?
+
+                    </a>
+
+                </div>
+
+                <!-- Login Button -->
+
+                <button
+                    id="loginBtn"
+                    class="login-btn"
+                    type="submit">
+
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+
+                    Sign In as Administrator
+
+                </button>
+
+            </form>
+
+            <!-- =========================
+                 FOOTER
+            ========================== -->
+
+            <footer>
+
+                © 2026 University of Haripur
+
+            </footer>
+
+        </section>
+
+    </main>
+
+    <script src="login.js"></script>
+
+</body>
+
+</html>

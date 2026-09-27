@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses - Intelligent Ecosystem (IES)</title>
+    <!-- Fonts & FontAwesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --sidebar-bg: #090e1a;
+            --sidebar-hover: #121929;
+            --sidebar-active: #2563eb;
+            --sidebar-text: #94a3b8;
+            --main-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --primary-blue: #2563eb;
+            --accent-purple: #8b5cf6;
+            --success-green: #10b981;
+            --warning-amber: #f59e0b;
+            --danger-red: #ef4444;
+            --font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background-color: var(--main-bg);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR STYLING --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* University Logo Styling */
+        .uoh-logo-img {
+            height: 42px;
+            width: auto;
+            max-width: 45px;
+            object-fit: contain;
+        }
+
+        .sidebar-header-text h3 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .sidebar-header-text p {
+            font-size: 0.72rem;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #475569;
+            padding: 18px 20px 8px;
+            font-weight: 700;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 12px;
+        }
+
+        .sidebar-menu-item {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            gap: 12px;
+        }
+
+        .sidebar-link i {
+            font-size: 1.05rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-link:hover {
+            background-color: var(--sidebar-hover);
+            color: #ffffff;
+        }
+
+        .sidebar-link.active {
+            background-color: var(--sidebar-active);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 16px 20px;
+            font-size: 0.72rem;
+            color: #475569;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- MAIN WRAPPER & TOPBAR --- */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        .topbar {
+            height: 70px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mobile-toggle-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        .mobile-toggle-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .page-header-text h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .page-header-text p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 320px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 16px 9px 38px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: #f8fafc;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-blue);
+            background-color: #fff;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .icon-btn {
+            position: relative;
+            background: #f1f5f9;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: #e2e8f0;
+            color: var(--text-primary);
+        }
+
+        .icon-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: var(--danger-red);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-info {
+            line-height: 1.2;
+        }
+
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .user-role {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+
+        /* Single Notification Popover */
+        .notification-panel {
+            position: absolute;
+            top: 60px;
+            right: 80px;
+            width: 320px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 1050;
+            overflow: hidden;
+        }
+
+        .notification-panel.show {
+            display: block;
+        }
+
+        .notification-header {
+            padding: 14px 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background: #f8fafc;
+        }
+
+        /* --- MY COURSES CONTENT LAYOUT --- */
+        .courses-content {
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Top Controls Filter Bar */
+        .filter-action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .select-semester {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-download-transcript {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-download-transcript:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        /* 4 Main Stats Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .metric-info h4 {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .metric-info .value {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin: 2px 0;
+        }
+
+        .metric-info .subtext {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Main Dashboard Grid Split (Content + Sidebar Widgets) */
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-header-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Enrolled Course Cards Grid */
+        .enrolled-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .course-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+        }
+
+        .course-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .course-code-icon {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .course-icon-bg {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .course-code-text {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .course-title-text {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+            margin-top: 2px;
+        }
+
+        .credit-badge {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Progress Circle Canvas / CSS Ring */
+        .progress-ring-container {
+            width: 50px;
+            height: 50px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary-blue) var(--progress), #e2e8f0 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-circle-inner {
+            width: 38px;
+            height: 38px;
+            background: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .course-details-meta {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 12px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-view-details {
+            background: transparent;
+            border: none;
+            color: var(--primary-blue);
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+            padding: 0;
+            transition: gap 0.2s;
+        }
+
+        .btn-view-details:hover {
+            gap: 10px;
+            text-decoration: underline;
+        }
+
+        /* Detailed Table Section */
+        .card-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .course-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.82rem;
+        }
+
+        .course-table th {
+            padding: 12px 14px;
+            background: #f8fafc;
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .course-table td {
+            padding: 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: #dcfce7;
+            color: #15803d;
+            display: inline-block;
+        }
+
+        /* Right Column Widgets */
+        .widget-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .widget-header {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .overview-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 0.8rem;
+        }
+
+        .overview-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-bar-container {
+            height: 6px;
+            width: 100%;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary-blue);
+            border-radius: 10px;
+        }
+
+        /* Weekly Class Schedule Widget */
+        .weekly-schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+
+        .schedule-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed #f1f5f9;
+        }
+
+        /* Calendar Widget */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+            font-size: 0.75rem;
+        }
+
+        .calendar-day-head {
+            font-weight: 700;
+            color: var(--text-secondary);
+            padding-bottom: 6px;
+        }
+
+        .calendar-day {
+            padding: 6px 0;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .calendar-day:hover {
+            background: #f1f5f9;
+        }
+
+        .calendar-day.active {
+            background: var(--primary-blue);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .calendar-legend {
+            display: flex;
+            gap: 12px;
+            font-size: 0.68rem;
+            margin-top: 12px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        /* Quick Actions Cards Box */
+        .quick-actions-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .quick-action-btn {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .quick-action-btn:hover {
+            background: #eff6ff;
+            border-color: var(--primary-blue);
+        }
+
+        .quick-action-btn i {
+            font-size: 1.1rem;
+            color: var(--primary-blue);
+        }
+
+        /* Dynamic Details Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1200;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 580px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            .mobile-toggle-btn {
+                display: block;
+            }
+
+            .dashboard-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .search-box {
+                width: 140px;
+            }
+
+            .page-header-text h1 {
+                font-size: 1rem;
+            }
+
+            .page-header-text p {
+                display: none;
+            }
+
+            .courses-content {
+                padding: 16px;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .quick-actions-box {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+    <!-- OVERLAY FOR MOBILE SIDEBAR -->
+    <div id="sidebar-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999;" onclick="toggleSidebar()"></div>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../login_page/uoh-logo.png" alt="University Logo" class="uoh-logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/40?text=UoH';">
+            <div class="sidebar-header-text">
+                <h3>The University of Haripur</h3>
+                <p>Intelligent Ecosystem (IES)</p>
+            </div>
+        </div>
+
+        <div class="sidebar-section-title">Student Portal</div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+                <a href="stu_dashboard.html" class="sidebar-link">
+                    <i class="fa-solid fa-border-all"></i> Dashboard
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="my-courses.html" class="sidebar-link active">
+                    <i class="fa-solid fa-book-open"></i> My Courses
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="attendance.html" class="sidebar-link">
+                    <i class="fa-regular fa-calendar-check"></i> Attendance
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="assignments.html" class="sidebar-link">
+                    <i class="fa-regular fa-file-lines"></i> Assignments
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="exams.html" class="sidebar-link">
+                    <i class="fa-solid fa-graduation-cap"></i> Exams
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="results.html" class="sidebar-link">
+                    <i class="fa-solid fa-chart-line"></i> Results & CGPA
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="fees.html" class="sidebar-link">
+                    <i class="fa-solid fa-wallet"></i> Fees
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="library.html" class="sidebar-link">
+                    <i class="fa-solid fa-book"></i> Library
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="timetable.html" class="sidebar-link">
+                    <i class="fa-regular fa-clock"></i> Timetable
+                </a>
+            </li>
+            
+            <li class="sidebar-menu-item">
+                <a href="profile.html" class="sidebar-link">
+                    <i class="fa-regular fa-user"></i> Profile
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="settings.html" class="sidebar-link">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-section-title">System</div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+                <a href="support.html" class="sidebar-link">
+                    <i class="fa-regular fa-headset"></i> Support
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="../landing_page/index.html"  class="sidebar-link">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <p>© 2026 University of Haripur</p>
+            <p>All rights reserved. IES v1.0</p>
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <!-- 3-dots / menu toggle button for Mobile -->
+                <button class="mobile-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle Navigation">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+                <div class="page-header-text">
+                    <h1>My Courses</h1>
+                    <p>View and manage all your enrolled courses.</p>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="courseSearchInput" onkeyup="filterCourses()" placeholder="Search courses, assignments, materials...">
+                </div>
+
+                <!-- Interactive Single Notification Icon -->
+                
+
+                <!-- Notifications Panel -->
+                <div class="notification-panel" id="notificationPanel">
+                    <div class="notification-header">
+                        <strong style="font-size:0.85rem;">Notifications</strong>
+                        <span style="font-size:0.7rem; color:var(--primary-blue); cursor:pointer;">Mark all read</span>
+                    </div>
+                    <div class="notification-item">
+                        <strong>Course schedule active</strong>
+                        <p style="color:var(--text-secondary); font-size:0.75rem; margin-top:2px;">All registered courses loaded from academic records.</p>
+                    </div>
+                    <div class="notification-item">
+                        <strong>Mid Term Exam Schedule Published</strong>
+                        <p style="color:var(--text-secondary); font-size:0.75rem; margin-top:2px;">Exams start from 10th June 2026.</p>
+                    </div>
+                </div>
+
+                <!-- User Profile -->
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Student Avatar" class="user-avatar" id="topbarAvatar">
+                    <div class="user-info">
+                        <div class="user-name" id="topbarUserName">Loading...</div>
+                        <div class="user-role" id="topbarUserRole">-</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; color: var(--text-secondary);"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="courses-content">
+            <!-- Filter & Download Bar -->
+            <div class="filter-action-bar">
+                <select class="select-semester" id="semesterSelect" onchange="onSemesterChange(event)">
+                    <option value="">Loading Semesters...</option>
+                </select>
+
+                <button class="btn-download-transcript" onclick="downloadTranscript()">
+                    <i class="fa-solid fa-download"></i> Download Transcript
+                </button>
+            </div>
+
+            <!-- Metric Cards -->
+            <section class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#e0e7ff; color:#4f46e5;"><i class="fa-solid fa-book-open"></i></div>
+                    <div class="metric-info">
+                        <h4>Enrolled Courses</h4>
+                        <div class="value" id="metricEnrolledCount">-</div>
+                        <div class="subtext" id="metricSemesterLabel">This Semester</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#dcfce7; color:#16a34a;"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div class="metric-info">
+                        <h4>Credit Hours</h4>
+                        <div class="value" id="metricTotalCredits">-</div>
+                        <div class="subtext">Total Credits</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#f3e8ff; color:#9333ea;"><i class="fa-solid fa-award"></i></div>
+                    <div class="metric-info">
+                        <h4>CGPA</h4>
+                        <div class="value" id="metricCGPA">-</div>
+                        <div class="subtext">Out of 4.00</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-chart-simple"></i></div>
+                    <div class="metric-info">
+                        <h4>Completed Credits</h4>
+                        <div class="value" id="metricCompletedCredits">-</div>
+                        <div class="subtext">Till Now</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Two Column Split (Left Grid/Table & Right Widgets) -->
+            <div class="dashboard-row">
+                <!-- LEFT COLUMN -->
+                <div class="left-column">
+                    <!-- Enrolled Courses Cards Grid -->
+                    <div>
+                        <div class="section-header-title">Enrolled Courses</div>
+                        <div class="enrolled-grid" id="enrolledGrid">
+                            <div style="padding: 20px; color: var(--text-secondary);">Loading enrolled courses from database...</div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Course List Table -->
+                    <div class="card-container">
+                        <div class="section-header-title">Course List</div>
+                        <div class="table-responsive">
+                            <table class="course-table">
+                                <thead>
+                                    <tr>
+                                        <th>Course Code</th>
+                                        <th>Course Title</th>
+                                        <th>Credits</th>
+                                        <th>Instructor</th>
+                                        <th>Schedule</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="courseTableBody">
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 16px;">Loading courses...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:14px; font-size:0.75rem; color:var(--text-secondary);">
+                            <span id="footerTotalCredits">Total Credit Hours: <strong>-</strong></span>
+                            <span id="footerCourseCount">Showing 0 courses</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN (SIDEBAR WIDGETS) -->
+                <div class="right-column">
+                    <!-- Semester Overview Widget -->
+                    <div class="widget-card">
+                        <div class="widget-header">Semester Overview</div>
+                        <div class="overview-list">
+                            <div class="overview-item">
+                                <span>Start Date</span>
+                                <strong>15 Jan 2026</strong>
+                            </div>
+                            <div class="overview-item">
+                                <span>End Date</span>
+                                <strong>30 May 2026</strong>
+                            </div>
+                            <div style="margin: 4px 0;">
+                                <div class="overview-item">
+                                    <span>Weeks Completed</span>
+                                    <strong>12 / 16</strong>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" style="width: 75%;"></div>
+                                </div>
+                            </div>
+                            <div class="overview-item" style="margin-top:4px;">
+                                <span>Mid Terms</span>
+                                <span style="background:#dcfce7; color:#16a34a; padding:2px 8px; border-radius:10px; font-weight:700; font-size:0.7rem;">Completed</span>
+                            </div>
+                            <div class="overview-item">
+                                <span>Final Exams</span>
+                                <span style="background:#ffedd5; color:#c2410c; padding:2px 8px; border-radius:10px; font-weight:700; font-size:0.7rem;">Upcoming</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Class Schedule Widget -->
+                    <div class="widget-card">
+                        <div class="widget-header">Weekly Class Schedule</div>
+                        <div class="weekly-schedule-list" id="weeklyScheduleList">
+                            <div class="schedule-row"><span>Monday</span><strong>2 Classes</strong></div>
+                            <div class="schedule-row"><span>Tuesday</span><strong>2 Classes</strong></div>
+                            <div class="schedule-row"><span>Wednesday</span><strong>3 Classes</strong></div>
+                            <div class="schedule-row"><span>Thursday</span><strong>2 Classes</strong></div>
+                            <div class="schedule-row"><span>Friday</span><strong>2 Classes</strong></div>
+                            <div style="display:flex; justify-content:space-between; margin-top:8px; padding-top:8px; border-top:1px solid var(--border-color); color:var(--primary-blue); font-weight:700;">
+                                <span>Total This Week</span>
+                                <span id="totalWeeklyClasses">11 Classes</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Calendar Widget -->
+                    <div class="widget-card">
+                        <div class="calendar-header">
+                            <i class="fa-solid fa-chevron-left" style="cursor:pointer;" onclick="changeMonth(-1)"></i>
+                            <span id="calendarMonthTitle">June 2026</span>
+                            <i class="fa-solid fa-chevron-right" style="cursor:pointer;" onclick="changeMonth(1)"></i>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="calendar-day-head">Su</div>
+                            <div class="calendar-day-head">Mo</div>
+                            <div class="calendar-day-head">Tu</div>
+                            <div class="calendar-day-head">We</div>
+                            <div class="calendar-day-head">Th</div>
+                            <div class="calendar-day-head">Fr</div>
+                            <div class="calendar-day-head">Sa</div>
+
+                            <!-- Calendar days dynamically loaded -->
+                            <div class="calendar-day" style="color:#cbd5e1;">26</div>
+                            <div class="calendar-day" style="color:#cbd5e1;">27</div>
+                            <div class="calendar-day" style="color:#cbd5e1;">28</div>
+                            <div class="calendar-day" style="color:#cbd5e1;">29</div>
+                            <div class="calendar-day" style="color:#cbd5e1;">30</div>
+                            <div class="calendar-day" style="color:#cbd5e1;">31</div>
+                            <div class="calendar-day">1</div>
+                            <div class="calendar-day">2</div>
+                            <div class="calendar-day">3</div>
+                            <div class="calendar-day">4</div>
+                            <div class="calendar-day">5</div>
+                            <div class="calendar-day">6</div>
+                            <div class="calendar-day">7</div>
+                            <div class="calendar-day">8</div>
+                            <div class="calendar-day">9</div>
+                            <div class="calendar-day active">10</div>
+                            <div class="calendar-day">11</div>
+                            <div class="calendar-day active" style="background:#2563eb;">12</div>
+                            <div class="calendar-day">13</div>
+                            <div class="calendar-day">14</div>
+                            <div class="calendar-day">15</div>
+                            <div class="calendar-day">16</div>
+                            <div class="calendar-day">17</div>
+                            <div class="calendar-day">18</div>
+                            <div class="calendar-day">19</div>
+                            <div class="calendar-day">20</div>
+                            <div class="calendar-day">21</div>
+                            <div class="calendar-day">22</div>
+                            <div class="calendar-day">23</div>
+                            <div class="calendar-day">24</div>
+                            <div class="calendar-day">25</div>
+                            <div class="calendar-day">26</div>
+                            <div class="calendar-day">27</div>
+                            <div class="calendar-day">28</div>
+                            <div class="calendar-day">29</div>
+                            <div class="calendar-day">30</div>
+                        </div>
+                        <div class="calendar-legend">
+                            <div class="legend-item"><div class="dot" style="background:#2563eb;"></div> Classes</div>
+                            <div class="legend-item"><div class="dot" style="background:#10b981;"></div> Assignments</div>
+                            <div class="legend-item"><div class="dot" style="background:#f59e0b;"></div> Exams</div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Widget with Admin Injector -->
+                    <div class="widget-card">
+                        <div class="widget-header">
+                            <span>Quick Actions</span>
+                            <button onclick="adminAddQuickAction()" style="background:none; border:none; color:var(--primary-blue); font-size:0.72rem; cursor:pointer; font-weight:700;">+ Add (Admin)</button>
+                        </div>
+                        <div class="quick-actions-box" id="quickActionsBox">
+                            <a href="#" class="quick-action-btn"><i class="fa-regular fa-folder-open"></i> Course Materials</a>
+                            <a href="results.html" class="quick-action-btn"><i class="fa-regular fa-star"></i> My Grades</a>
+                            <a href="#" class="quick-action-btn"><i class="fa-regular fa-file-lines"></i> Class Notes</a>
+                            <a href="timetable.html" class="quick-action-btn"><i class="fa-regular fa-calendar"></i> Study Planner</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- DYNAMIC COURSE DETAILS MODAL -->
+    <div class="modal-overlay" id="courseModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modalCourseTitle" style="font-size:1.1rem; color:var(--text-primary);">Course Title</h3>
+                    <span id="modalCourseCode" style="font-size:0.75rem; color:var(--text-secondary); font-weight:700;">CSC-302</span>
+                </div>
+                <button class="modal-close-btn" onclick="closeCourseDetails()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px; font-size:0.85rem;">
+                <div style="display:flex; justify-content:space-between; padding:8px 12px; background:#f8fafc; border-radius:8px;">
+                    <span>Instructor:</span> <strong id="modalInstructor">Dr. Usman Tariq</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:8px 12px; background:#f8fafc; border-radius:8px;">
+                    <span>Instructor Email:</span> <strong id="modalInstructorEmail">-</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:8px 12px; background:#f8fafc; border-radius:8px;">
+                    <span>Schedule:</span> <strong id="modalSchedule">Tue, Thu (08:00 - 09:30 AM)</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:8px 12px; background:#f8fafc; border-radius:8px;">
+                    <span>Class Location:</span> <strong id="modalLocation">Room CS-204</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:8px 12px; background:#f8fafc; border-radius:8px;">
+                    <span>Overall Syllabus Progress:</span> <strong id="modalProgress" style="color:var(--primary-blue);">78%</strong>
+                </div>
+                
+                <h4 style="margin-top:8px; font-size:0.9rem;">Course Resources & Actions</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <button style="padding:10px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; color:var(--primary-blue); font-weight:600; cursor:pointer;" onclick="alert('Downloading course syllabus...')"><i class="fa-solid fa-download"></i> Syllabus PDF</button>
+                    <button style="padding:10px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; color:#16a34a; font-weight:600; cursor:pointer;" onclick="alert('Opening course resources...')"><i class="fa-solid fa-folder"></i> Class Materials</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC WITH REAL BACKEND INTEGRATION -->
+    <script>
+        const API_BASE_URL = window.ACOS_CONFIG.API_BASE_URL;
+        let coursesData = null;
+
+        // 1. Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('show');
+            overlay.style.display = sidebar.classList.contains('show') ? 'block' : 'none';
+        }
+
+        // 2. Notification Popover
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationPanel');
+            panel.classList.toggle('show');
+        }
+
+        // 3. Load Courses from Real Backend
+        async function loadStudentCourses(selectedSemester = null) {
+            const token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
+            if (!token) {
+                window.location.href = "../login_page/student-login.html";
+                return;
+            }
+
+            try {
+                let url = `${API_BASE_URL}/student/courses`;
+                if (selectedSemester) {
+                    url += `?semester=${encodeURIComponent(selectedSemester)}`;
+                }
+
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        localStorage.removeItem("access_token");
+                        sessionStorage.removeItem("access_token");
+                        window.location.href = "../login_page/student-login.html";
+                        return;
+                    }
+                    throw new Error(`HTTP error: ${response.status}`);
+                }
+
+                coursesData = await response.json();
+                renderCoursesUI(coursesData);
+            } catch (error) {
+                console.error("Failed to load student courses:", error);
+                document.getElementById('enrolledGrid').innerHTML = '<div style="padding: 20px; color: var(--danger-red);">Could not load courses from backend. Please verify server status.</div>';
+            }
+        }
+
+        // Palette for course icons
+        const iconPalettes = [
+            { bg: "#10b981", icon: "fa-code" },
+            { bg: "#f97316", icon: "fa-database" },
+            { bg: "#8b5cf6", icon: "fa-layer-group" },
+            { bg: "#2563eb", icon: "fa-calculator" },
+            { bg: "#059669", icon: "fa-pen-nib" },
+            { bg: "#eab308", icon: "fa-atom" },
+            { bg: "#ec4899", icon: "fa-flask" },
+            { bg: "#06b6d4", icon: "fa-server" }
+        ];
+
+        // 4. Render Dynamic UI
+        function renderCoursesUI(data) {
+            if (!data) return;
+
+            const student = data.student;
+            const metrics = data.metrics;
+            const courses = data.courses || [];
+            const availableSemesters = data.available_semesters || [];
+
+            const dayCounts = new Map(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(day => [day, 0]));
+            courses.forEach(course => (course.schedule_entries || []).forEach(entry => {
+                if (dayCounts.has(entry.day_of_week)) dayCounts.set(entry.day_of_week, dayCounts.get(entry.day_of_week) + 1);
+            }));
+            document.querySelectorAll('#weeklyScheduleList .schedule-row').forEach(row => {
+                const day = row.querySelector('span')?.textContent.trim();
+                const count = row.querySelector('strong');
+                if (count && dayCounts.has(day)) count.textContent = `${dayCounts.get(day)} ${dayCounts.get(day) === 1 ? 'Class' : 'Classes'}`;
+            });
+
+            // Topbar
+            if (student) {
+                document.getElementById('topbarUserName').innerText = student.name || "Student";
+                document.getElementById('topbarUserRole').innerText = student.program || "BS Computer Science";
+                if (student.profile_photo) {
+                    document.getElementById('topbarAvatar').src = student.profile_photo;
+                }
+            }
+
+            // Metrics
+            document.getElementById('metricEnrolledCount').innerText = metrics.enrolled_courses_count ?? courses.length;
+            document.getElementById('metricTotalCredits').innerText = metrics.total_credit_hours ?? 0;
+            document.getElementById('metricCGPA').innerText = metrics.cgpa ? Number(metrics.cgpa).toFixed(2) : "0.00";
+            document.getElementById('metricCompletedCredits').innerText = metrics.completed_credits ?? 0;
+            document.getElementById('metricSemesterLabel').innerText = `Semester ${metrics.current_semester || 1}`;
+
+            // Semester Select Dropdown
+            const selectElem = document.getElementById('semesterSelect');
+            if (availableSemesters.length > 0) {
+                selectElem.innerHTML = availableSemesters.map(s => 
+                    `<option value="${s.semester}" ${s.semester == metrics.current_semester ? 'selected' : ''}>${s.label}</option>`
+                ).join('');
+            } else {
+                selectElem.innerHTML = `<option value="${metrics.current_semester || 1}">Semester ${metrics.current_semester || 1}</option>`;
+            }
+
+            // Render Cards Grid
+            const gridElem = document.getElementById('enrolledGrid');
+            if (courses.length === 0) {
+                gridElem.innerHTML = '<div style="padding: 20px; color: var(--text-secondary);">No enrolled courses found for this semester.</div>';
+            } else {
+                gridElem.innerHTML = courses.map((c, idx) => {
+                    const pal = iconPalettes[idx % iconPalettes.length];
+                    const progress = c.progress_percentage || 75;
+                    const deg = Math.round((progress / 100) * 360);
+                    const instructorName = c.instructor?.name || "Faculty Assigned";
+                    const instructorEmail = c.instructor?.office_email || "-";
+                    const schedule = c.schedule || "Schedule TBA";
+                    const location = c.location || "Room TBA";
+
+                    return `
+                        <div class="course-card" data-code="${c.course_code}" data-title="${c.course_title}">
+                            <div class="course-card-top">
+                                <div class="course-code-icon">
+                                    <div class="course-icon-bg" style="background:${pal.bg};"><i class="fa-solid ${pal.icon}"></i></div>
+                                    <div>
+                                        <div class="course-code-text">${c.course_code}</div>
+                                        <div class="course-title-text">${c.course_title}</div>
+                                        <div class="credit-badge">${c.credit_hours} Credit Hours</div>
+                                    </div>
+                                </div>
+                                <div class="progress-ring-container">
+                                    <div class="progress-circle" style="--progress: ${deg}deg;">
+                                        <div class="progress-circle-inner">${progress}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="course-details-meta">
+                                <div class="meta-item"><i class="fa-regular fa-user"></i> ${instructorName}</div>
+                                <div class="meta-item"><i class="fa-regular fa-clock"></i> ${schedule}</div>
+                                <div class="meta-item"><i class="fa-solid fa-location-dot"></i> ${location}</div>
+                            </div>
+                            <button class="btn-view-details" onclick="openCourseDetails('${c.course_code}', '${c.course_title.replace(/'/g, "\\'")}', '${instructorName.replace(/'/g, "\\'")}', '${schedule.replace(/'/g, "\\'")}', '${location.replace(/'/g, "\\'")}', '${progress}%', '${instructorEmail.replace(/'/g, "\\'")}')">
+                                View Details <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Render Table Rows
+            const tbodyElem = document.getElementById('courseTableBody');
+            if (courses.length === 0) {
+                tbodyElem.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 16px;">No courses found.</td></tr>';
+            } else {
+                tbodyElem.innerHTML = courses.map(c => {
+                    const instructorName = c.instructor?.name || "Faculty Assigned";
+                    const instructorEmail = c.instructor?.office_email || "-";
+                    const schedule = c.schedule || "Schedule TBA";
+                    const location = c.location || "Room TBA";
+                    const progress = c.progress_percentage || 75;
+
+                    return `
+                        <tr data-code="${c.course_code}" data-title="${c.course_title}">
+                            <td><strong>${c.course_code}</strong></td>
+                            <td>${c.course_title}</td>
+                            <td>${c.credit_hours}</td>
+                            <td>${instructorName}</td>
+                            <td>${schedule}</td>
+                            <td><span class="status-pill">${c.enrollment_status || 'In Progress'}</span></td>
+                            <td>
+                                <button onclick="openCourseDetails('${c.course_code}', '${c.course_title.replace(/'/g, "\\'")}', '${instructorName.replace(/'/g, "\\'")}', '${schedule.replace(/'/g, "\\'")}', '${location.replace(/'/g, "\\'")}', '${progress}%', '${instructorEmail.replace(/'/g, "\\'")}')" style="border:none; background:none; cursor:pointer; color:var(--text-secondary);">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            // Footer info
+            document.getElementById('footerTotalCredits').innerHTML = `Total Credit Hours: <strong>${metrics.total_credit_hours ?? 0}</strong>`;
+            document.getElementById('footerCourseCount').innerText = `Showing 1 to ${courses.length} of ${courses.length} courses`;
+        }
+
+        // 5. Semester Switch Handler
+        function onSemesterChange(e) {
+            const selectedSem = e.target.value;
+            loadStudentCourses(selectedSem);
+        }
+
+        // 6. Search Filter Functionality
+        function filterCourses() {
+            const input = document.getElementById('courseSearchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.course-card');
+            const rows = document.querySelectorAll('#courseTableBody tr');
+
+            cards.forEach(card => {
+                const code = (card.getAttribute('data-code') || "").toLowerCase();
+                const title = (card.getAttribute('data-title') || "").toLowerCase();
+                if (code.includes(input) || title.includes(input)) {
+                    card.style.display = "flex";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            rows.forEach(row => {
+                const code = (row.getAttribute('data-code') || "").toLowerCase();
+                const title = (row.getAttribute('data-title') || "").toLowerCase();
+                if (code.includes(input) || title.includes(input)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        // 7. Modal Course Details Handler
+        function openCourseDetails(code, title, instructor, schedule, location, progress, email = "-") {
+            document.getElementById('modalCourseCode').innerText = code;
+            document.getElementById('modalCourseTitle').innerText = title;
+            document.getElementById('modalInstructor').innerText = instructor;
+            document.getElementById('modalInstructorEmail').innerText = email;
+            document.getElementById('modalSchedule').innerText = schedule;
+            document.getElementById('modalLocation').innerText = location;
+            document.getElementById('modalProgress').innerText = progress;
+
+            document.getElementById('courseModal').classList.add('active');
+        }
+
+        function closeCourseDetails() {
+            document.getElementById('courseModal').classList.remove('active');
+        }
+
+        // 8. Download Transcript Handler
+        function downloadTranscript() {
+            const studentName = coursesData?.student?.name || "Student";
+            const sem = coursesData?.metrics?.current_semester || 1;
+            alert(`Initiating verified transcript download for ${studentName} (Semester ${sem})...`);
+        }
+
+        // 9. Admin Quick Action Ingestion
+        function adminAddQuickAction() {
+            const title = prompt("Admin Action: Enter new action title:");
+            if (!title) return;
+
+            const box = document.getElementById('quickActionsBox');
+            const newBtn = document.createElement('a');
+            newBtn.href = "#";
+            newBtn.className = "quick-action-btn";
+            newBtn.innerHTML = `<i class="fa-solid fa-plus-circle"></i> ${title}`;
+            box.appendChild(newBtn);
+        }
+
+        // 10. Dynamic Calendar Month Switcher
+        let currentMonthIdx = 5; // June
+        const months = ["January 2026", "February 2026", "March 2026", "April 2026", "May 2026", "June 2026", "July 2026", "August 2026"];
+        function changeMonth(dir) {
+            currentMonthIdx += dir;
+            if(currentMonthIdx < 0) currentMonthIdx = 0;
+            if(currentMonthIdx >= months.length) currentMonthIdx = months.length - 1;
+            document.getElementById('calendarMonthTitle').innerText = months[currentMonthIdx];
+        }
+
+        // 11. Logout Handler
+        function handleLogout(e) {
+            if (e) e.preventDefault();
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("token_type");
+            sessionStorage.removeItem("access_token");
+            window.location.href = "../login_page/student-login.html";
+        }
+
+        // 12. Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStudentCourses();
+        });
+    </script>
+<!-- Student Topbar Hydration -->
+<script src="../shared/student-topbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Agent - University of Haripur</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --sidebar-bg: #0b1120;
+            --sidebar-hover: #1e293b;
+            --sidebar-active: #2563eb;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --accent-red: #ef4444;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR STYLING --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: #94a3b8;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease-in-out;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #334155 transparent;
+        }
+
+        .sidebar-brand {
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        /* LOGO STYLING FOR IMAGE PATH ../login/logo.png */
+        .uni-logo-img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #ffffff;
+            padding: 3px;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .brand-text h2 {
+            color: #ffffff;
+            font-size: 0.88rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .brand-text span {
+            font-size: 0.68rem;
+            color: #64748b;
+        }
+
+        .sidebar-section {
+            padding: 16px 12px 8px;
+        }
+
+        .section-title {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #475569;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            padding-left: 12px;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--sidebar-hover);
+            color: #ffffff;
+        }
+
+        .nav-link.active {
+            background-color: var(--sidebar-active);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* --- MAIN WRAPPER --- */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* HEADER */
+        .top-header {
+            background-color: #ffffff;
+            height: 70px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .menu-toggle:hover {
+            background-color: var(--bg-main);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title-icon {
+            width: 40px;
+            height: 40px;
+            background: #eff6ff;
+            color: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            border: 1px solid #dbeafe;
+        }
+
+        .header-title-text h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-title-text p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 280px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: #f8fafc;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .icon-btn .badge {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 12px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-info h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        /* --- BODY CONTENT --- */
+        .content-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* METRIC CARDS GRID (6 CARDS) */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .metric-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .metric-details span {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .metric-details h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 2px 0;
+        }
+
+        .metric-trend {
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .trend-up { color: #10b981; }
+        .trend-red { color: #ef4444; }
+
+        /* GRID ROW LAYOUTS */
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .card-header h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .card-action {
+            font-size: 0.75rem;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* LIVE CCTV MONITORING GRID */
+        .cctv-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .cctv-card {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+        }
+
+        .cctv-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+            transition: transform 0.3s ease;
+        }
+
+        .cctv-card:hover img {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        .cctv-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 6px 8px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.62rem;
+            color: #4ade80;
+            font-weight: 700;
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: #4ade80;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #4ade80;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        /* TABLES */
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .custom-table th {
+            text-align: left;
+            padding: 10px 8px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .custom-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .badge-status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.68rem;
+            font-weight: 700;
+        }
+
+        .status-active { background: #fee2e2; color: #dc2626; }
+        .status-resolved { background: #dcfce7; color: #166534; }
+        .priority-high { color: #dc2626; font-weight: 700; }
+        .priority-med { color: #d97706; font-weight: 700; }
+
+        /* QUICK ACTIONS GRID */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .qa-btn {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 14px 10px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.72rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .qa-btn:hover {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .qa-btn i {
+            font-size: 1.25rem;
+        }
+
+        .btn-add-qa {
+            grid-column: span 4;
+            background: #f0fdf4;
+            border: 1px dashed #4ade80;
+            color: #166534;
+            padding: 10px;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .btn-add-qa:hover {
+            background: #dcfce7;
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .cctv-modal-card {
+            max-width: 750px;
+            background: #000;
+            color: #fff;
+            padding: 16px;
+        }
+
+        .modal-card h3 { margin-bottom: 14px; font-size: 1rem; }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.75rem; margin-bottom: 4px; font-weight: 600; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 8px 10px; border: 1px solid var(--border-color);
+            border-radius: 6px; font-size: 0.85rem; outline: none;
+        }
+
+        .modal-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+        .btn-secondary { padding: 8px 14px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-primary { padding: 8px 14px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; }
+
+        /* RESPONSIVE BREAKPOINTS */
+        @media (max-width: 1024px) {
+            .dashboard-row { grid-template-columns: 1fr; }
+            .col-3, .col-4, .col-5, .col-6, .col-7, .col-8 { grid-column: span 12 !important; }
+            .cctv-grid { grid-template-columns: repeat(2, 1fr); }
+            .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
+            .btn-add-qa { grid-column: span 2; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-wrapper { margin-left: 0; }
+            .search-bar { display: none; }
+            .sidebar-overlay {
+                display: none; position: fixed; top:0; left:0; right:0; bottom:0;
+                background: rgba(0,0,0,0.5); z-index: 999;
+            }
+            .sidebar-overlay.show { display: block; }
+        }
+
+        /* Column spans desktop */
+        .col-3 { grid-column: span 3; }
+        .col-4 { grid-column: span 4; }
+        .col-5 { grid-column: span 5; }
+        .col-6 { grid-column: span 6; }
+        .col-7 { grid-column: span 7; }
+        .col-8 { grid-column: span 8; }
+        .col-12 { grid-column: span 12; }
+    </style>
+    <link rel="stylesheet" href="admin-shell.css">
+    <script src="admin-shell.js" defer></script>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+    <!-- OVERLAY FOR MOBILE SIDEBAR -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <!-- Custom Image Path: ../login/logo.png -->
+            <img src="../login_page/uoh-logo.png" alt="University Logo" class="uni-logo-img" onerror="this.src='https://via.placeholder.com/42?text=UOH'">
+            <div class="brand-text">
+                <h2>The University of Haripur</h2>
+                <span>Intelligent Ecosystem (IES)</span>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="sidebar-section">
+            <div class="section-title">Navigation</div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="academic-integrity.html" class="nav-link"><i class="fa-solid fa-user-shield"></i> Academic Integrity</a></li>
+                <li class="nav-item"><a href="clerk-watchdog.html" class="nav-link"><i class="fa-solid fa-user-check"></i> Clerk Watchdog</a></li>
+                <li class="nav-item"><a href="exam-monitoring.html" class="nav-link"><i class="fa-solid fa-file-signature"></i> Exam Monitoring</a></li>
+                <li class="nav-item"><a href="student-management.html" class="nav-link"><i class="fa-solid fa-graduation-cap"></i> Student Management</a></li>
+                <li class="nav-item"><a href="faculty-management.html" class="nav-link"><i class="fa-solid fa-users-gear"></i> Faculty Management</a></li>
+                <li class="nav-item"><a href="finance-agent.html" class="nav-link"><i class="fa-solid fa-building-columns"></i> Finance Agent</a></li>
+            </ul>
+        </div>
+
+        <!-- MANAGEMENT -->
+        <div class="sidebar-section">
+            <div class="section-title">Management</div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="ai-timetable-creator.html" class="nav-link"><i class="fa-solid fa-flask"></i> AI Timetable Creator</a></li>
+                <li class="nav-item"><a href="library-agent.html" class="nav-link"><i class="fa-solid fa-book"></i> Library Agent</a></li>
+                <li class="nav-item"><a href="hostel-agent.html" class="nav-link"><i class="fa-solid fa-hotel"></i> Hostel Agent</a></li>
+                <li class="nav-item">
+                    <!-- Security Agent Button: Direct Link handling (Stays on same page) -->
+                    <a href="javascript:void(0)" class="nav-link active" id="securityAgentBtn">
+                        <i class="fa-solid fa-shield-halved"></i> Security Agent
+                    </a>
+                </li>
+                <li class="nav-item"><a href="hr-administration.html" class="nav-link"><i class="fa-solid fa-briefcase"></i> HR Administration</a></li>
+                
+            </ul>
+        </div>
+
+        <!-- SYSTEM -->
+        <div class="sidebar-section" style="margin-top: auto;">
+            <div class="section-title">System</div>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="coming-soon.html?feature=Reports" class="nav-link"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
+                <li class="nav-item"><a href="coming-soon.html?feature=Analytics" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Analytics</a></li>
+                <li class="nav-item"><a href="coming-soon.html?feature=Settings" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a></li>
+                <li class="nav-item"><a href="coming-soon.html?feature=Support" class="nav-link"><i class="fa-solid fa-headset"></i> Support</a></li>
+                <li class="nav-item"><a href="../login_page/admin-login.html" class="nav-link" style="color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+        <!-- TOP HEADER -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="header-title">
+                    <div class="header-title-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div class="header-title-text">
+                        <h1>Security Agent</h1>
+                        <p>Campus Security Monitoring & Incident Management</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search incidents, alerts, locations...">
+                </div>
+
+                <div class="header-actions">
+                    
+                    
+                </div>
+
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Admin Avatar" class="user-avatar">
+                    <div class="user-info">
+                        <h4>Admin User</h4>
+                        <p>Super Administrator</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: var(--text-secondary); margin-left: 4px;"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD CONTENT BODY -->
+        <main class="content-body">
+            
+            <!-- 6 TOP METRIC CARDS -->
+            <section class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #f0fdf4; color: #16a34a;">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="metric-details">
+                        <span>Total Security Personnel</span>
+                        <h3 id="stat-personnel">68</h3>
+                        <div class="metric-trend trend-up"><i class="fa-solid fa-caret-up"></i> 5 New this month</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #eff6ff; color: #2563eb;">
+                        <i class="fa-solid fa-video"></i>
+                    </div>
+                    <div class="metric-details">
+                        <span>Active CCTV Cameras</span>
+                        <h3 id="stat-cctv">246</h3>
+                        <div class="metric-trend trend-up"><i class="fa-solid fa-caret-up"></i> 12 Added this month</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #fef2f2; color: #dc2626;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div class="metric-details">
+                        <span>Active Incidents</span>
+                        <h3 id="stat-incidents">7</h3>
+                        <div class="metric-trend trend-red"><i class="fa-solid fa-caret-up"></i> 2 High Priority</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #f0fdf4; color: #15803d;">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div class="metric-details">
+                        <span>Resolved Today</span>
+                        <h3 id="stat-resolved">9</h3>
+                        <div class="metric-trend trend-up"><i class="fa-solid fa-caret-up"></i> 20% vs yesterday</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #f0f9ff; color: #0284c7;">
+                        <i class="fa-solid fa-door-open"></i>
+                    </div>
+                    <div class="metric-details">
+                        <span>Access Points</span>
+                        <h3 id="stat-access">54</h3>
+                        <div class="metric-trend" style="color: var(--text-secondary);">Across Campus</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #fff7ed; color: #ea580c;">
+                        <i class="fa-solid fa-bell"></i>
+                    </div>
+                    <div class="metric-details">
+                        <span>Security Alerts (24h)</span>
+                        <h3 id="stat-alerts">23</h3>
+                        <div class="metric-trend trend-red"><i class="fa-solid fa-caret-up"></i> 5 New Alerts</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ROW 2: CHARTS & LIVE CCTV FEEDS -->
+            <section class="dashboard-row">
+                <!-- Line Chart: Incident Overview -->
+                <div class="card col-5">
+                    <div class="card-header">
+                        <h3>Incident Overview (This Month)</h3>
+                        <select style="border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 8px; font-size: 0.75rem;">
+                            <option>This Month</option>
+                            <option>Last Month</option>
+                        </select>
+                    </div>
+                    <div style="height: 200px; position: relative;">
+                        <canvas id="incidentOverviewChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Donut Chart: Incident by Category -->
+                <div class="card col-3">
+                    <div class="card-header">
+                        <h3>Incident by Category</h3>
+                    </div>
+                    <div style="height: 200px; position: relative;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Live CCTV Feeds Grid -->
+                <div class="card col-4">
+                    <div class="card-header">
+                        <h3>Live CCTV Monitoring</h3>
+                        <a href="javascript:void(0)" onclick="openCctvModal('Main Gate')" class="card-action">View All</a>
+                    </div>
+                    <div class="cctv-grid">
+                        <div class="cctv-card" onclick="openCctvModal('Main Gate Feed')">
+                            <img src="https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?w=300&auto=format&fit=crop&q=80" alt="Main Gate">
+                            <div class="cctv-overlay">
+                                <span>Main Gate</span>
+                                <div class="live-badge"><div class="live-dot"></div>Live</div>
+                            </div>
+                        </div>
+
+                        <div class="cctv-card" onclick="openCctvModal('Academic Block Feed')">
+                            <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=300&auto=format&fit=crop&q=80" alt="Academic Block">
+                            <div class="cctv-overlay">
+                                <span>Academic Block</span>
+                                <div class="live-badge"><div class="live-dot"></div>Live</div>
+                            </div>
+                        </div>
+
+                        <div class="cctv-card" onclick="openCctvModal('Admin Entrance Feed')">
+                            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&auto=format&fit=crop&q=80" alt="Admin Entrance">
+                            <div class="cctv-overlay">
+                                <span>Admin Block</span>
+                                <div class="live-badge"><div class="live-dot"></div>Live</div>
+                            </div>
+                        </div>
+
+                        <div class="cctv-card" onclick="openCctvModal('Library Entrance Feed')">
+                            <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=300&auto=format&fit=crop&q=80" alt="Library">
+                            <div class="cctv-overlay">
+                                <span>Library Entrance</span>
+                                <div class="live-badge"><div class="live-dot"></div>Live</div>
+                            </div>
+                        </div>
+
+                        <div class="cctv-card" onclick="openCctvModal('Hostel Area Feed')">
+                            <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=300&auto=format&fit=crop&q=80" alt="Hostel Area">
+                            <div class="cctv-overlay">
+                                <span>Hostel Area</span>
+                                <div class="live-badge"><div class="live-dot"></div>Live</div>
+                            </div>
+                        </div>
+
+                        <div class="cctv-card" onclick="openCctvModal('Parking Area Feed')">
+                            <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=300&auto=format&fit=crop&q=80" alt="Parking">
+                            <div class="cctv-overlay">
+                                <span>Parking Area</span>
+                                <div class="live-badge"><div class="live-dot"></div>Live</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="openCctvModal('CCTV Control Dashboard')" style="margin-top: 12px; border: none; background: #eff6ff; color: #2563eb; padding: 8px; border-radius: 6px; font-weight: 600; font-size: 0.75rem; cursor: pointer;">
+                        Open CCTV Dashboard <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ROW 3: TABLES (Recent Incidents, Access Control, Top Alerts) -->
+            <section class="dashboard-row">
+                <!-- Recent Incidents Table -->
+                <div class="card col-5">
+                    <div class="card-header">
+                        <h3>Recent Incidents</h3>
+                        <a href="#" class="card-action">View All</a>
+                    </div>
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Incident ID</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incidentsTableBody">
+                            <tr>
+                                <td><b>INC-2024-037</b></td>
+                                <td>Access Control</td>
+                                <td>Main Gate</td>
+                                <td class="priority-high">High</td>
+                                <td><span class="badge-status status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td><b>INC-2024-036</b></td>
+                                <td>Safety & Security</td>
+                                <td>Library Area</td>
+                                <td class="priority-med">Medium</td>
+                                <td><span class="badge-status status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td><b>INC-2024-035</b></td>
+                                <td>Theft</td>
+                                <td>Hostel Block C</td>
+                                <td class="priority-high">High</td>
+                                <td><span class="badge-status status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td><b>INC-2024-034</b></td>
+                                <td>Harassment</td>
+                                <td>Academic Block</td>
+                                <td class="priority-high">High</td>
+                                <td><span class="badge-status status-resolved">Resolved</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Access Control Summary -->
+                <div class="card col-4">
+                    <div class="card-header">
+                        <h3>Access Control Summary</h3>
+                        <a href="#" class="card-action">View All</a>
+                    </div>
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Access Point</th>
+                                <th>Type</th>
+                                <th>Today Entries</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Main Gate</td>
+                                <td>Vehicle</td>
+                                <td>1,256</td>
+                                <td><span style="color: #16a34a; font-weight: 700;">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>Academic Block</td>
+                                <td>Biometric</td>
+                                <td>2,345</td>
+                                <td><span style="color: #16a34a; font-weight: 700;">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>Library Entrance</td>
+                                <td>Biometric</td>
+                                <td>1,892</td>
+                                <td><span style="color: #16a34a; font-weight: 700;">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>Hostel Gate</td>
+                                <td>Biometric</td>
+                                <td>2,156</td>
+                                <td><span style="color: #16a34a; font-weight: 700;">Active</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Top Alert Zones -->
+                <div class="card col-3">
+                    <div class="card-header">
+                        <h3>Top Alert Zones</h3>
+                        <a href="#" class="card-action">View All</a>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.8rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Hostel Area</span>
+                            <span style="font-weight: 700; color: #dc2626;">8 Alerts</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Parking Area</span>
+                            <span style="font-weight: 700; color: #d97706;">5 Alerts</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Main Gate</span>
+                            <span style="font-weight: 700;">4 Alerts</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Academic Block</span>
+                            <span style="font-weight: 700;">3 Alerts</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ROW 4: PATROL & QUICK ACTIONS -->
+            <section class="dashboard-row">
+                <!-- Personnel Status -->
+                <div class="card col-3">
+                    <div class="card-header">
+                        <h3>Security Personnel Status</h3>
+                    </div>
+                    <div style="height: 180px; position: relative;">
+                        <canvas id="personnelChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Alerts List -->
+                <div class="card col-4">
+                    <div class="card-header">
+                        <h3>Recent Alerts</h3>
+                        <a href="#" class="card-action">View All</a>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #fff5f5; border-radius: 8px;">
+                            <i class="fa-solid fa-triangle-exclamation" style="color: #dc2626; font-size: 1.1rem;"></i>
+                            <div style="flex:1;">
+                                <h4 style="font-size: 0.8rem;">Unauthorized Access Attempt</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-secondary);">Main Gate • 10:05 AM</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 8px; background: #fffbebfb; border-radius: 8px;">
+                            <i class="fa-solid fa-eye" style="color: #d97706; font-size: 1.1rem;"></i>
+                            <div style="flex:1;">
+                                <h4 style="font-size: 0.8rem;">Suspicious Activity Detected</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-secondary);">Hostel Area • 09:42 AM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Grid (Admin Dynamic Adding Supported) -->
+                <div class="card col-5">
+                    <div class="card-header">
+                        <h3>Quick Actions</h3>
+                        <span style="font-size:0.7rem; color: var(--text-secondary);">Admin Configurable</span>
+                    </div>
+
+                    <div class="quick-actions-grid" id="quickActionsContainer">
+                        <a href="javascript:void(0)" onclick="openAddIncidentModal()" class="qa-btn">
+                            <i class="fa-solid fa-user-plus" style="color: #ef4444;"></i>
+                            <span>Add Incident</span>
+                        </a>
+                        <a href="javascript:void(0)" class="qa-btn">
+                            <i class="fa-solid fa-bell" style="color: #f59e0b;"></i>
+                            <span>Add Alert</span>
+                        </a>
+                        <a href="javascript:void(0)" class="qa-btn">
+                            <i class="fa-solid fa-file-invoice" style="color: #2563eb;"></i>
+                            <span>Access Logs</span>
+                        </a>
+                        <a href="javascript:void(0)" class="qa-btn">
+                            <i class="fa-solid fa-map-location-dot" style="color: #10b981;"></i>
+                            <span>Patrol Map</span>
+                        </a>
+                        <a href="javascript:void(0)" onclick="openCctvModal('CCTV Live Center')" class="qa-btn">
+                            <i class="fa-solid fa-video" style="color: #8b5cf6;"></i>
+                            <span>CCTV Dashboard</span>
+                        </a>
+                        <a href="javascript:void(0)" class="qa-btn">
+                            <i class="fa-solid fa-users" style="color: #10b981;"></i>
+                            <span>Add Personnel</span>
+                        </a>
+                    </div>
+
+                    <button class="qa-btn btn-add-qa" onclick="openAddActionModal()" style="margin-top: 12px; width: 100%;">
+                        <i class="fa-solid fa-plus"></i> Admin: Add New Quick Action Input
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- CCTV MODAL FOR CAMERA ACCESS -->
+    <div class="modal-overlay" id="cctvModal">
+        <div class="modal-card cctv-modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 id="cctvModalTitle" style="color: #fff; margin:0;"><i class="fa-solid fa-video"></i> CCTV Live Stream Access</h3>
+                <button onclick="closeCctvModal()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="width:100%; height:360px; background:#111; border-radius:8px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;">
+                <img id="cctvStreamImg" src="https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?w=800&auto=format&fit=crop&q=80" style="width:100%; height:100%; object-fit:cover;">
+                <div style="position:absolute; top:12px; left:12px; background:rgba(0,0,0,0.7); padding:4px 10px; border-radius:4px; color:#4ade80; font-size:0.75rem; font-weight:700;">
+                    <i class="fa-solid fa-circle" style="font-size:0.5rem; vertical-align:middle;"></i> LIVE FEED CONNECTED
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FOR ADMIN TO ADD QUICK ACTION -->
+    <div class="modal-overlay" id="actionModal">
+        <div class="modal-card">
+            <h3>Add New Quick Action Button</h3>
+            <div class="form-group">
+                <label>Action Label Name</label>
+                <input type="text" id="actionName" placeholder="e.g. Trigger Siren Alert">
+            </div>
+            <div class="form-group">
+                <label>Icon (FontAwesome class)</label>
+                <input type="text" id="actionIcon" placeholder="fa-solid fa-bullhorn" value="fa-solid fa-shield">
+            </div>
+            <div class="form-group">
+                <label>Target Page Link URL</label>
+                <input type="text" id="actionLink" placeholder="e.g. trigger-siren.html" value="#">
+            </div>
+            <div class="modal-btns">
+                <button class="btn-secondary" onclick="closeAddActionModal()">Cancel</button>
+                <button class="btn-primary" onclick="addNewQuickAction()">Add Action</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // 1. Sidebar Toggle for Mobile / Hamburger Menu
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        }
+
+        // 2. Security Agent Button: Stays on same page
+        document.getElementById('securityAgentBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Aap Security Agent Dashboard per he majood hain.');
+        });
+
+        // 3. Live CCTV Modal Feeds Access
+        function openCctvModal(cameraName) {
+            document.getElementById('cctvModalTitle').innerHTML = `<i class="fa-solid fa-video"></i> Live Stream: ${cameraName}`;
+            document.getElementById('cctvModal').style.display = 'flex';
+        }
+
+        function closeCctvModal() {
+            document.getElementById('cctvModal').style.display = 'none';
+        }
+
+        // 4. Admin Dynamic Quick Action Generator
+        function openAddActionModal() {
+            document.getElementById('actionModal').style.display = 'flex';
+        }
+
+        function closeAddActionModal() {
+            document.getElementById('actionModal').style.display = 'none';
+        }
+
+        function addNewQuickAction() {
+            const name = document.getElementById('actionName').value;
+            const icon = document.getElementById('actionIcon').value;
+            const link = document.getElementById('actionLink').value;
+
+            if(!name) {
+                alert('Please enter action label name');
+                return;
+            }
+
+            const container = document.getElementById('quickActionsContainer');
+            const newBtn = document.createElement('a');
+            newBtn.href = link;
+            newBtn.className = 'qa-btn';
+            newBtn.innerHTML = `<i class="${icon}" style="color: var(--primary);"></i><span>${name}</span>`;
+            
+            container.appendChild(newBtn);
+
+            document.getElementById('actionName').value = '';
+            closeAddActionModal();
+        }
+
+        // 5. Chart.js Graphs Setup
+        window.onload = function() {
+            // Line Chart: Incident Overview
+            const ctx1 = document.getElementById('incidentOverviewChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['1 Jun', '7 Jun', '14 Jun', '21 Jun', '28 Jun'],
+                    datasets: [{
+                        label: 'Total Incidents',
+                        data: [15, 27, 25, 28, 30],
+                        borderColor: '#2563eb',
+                        backgroundColor: '#2563eb',
+                        tension: 0.4,
+                        fill: false
+                    }, {
+                        label: 'Resolved Incidents',
+                        data: [8, 15, 12, 18, 22],
+                        borderColor: '#10b981',
+                        backgroundColor: '#10b981',
+                        tension: 0.4,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Donut Chart: Incident Categories
+            const ctx2 = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Access Control', 'Safety', 'Theft', 'Harassment', 'Vandalism'],
+                    datasets: [{
+                        data: [32, 24, 16, 14, 14],
+                        backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ec4899', '#6366f1']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // Donut Chart: Personnel Status
+            const ctx3 = document.getElementById('personnelChart').getContext('2d');
+            new Chart(ctx3, {
+                type: 'doughnut',
+                data: {
+                    labels: ['On Duty', 'Off Duty', 'On Leave', 'Training'],
+                    datasets: [{
+                        data: [61, 23, 9, 7],
+                        backgroundColor: ['#10b981', '#64748b', '#f59e0b', '#3b82f6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        };
+
+        // 6. Easy Backend Connect Helper Endpoint Stubs
+        /*
+        async function loadBackendSecurityData() {
+            try {
+                const response = await fetch('/api/security/dashboard-stats');
+                const data = await response.json();
+                
+                document.getElementById('stat-personnel').innerText = data.personnel_count;
+                document.getElementById('stat-cctv').innerText = data.active_cctv;
+                document.getElementById('stat-incidents').innerText = data.active_incidents;
+            } catch (error) {
+                console.log("Backend offline or waiting for API connection...", error);
+            }
+        }
+        */
+    </script>
+</body>
+</html>

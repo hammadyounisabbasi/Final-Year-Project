@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Agent - The University of Haripur</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+
+
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --sidebar-bg: #0b1120;
+            --sidebar-hover: #1e293b;
+            --sidebar-active: #2563eb;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-amber: #f59e0b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .layout-container {
+            display: flex;
+            flex: 1;
+        }
+
+        /* --- SIDEBAR STYLING --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: #94a3b8;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease-in-out;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #334155 transparent;
+        }
+
+        .sidebar-brand {
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        /* LOGO STYLING FOR IMAGE PATH ../login/logo.png */
+        .uni-logo-img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #ffffff;
+            padding: 3px;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .brand-text h2 {
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: 0.02em;
+        }
+
+        .brand-text span {
+            font-size: 0.65rem;
+            color: #64748b;
+        }
+
+        .sidebar-section {
+            padding: 16px 12px 8px;
+        }
+
+        .section-title {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #475569;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            padding-left: 12px;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 12px;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-link:hover {
+            background-color: var(--sidebar-hover);
+            color: #ffffff;
+        }
+
+        .nav-link.active {
+            background-color: var(--sidebar-active);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .nav-link i {
+            font-size: 0.95rem;
+            width: 18px;
+            text-align: center;
+        }
+
+        /* --- MAIN WRAPPER --- */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* TOP HEADER */
+        .top-header {
+            background-color: #ffffff;
+            height: 70px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .menu-toggle:hover {
+            background-color: var(--bg-main);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title-icon {
+            width: 40px;
+            height: 40px;
+            background: #f0fdf4;
+            color: #10b981;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            border: 1px solid #dcfce7;
+        }
+
+        .header-title-text h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-title-text p {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 280px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: #f8fafc;
+            font-size: 0.82rem;
+            outline: none;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+        }
+
+        /* SINGLE NOTIFICATION BELL SYSTEM */
+        .notification-wrapper {
+            position: relative;
+        }
+
+        .icon-btn {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-main);
+            color: var(--primary);
+        }
+
+        .icon-btn .badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        /* NOTIFICATION DROPDOWN POPOVER */
+        .notification-dropdown {
+            position: absolute;
+            top: 48px;
+            right: 0;
+            width: 320px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 1500;
+            overflow: hidden;
+        }
+
+        .notification-dropdown.show {
+            display: flex;
+        }
+
+        .notif-header {
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notif-header h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .notif-list {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .notif-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .notif-item:hover { background: #f8fafc; }
+        .notif-item.unread { background: #eff6ff; }
+
+        .notif-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .notif-content h5 { font-size: 0.78rem; font-weight: 600; margin-bottom: 2px; }
+        .notif-content p { font-size: 0.7rem; color: var(--text-secondary); }
+        .notif-time { font-size: 0.65rem; color: #94a3b8; margin-top: 4px; }
+
+        .date-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 12px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .user-avatar-initials {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-info h4 { font-size: 0.8rem; font-weight: 600; }
+        .user-info p { font-size: 0.68rem; color: var(--text-secondary); }
+
+        /* --- CONTENT BODY --- */
+        .content-body {
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 6 TOP METRIC CARDS */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 14px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .metric-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .metric-details span {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: block;
+        }
+
+        .metric-details h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 2px 0;
+            color: var(--text-primary);
+        }
+
+        .metric-trend {
+            font-size: 0.68rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .trend-up { color: #10b981; }
+        .trend-red { color: #ef4444; }
+
+        /* DASHBOARD GRID ROWS */
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 18px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 18px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .card-header h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .card-action {
+            font-size: 0.75rem;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .card-select {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.72rem;
+            outline: none;
+            background: #f8fafc;
+            color: var(--text-secondary);
+        }
+
+        /* TABLES */
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+
+        .custom-table th {
+            text-align: left;
+            padding: 8px 6px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 0.72rem;
+        }
+
+        .custom-table td {
+            padding: 10px 6px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .badge-issued {
+            background: #dcfce7;
+            color: #15803d;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge-overdue {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* STATS LIST ITEMS */
+        .stat-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            background: #f8fafc;
+        }
+
+        .stat-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        .stat-item-text span {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: block;
+        }
+
+        .stat-item-text h5 {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .stat-item-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        /* TOP BORROWERS LIST */
+        .borrower-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .borrower-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rank-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: var(--text-primary);
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .borrower-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .borrower-name {
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .borrower-count {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* E-RESOURCES BARS */
+        .resource-bar-item {
+            margin-bottom: 10px;
+        }
+
+        .resource-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .progress-bg {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 3px;
+        }
+
+        /* NEW ARRIVALS ITEM */
+        .arrival-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: #ffffff;
+        }
+
+        .arrival-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .book-thumb {
+            width: 32px;
+            height: 42px;
+            background: #2563eb;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .arrival-details h5 {
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .arrival-details p {
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+        }
+
+        .arrival-badge {
+            background: #dcfce7;
+            color: #15803d;
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* QUICK ACTIONS GRID */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .qa-btn {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 12px 8px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .qa-btn:hover {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .qa-btn i {
+            font-size: 1.2rem;
+        }
+
+        .btn-add-qa {
+            grid-column: span 4;
+            background: #f0fdf4;
+            border: 1px dashed #4ade80;
+            color: #166534;
+            padding: 10px;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .btn-add-qa:hover {
+            background: #dcfce7;
+        }
+
+        /* FOOTER */
+        .app-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            margin-top: auto;
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-card h3 { margin-bottom: 12px; font-size: 0.95rem; }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.72rem; margin-bottom: 4px; font-weight: 600; }
+        .form-group input {
+            width: 100%; padding: 8px 10px; border: 1px solid var(--border-color);
+            border-radius: 6px; font-size: 0.82rem; outline: none;
+        }
+
+        .modal-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+        .btn-secondary { padding: 8px 14px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-size: 0.78rem; }
+        .btn-primary { padding: 8px 14px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.78rem; }
+
+        /* RESPONSIVE BREAKPOINTS & MOBILE TOPBAR ENHANCEMENTS */
+        @media (max-width: 1200px) {
+            .dashboard-row { grid-template-columns: 1fr; }
+            .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-12 { grid-column: span 12 !important; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-wrapper { margin-left: 0; }
+            
+            /* Professional Mobile Topbar */
+            .top-header {
+                padding: 0 12px;
+                height: 60px;
+            }
+            .header-right {
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+            }
+            .header-title-text p { display: none; }
+            .header-title-text h1 { font-size: 0.95rem; }
+            .header-title-icon { width: 34px; height: 34px; font-size: 0.95rem; }
+            .search-bar {
+                width: 100%;
+                max-width: 260px;
+            }
+            .date-badge,
+            .user-info p {
+                display: none;
+            }
+            .user-info h4 { font-size: 0.75rem; }
+            .user-profile { padding-left: 6px; gap: 6px; }
+
+            .sidebar-overlay {
+                display: none; position: fixed; top:0; left:0; right:0; bottom:0;
+                background: rgba(0,0,0,0.5); z-index: 999;
+            }
+            .sidebar-overlay.show { display: block; }
+            .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
+            .btn-add-qa { grid-column: span 2; }
+            .app-footer { flex-direction: column; gap: 10px; text-align: center; }
+        }
+
+        /* Column Spans for Desktop */
+        .col-3 { grid-column: span 3; }
+        .col-4 { grid-column: span 4; }
+        .col-5 { grid-column: span 5; }
+        .col-6 { grid-column: span 6; }
+        .col-7 { grid-column: span 7; }
+        .col-8 { grid-column: span 8; }
+        .col-12 { grid-column: span 12; }
+    </style>
+    <link rel="stylesheet" href="admin-shell.css">
+    <script src="admin-shell.js" defer></script>
+<link rel="stylesheet" href="../shared/library.css">
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+    <!-- OVERLAY FOR MOBILE SIDEBAR -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="layout-container">
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <!-- Custom Image Path: ../login/logo.png -->
+                <img src="../login_page/uoh-logo.png" alt="University Logo" class="uni-logo-img" onerror="this.src='https://via.placeholder.com/42?text=UOH'">
+                <div class="brand-text">
+                    <h2>The University of Haripur</h2>
+                    <span>Intelligent Ecosystem (IES)</span>
+                </div>
+            </div>
+
+            <!-- NAVIGATION -->
+            <div class="sidebar-section">
+                <div class="section-title">NAVIGATION</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="dashboard.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></div></a></li>
+                    <li class="nav-item"><a href="academic-integrity.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-user-shield"></i> <span>Academic Integrity</span></div></a></li>
+                    <li class="nav-item"><a href="clerk-watchdog.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-user-check"></i> <span>Clerk Watchdog</span></div></a></li>
+                    <li class="nav-item"><a href="exam-monitoring.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-file-signature"></i> <span>Exam Monitoring</span></div></a></li>
+                    <li class="nav-item"><a href="student-management.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-graduation-cap"></i> <span>Student Management</span></div></a></li>
+                    <li class="nav-item"><a href="faculty-management.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-users-gear"></i> <span>Faculty Management</span></div></a></li>
+                    <li class="nav-item"><a href="finance-agent.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-building-columns"></i> <span>Finance Agent</span></div></a></li>
+                </ul>
+            </div>
+
+            <!-- MANAGEMENT -->
+            <div class="sidebar-section">
+                <div class="section-title">MANAGEMENT</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="ai-timetable-creator.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-flask"></i> <span>AI Timetable Creator</span></div></a></li>
+                    <li class="nav-item">
+                        <!-- Library Agent stays on same page -->
+                        <a href="javascript:void(0)" class="nav-link active" id="libraryAgentBtn">
+                            <div class="nav-link-content"><i class="fa-solid fa-book"></i> <span>Library Agent</span></div>
+                        </a>
+                    </li>
+                    <li class="nav-item"><a href="hostel-agent.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-hotel"></i> <span>Hostel Agent</span></div></a></li>
+                    <li class="nav-item"><a href="security-agent.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-shield-halved"></i> <span>Security Agent</span></div></a></li>
+                    <li class="nav-item"><a href="hr-administration.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-briefcase"></i> <span>HR Administration</span></div></a></li>
+                    
+                </ul>
+            </div>
+
+            <!-- SYSTEM -->
+            <div class="sidebar-section">
+                <div class="section-title">SYSTEM</div>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="coming-soon.html?feature=Reports" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-chart-line"></i> <span>Reports</span></div></a></li>
+                    <li class="nav-item"><a href="coming-soon.html?feature=Analytics" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-chart-simple"></i> <span>Analytics</span></div></a></li>
+                    <li class="nav-item"><a href="coming-soon.html?feature=Settings" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-gear"></i> <span>Settings</span></div></a></li>
+                    <li class="nav-item"><a href="coming-soon.html?feature=Support" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-circle-question"></i> <span>Support</span></div></a></li>
+                    <li class="nav-item"><a href="../login_page/admin-login.html" class="nav-link"><div class="nav-link-content"><i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span></div></a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+            <!-- TOP HEADER -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()" title="Toggle Navigation">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="header-title">
+                        <div class="header-title-icon">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <div class="header-title-text">
+                            <h1>Library Agent</h1>
+                            <p>Smart Library Management & Knowledge Resources</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search books, journals, e-resources, members...">
+                    </div>
+
+                    <!-- SINGLE NOTIFICATION BELL SYSTEM -->
+                    <div class="notification-wrapper">
+                        
+
+                        <!-- NOTIFICATION POPUP DROPDOWN -->
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notif-header">
+                                <h4>Library Alerts</h4>
+                                <span style="font-size:0.68rem; color:#2563eb; cursor:pointer;" onclick="markAllNotifsRead()">Mark all as read</span>
+                            </div>
+                            <div class="notif-list" id="notifListContainer">
+                                <div class="notif-item unread">
+                                    <div class="notif-icon"><i class="fa-solid fa-clock-rotate-left" style="color:#ef4444;"></i></div>
+                                    <div class="notif-content">
+                                        <h5>142 Overdue Books Alert</h5>
+                                        <p>Automatic SMS & Email reminders initiated for defaulters.</p>
+                                        <div class="notif-time">15 mins ago</div>
+                                    </div>
+                                </div>
+                                <div class="notif-item unread">
+                                    <div class="notif-icon"><i class="fa-solid fa-book" style="color:#10b981;"></i></div>
+                                    <div class="notif-content">
+                                        <h5>New Books Arrived</h5>
+                                        <p>4 new AI & Data Science titles added to catalog.</p>
+                                        <div class="notif-time">1 hour ago</div>
+                                    </div>
+                                </div>
+                                <div class="notif-item unread">
+                                    <div class="notif-icon"><i class="fa-solid fa-globe" style="color:#f59e0b;"></i></div>
+                                    <div class="notif-content">
+                                        <h5>IEEE Access Subscription</h5>
+                                        <p>E-Resource access license renewed successfully.</p>
+                                        <div class="notif-time">3 hours ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="date-badge">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span>07 June 2024<br>10:15 AM</span>
+                    </div>
+
+                    <div class="user-profile">
+                        <div class="user-avatar-initials">AD</div>
+                        <div class="user-info">
+                            <h4>Admin User</h4>
+                            <p>Super Administrator</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: var(--text-secondary); margin-left: 4px;"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- DASHBOARD CONTENT BODY -->
+            <main class="content-body"><div id="libraryApp" data-role="admin"></div></main>
+
+            <!-- FOOTER -->
+            <footer class="app-footer">
+                <div>© 2024 The University of Haripur. All rights reserved.</div>
+                <div>Smart Library Management System v2.4</div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="../shared/library.js"></script>
+</body>
+</html>

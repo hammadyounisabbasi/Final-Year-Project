@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library - Student Portal | The University of Haripur</title>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --sidebar-bg: #091024;
+            --sidebar-hover: #132042;
+            --sidebar-text: #94a3b8;
+            --sidebar-active-bg: #1d61f2;
+            --sidebar-active-text: #ffffff;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --primary-blue: #2563eb;
+            --primary-blue-hover: #1d4ed8;
+            --primary-blue-bg: #eff6ff;
+            --green-bg: #f0fdf4;
+            --green-text: #16a34a;
+            --green-badge-bg: #dcfce7;
+            --green-badge-text: #15803d;
+            --amber-bg: #fffbebfb;
+            --amber-border: #fde68a;
+            --amber-text: #b45309;
+            --amber-badge-bg: #fef3c7;
+            --amber-badge-text: #d97706;
+            --purple-bg: #faf5ff;
+            --purple-text: #9333ea;
+            --teal-bg: #f0fdfa;
+            --teal-text: #0d9488;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* PORTAL LAYOUT CONTAINER */
+        #portalContainer {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* ---------------- SIDEBAR ---------------- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* UNIVERSITY LOGO STYLING */
+        .uoh-logo-img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: #ffffff;
+            padding: 2px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .logo-text h2 {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            color: var(--sidebar-text);
+            margin-top: 2px;
+        }
+
+        .nav-section {
+            padding: 15px 12px 5px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            letter-spacing: 0.8px;
+            padding: 0 12px 8px;
+            text-transform: uppercase;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background-color: var(--sidebar-hover);
+            color: #ffffff;
+        }
+
+        .nav-item.active {
+            background-color: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+        }
+
+        .nav-item i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .sidebar-footer {
+            padding: 18px 20px;
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.6;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* ---------------- MAIN WRAPPER ---------------- */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* ---------------- TOPBAR ---------------- */
+        .topbar {
+            height: 70px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            gap: 15px;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            max-width: 550px;
+        }
+
+        .mobile-toggle-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        .mobile-toggle-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 14px;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .search-box i {
+            color: #94a3b8;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 13.5px;
+            color: var(--text-primary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* SINGLE NOTIFICATION BELL WITH BADGE & MODAL */
+        .notification-btn {
+            position: relative;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            color: #475569;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .user-profile:hover {
+            background-color: #f8fafc;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        .user-info {
+            line-height: 1.25;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* ---------------- CONTENT AREA ---------------- */
+        .content-area {
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            min-width: 0;
+        }
+
+        /* ---------------- RESPONSIVE MEDIA QUERIES ---------------- */
+        @media (max-width: 868px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .main-wrapper {
+                margin-left: 0;
+            }
+            .mobile-toggle-btn {
+                display: flex;
+            }
+            .topbar {
+                padding: 0 16px;
+            }
+            .user-info {
+                display: none;
+            }
+            .content-area {
+                padding: 16px;
+            }
+        }
+    </style>
+<link rel="stylesheet" href="../shared/library.css">
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+    <div id="portalContainer">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <!-- LOGO AREA WITH EXACT RELATIVE PATH & FALLBACK CSS -->
+                <div class="sidebar-header">
+                    <img src="../login_page/uoh-logo.png" alt="The University of Haripur" class="uoh-logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/44?text=UOH'">
+                    <div class="logo-text">
+                        <h2>The University of Haripur</h2>
+                        <p>Intelligent Ecosystem (IES)</p>
+                    </div>
+                </div>
+
+                <!-- NAVIGATION ITEMS -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Student Portal</div>
+                    <a href="stu_dashboard.html" class="nav-item">
+                        <i data-lucide="home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="my-courses.html" class="nav-item">
+                        <i data-lucide="book-open"></i>
+                        <span>My Courses</span>
+                    </a>
+                    <a href="attendance.html" class="nav-item">
+                        <i data-lucide="user-check"></i>
+                        <span>Attendance</span>
+                    </a>
+                    <a href="assignments.html" class="nav-item">
+                        <i data-lucide="file-text"></i>
+                        <span>Assignments</span>
+                    </a>
+                    <a href="exams.html" class="nav-item">
+                        <i data-lucide="edit-3"></i>
+                        <span>Exams</span>
+                    </a>
+                    <a href="results.html" class="nav-item">
+                        <i data-lucide="bar-chart-2"></i>
+                        <span>Results & CGPA</span>
+                    </a>
+                    <a href="fees.html" class="nav-item">
+                        <i data-lucide="credit-card"></i>
+                        <span>Fees</span>
+                    </a>
+                    <!-- STAYS ON THIS PAGE WHEN CLICKED -->
+                    <a href="library.html" class="nav-item active" onclick="event.preventDefault();">
+                        <i data-lucide="book"></i>
+                        <span>Library</span>
+                    </a>
+                    <a href="timetable.html" class="nav-item">
+                        <i data-lucide="calendar"></i>
+                        <span>Timetable</span>
+                    </a>
+                    
+                    <a href="profile.html" class="nav-item">
+                        <i data-lucide="user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="settings.html" class="nav-item">
+                        <i data-lucide="settings"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="support.html" class="nav-item">
+                        <i data-lucide="help-circle"></i>
+                        <span>Support</span>
+                    </a>
+                    <a href="../landing_page/index.html" class="nav-item">
+                        <i data-lucide="log-out"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <p>© 2024 University of Haripur</p>
+                <p>All rights reserved.</p>
+                <p style="margin-top: 4px; color: #475569;">IES v1.0</p>
+            </div>
+        </aside>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+            
+            <!-- TOPBAR -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <!-- 3 DOTS MOBILE SIDEBAR TOGGLE BUTTON -->
+                    <button class="mobile-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle Navigation">
+                        <span aria-hidden="true">&#9776;</span>
+                    </button>
+
+                    <!-- RESPONSIVE SEARCH BOX (VISIBLE ON MOBILE & DESKTOP) -->
+                    <div class="search-box">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="globalSearchInput" placeholder="Search books, journals, authors, ISBN...">
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <!-- SINGLE RESPONSIVE NOTIFICATION BELL -->
+                    
+
+                    <!-- NOTIFICATION POPUP MODAL -->
+                    <div class="notification-modal" id="notificationModal">
+                        <div class="notification-modal-header">
+                            <h4>Notifications</h4>
+                            <span style="font-size: 11px; color: var(--primary-blue); cursor: pointer;" onclick="markNotificationsRead()">Mark all read</span>
+                        </div>
+                        <div class="notification-list" id="notificationList">Library updates appear automatically in the catalog.</div></div>
+
+                    <!-- USER PROFILE -->
+                    <div class="user-profile">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student Profile" class="user-avatar" id="topbarUserAvatar">
+                        <div class="user-info">
+                            <div class="user-name" id="topbarUserName">Loading...</div>
+                            <div class="user-role" id="topbarUserRole">BS Computer Science</div>
+                        </div>
+                        <i data-lucide="chevron-down" style="width: 16px; height: 16px; color: #64748b;"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- CONTENT AREA -->
+            <main class="content-area"><div id="libraryApp" data-role="student"></div></main>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT ENGINE & REALTIME BACKEND READY STATE DATA -->
+    
+<!-- Student Topbar Hydration -->
+<script src="../shared/student-topbar.js"></script>
+<script src="../shared/library.js?v=20260921-student-reply-visibility"></script>
+</body>
+</html>

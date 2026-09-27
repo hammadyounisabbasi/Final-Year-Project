@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3. Exam Monitoring - University of Haripur (UIES)</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark-sidebar: #0b1329;
+            --bg-dark-card: #111a36;
+            --sidebar-active-blue: #1d4ed8;
+            --sidebar-hover-blue: #1e3a8a;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --info: #06b6d4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* -------------------------------------------------------------
+           SIDEBAR STYLES
+        ------------------------------------------------------------- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-dark-sidebar);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Custom Logo CSS as requested */
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            border-radius: 6px;
+            background: #ffffff;
+            padding: 2px;
+        }
+
+        .brand-text h2 {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .brand-text p {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .sidebar-menu {
+            padding: 15px 10px;
+            flex-grow: 1;
+        }
+
+        .menu-category {
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            padding: 12px 12px 6px 12px;
+            letter-spacing: 0.8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        }
+
+        .nav-item.active {
+            background-color: var(--sidebar-active-blue);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .nav-item-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-item-content i {
+            font-size: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--success);
+            box-shadow: 0 0 6px var(--success);
+        }
+
+        .help-card {
+            margin: 15px;
+            padding: 15px;
+            background: var(--bg-dark-card);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .help-card i {
+            font-size: 24px;
+            color: #60a5fa;
+        }
+
+        .help-card h4 {
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .help-card p {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+        /* Backdrop Overlay for Mobile Sidebar */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+        }
+
+        /* -------------------------------------------------------------
+           MAIN CONTENT WRAPPER
+        ------------------------------------------------------------- */
+        .main-wrapper {
+            margin-left: 280px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        /* -------------------------------------------------------------
+           TOPBAR
+        ------------------------------------------------------------- */
+        .topbar {
+            background-color: var(--card-bg);
+            height: 70px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+            max-width: 500px;
+        }
+
+        /* 3-dots mobile menu toggle */
+        .mobile-toggle-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .mobile-toggle-btn:hover {
+            background-color: var(--primary-light);
+        }
+
+        .global-search {
+            position: relative;
+            width: 100%;
+        }
+
+        .global-search i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .global-search input {
+            width: 100%;
+            padding: 10px 14px 10px 40px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: #f8fafc;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .global-search input:focus {
+            border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Responsive Notification Dropdown */
+        .notification-wrapper {
+            position: relative;
+        }
+
+        .icon-btn {
+            position: relative;
+            background: #f1f5f9;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: #e2e8f0;
+            color: var(--primary);
+        }
+
+        .badge-count {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: var(--danger);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        .notification-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 50px;
+            width: 320px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .notification-dropdown.show {
+            display: block;
+        }
+
+        .dropdown-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+        }
+
+        .dropdown-body {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .notif-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 12px;
+            display: flex;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .notif-item:hover {
+            background-color: #f8fafc;
+        }
+
+        .date-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #334155;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* -------------------------------------------------------------
+           PAGE CONTENT AREA
+        ------------------------------------------------------------- */
+        .content-area {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Header Title Block */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background-color: #eff6ff;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .page-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .breadcrumbs {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .breadcrumbs span {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        /* Stats Cards Row */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .stat-info h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .stat-info .val {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 2px 0;
+        }
+
+        .stat-info .trend {
+            font-size: 11px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend.up { color: var(--success); }
+        .trend.down { color: var(--danger); }
+
+        /* Grid Sections */
+        .grid-2-col {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-header h3 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .card-header a {
+            font-size: 12px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        th {
+            padding: 10px 12px;
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-live { background-color: #dcfce7; color: #15803d; }
+        .badge-high { background-color: #fee2e2; color: #b91c1c; }
+        .badge-medium { background-color: #fef3c7; color: #b45309; }
+
+        /* Camera Feed Section */
+        .camera-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tab-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: #f8fafc;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .camera-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .camera-card {
+            position: relative;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+        }
+
+        .camera-card img, .camera-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            bottom: 6px;
+            left: 6px;
+            right: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 10px;
+        }
+
+        .cam-live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #4ade80;
+            font-weight: 700;
+        }
+
+        .cam-live-indicator::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background-color: #4ade80;
+            border-radius: 50%;
+        }
+
+        /* Dynamic Admin Quick Action Input */
+        .quick-action-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .quick-action-box input {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .btn-add-action {
+            background-color: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .alerts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            border-left: 4px solid var(--primary);
+        }
+
+        .alert-item.danger { border-left-color: var(--danger); }
+        .alert-item.warning { border-left-color: var(--warning); }
+
+        .alert-content h5 { font-size: 12px; font-weight: 600; }
+        .alert-content p { font-size: 10px; color: var(--text-muted); }
+
+        /* Bottom Status Row */
+        .bottom-summary-bar {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .summary-item { text-align: center; }
+        .summary-item label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .summary-item .val { font-size: 18px; font-weight: 700; margin-top: 2px; }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--card-bg);
+        }
+
+        .footer-badges {
+            display: flex;
+            gap: 20px;
+        }
+
+        .f-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* -------------------------------------------------------------
+           RESPONSIVE MEDIA QUERIES (MOBILE FIXES)
+        ------------------------------------------------------------- */
+        @media (max-width: 1024px) {
+            .grid-2-col {
+                grid-template-columns: 1fr;
+            }
+            .camera-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+            .main-wrapper {
+                margin-left: 0;
+            }
+            .mobile-toggle-btn {
+                display: block;
+            }
+            .date-display, .user-info {
+                display: none;
+            }
+            .topbar-left {
+                max-width: 100%;
+            }
+            .topbar {
+                padding: 0 14px;
+            }
+            .content-area {
+                padding: 14px;
+                gap: 14px;
+            }
+            .camera-grid {
+                grid-template-columns: 1fr;
+            }
+            .bottom-summary-bar {
+                justify-content: flex-start;
+            }
+            .summary-item {
+                text-align: left;
+                width: 45%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="admin-shell.css">
+    <script src="admin-shell.js" defer></script>
+    <link rel="stylesheet" href="exam-assistant.css">
+    <script src="exam-assistant.js" defer></script>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+    <!-- SIDEBAR OVERLAY FOR MOBILE -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <!-- Reference Logo with provided relative path -->
+            <img src="../login_page/uoh-logo.png" alt="University Logo" class="brand-logo" onerror="this.src='https://via.placeholder.com/44?text=UOH'">
+            <div class="brand-text">
+                <h2>THE UNIVERSITY OF HARIPUR</h2>
+                <p>Intelligent Ecosystem (UIES)</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="dashboard.html" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </div>
+            </a>
+
+            <div class="menu-category">AI Agent Modules</div>
+
+            <a href="academic-integrity.html" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>1. Academic Integrity</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            <a href="clerk-watchdog.html" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>2. Clerk Watchdog</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            <!-- Exam Monitoring Active Link (Same Page Stay) -->
+            <a href="javascript:void(0)" class="nav-item active">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-desktop"></i>
+                    <span>3. Exam Monitoring</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            <a href="student-management.html" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    <span>4. Student Management</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            <a href="faculty-management.html" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <span>5. Faculty Management</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            <a href="finance-agent.html" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>6. Finance Agent</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            <a href="ai-timetable-creator.html" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-flask"></i>
+                    <span>7. Research Agent (ORIC)</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            <a href="library-agent.html" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-book"></i>
+                    <span>8. Library Agent</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            <a href="hostel-agent.html" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-hotel"></i>
+                    <span>9. Hostel Agent</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            <a href="security-agent.html" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>10. Security Agent</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            <a href="coming-soon.html?feature=IT%20Helpdesk" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-headset"></i>
+                    <span>11. IT Helpdesk</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            <a href="hr-administration.html" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span>12. HR Administration</span>
+                </div>
+                <div class="status-dot"></div>
+            </a>
+
+            
+
+            <div class="menu-category">System</div>
+
+            <a href="coming-soon.html?feature=Reports" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Reports</span>
+                </div>
+            </a>
+            <a href="coming-soon.html?feature=Analytics" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Analytics</span>
+                </div>
+            </a>
+            <a href="coming-soon.html?feature=Audit%20Logs" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Audit Logs</span>
+                </div>
+            </a>
+            <a href="coming-soon.html?feature=Settings" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </div>
+            </a>
+            <a href="coming-soon.html?feature=Help" class="nav-item">
+                <div class="nav-item-content">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span>Help & Support</span>
+                </div>
+            </a>
+        </nav>
+
+        <div class="help-card">
+            <i class="fa-solid fa-headset"></i>
+            <div>
+                <h4>Need Help?</h4>
+                <p>Contact Support Center</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <div class="main-wrapper">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <!-- Mobile 3-Dots Toggle Button -->
+                <button class="mobile-toggle-btn" id="mobileToggle" title="Toggle Sidebar">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+
+                <!-- Search Option Visible on Mobile & Desktop -->
+                <div class="global-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search exams, students, rooms...">
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <!-- Single Notification Icon Responsive -->
+                <div class="notification-wrapper">
+                    
+                    <!-- Dropdown -->
+                    <div class="notification-dropdown" id="notifDropdown">
+                        <div class="dropdown-header">
+                            <span>Notifications Alert</span>
+                            <small id="clearNotifs" style="color:var(--primary); cursor:pointer;">Mark read</small>
+                        </div>
+                        <div class="dropdown-body" id="notifList">
+                            <div class="notif-item">
+                                <i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i>
+                                <div>
+                                    <strong>Phone Detected</strong>
+                                    <p>Room 101 - Student Ali Hassan</p>
+                                </div>
+                            </div>
+                            <div class="notif-item">
+                                <i class="fa-solid fa-users" style="color:var(--warning)"></i>
+                                <div>
+                                    <strong>Multiple Faces</strong>
+                                    <p>Room 103 - Online Proctored</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="date-display">
+                    <i class="fa-regular fa-calendar"></i>
+                    <div>
+                        <div>07 June 2024</div>
+                        <small style="color:var(--text-muted)">09:55 AM</small>
+                    </div>
+                </div>
+
+                <div class="user-profile">
+                    <div class="avatar">AD</div>
+                    <div class="user-info">
+                        <span class="user-name">Admin User</span>
+                        <span class="user-role">Super Administrator</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT CONTAINER -->
+        <main class="content-area">
+
+            <!-- Page Title Block -->
+            <div class="page-header">
+                <div class="header-title-box">
+                    <div class="header-icon-box">
+                        <i class="fa-solid fa-desktop"></i>
+                    </div>
+                    <div>
+                        <h1>3. Exam Monitoring</h1>
+                        <p>AI Agent for real-time exam surveillance and integrity monitoring</p>
+                    </div>
+                </div>
+                <div class="breadcrumbs">
+                    AI Agents &gt; <span>Exam Monitoring</span>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:#eff6ff; color:#2563eb;">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Active Exams</h3>
+                        <div class="val">12</div>
+                        <div class="trend up"><i class="fa-solid fa-arrow-up"></i> 20% vs yesterday</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:#f0fdf4; color:#16a34a;">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Students</h3>
+                        <div class="val">2,430</div>
+                        <div class="trend up"><i class="fa-solid fa-arrow-up"></i> 15.6% vs yesterday</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:#fef2f2; color:#dc2626;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Suspicious Events</h3>
+                        <div class="val">32</div>
+                        <div class="trend down"><i class="fa-solid fa-arrow-down"></i> 8 vs yesterday</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:#fff7ed; color:#ea580c;">
+                        <i class="fa-solid fa-ban"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Blocked Devices</h3>
+                        <div class="val">14</div>
+                        <div class="trend down"><i class="fa-solid fa-arrow-down"></i> 3 vs yesterday</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:#faf5ff; color:#9333ea;">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Compliance Rate</h3>
+                        <div class="val">98.6%</div>
+                        <div class="trend up"><i class="fa-solid fa-arrow-up"></i> 2.4% vs yesterday</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additive AI scheduling assistant; existing monitoring widgets remain unchanged. -->
+            <section class="dashboard-card exam-ai-card" aria-labelledby="examAiHeading">
+                <div class="exam-ai-header">
+                    <div class="exam-ai-title">
+                        <div class="exam-ai-title-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <div>
+                            <h3 id="examAiHeading">AI Exam Scheduling Assistant</h3>
+                            <p>Date sheets, seating plans, room allocation and conflict analysis</p>
+                        </div>
+                    </div>
+                    <span class="exam-ai-status" id="examAiStatus">Connecting…</span>
+                </div>
+                <div class="exam-ai-layout">
+                    <div class="exam-ai-chat-panel">
+                        <div class="exam-ai-messages" id="examAiMessages" aria-live="polite"></div>
+                        <div class="exam-ai-attachments" id="examAiAttachments"></div>
+                        <form class="exam-ai-composer" id="examAiForm">
+                            <div class="exam-ai-input-wrap">
+                                <button class="exam-ai-icon-btn exam-ai-attach-btn" id="examAiAttach" type="button" title="Attach PDF, DOCX, TXT, CSV, or XLSX"><i class="fa-solid fa-paperclip"></i></button>
+                                <textarea id="examAiInput" rows="1" maxlength="4000" placeholder="Ask for a date sheet or seating plan…" aria-label="Message the exam scheduling assistant"></textarea>
+                                <button class="exam-ai-icon-btn exam-ai-send-btn" id="examAiSend" type="submit" title="Send"><i class="fa-solid fa-paper-plane"></i></button>
+                            </div>
+                            <input id="examAiFileInput" type="file" accept=".pdf,.docx,.txt,.csv,.xlsx" hidden>
+                            <div class="exam-ai-hint"><span>Temporary files · 8 MB maximum · Enter to send</span><button class="exam-ai-clear" id="examAiReset" type="button">New chat &amp; clear files</button></div>
+                        </form>
+                    </div>
+                    <div class="exam-ai-preview">
+                        <div class="exam-ai-preview-tabs">
+                            <div class="exam-ai-tabs">
+                                <button class="exam-ai-tab active" type="button" data-type="date_sheet">Date Sheet</button>
+                                <button class="exam-ai-tab" type="button" data-type="seating_plan">Seating Plan</button>
+                            </div>
+                            <div class="exam-ai-export">
+                                <button type="button" data-exam-export="pdf" disabled><i class="fa-regular fa-file-pdf"></i> PDF</button>
+                                <button type="button" data-exam-export="docx" disabled><i class="fa-regular fa-file-word"></i> DOCX</button>
+                            </div>
+                        </div>
+                        <div class="exam-ai-preview-note">Generated schedules are proposals only and are not saved or approved automatically.</div>
+                        <div class="exam-ai-empty" id="examAiEmpty"><div><i class="fa-regular fa-calendar-check"></i>Ask the assistant to generate a grounded date sheet or seating plan. The structured preview will appear here.</div></div>
+                        <div class="exam-ai-table-wrap" id="examAiTableWrap" hidden>
+                            <table class="exam-ai-table"><thead id="examAiTableHead"></thead><tbody id="examAiTableBody"></tbody></table>
+                        </div>
+                        <div class="exam-ai-warnings" id="examAiWarnings"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Row 1: Live Exam Table & AI Surveillance Chart Mock -->
+            <div class="grid-2-col">
+                <!-- Live Exam Table -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Live Exam Monitoring</h3>
+                        <a href="#">View All</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Exam</th>
+                                    <th>Course</th>
+                                    <th>Room</th>
+                                    <th>Students</th>
+                                    <th>Start Time</th>
+                                    <th>Status</th>
+                                    <th>Monitoring</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Data Structures</td>
+                                    <td>CS-201</td>
+                                    <td>Room 101</td>
+                                    <td>120</td>
+                                    <td>09:00 AM</td>
+                                    <td><span class="badge badge-live">Live</span></td>
+                                    <td><i class="fa-solid fa-eye" style="color:var(--primary)"></i> <i class="fa-solid fa-video" style="color:var(--info)"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Artificial Intelligence</td>
+                                    <td>CS-401</td>
+                                    <td>Room 102</td>
+                                    <td>98</td>
+                                    <td>09:00 AM</td>
+                                    <td><span class="badge badge-live">Live</span></td>
+                                    <td><i class="fa-solid fa-eye" style="color:var(--primary)"></i> <i class="fa-solid fa-video" style="color:var(--info)"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>Database Systems</td>
+                                    <td>CS-301</td>
+                                    <td>Room 103</td>
+                                    <td>110</td>
+                                    <td>09:00 AM</td>
+                                    <td><span class="badge badge-live">Live</span></td>
+                                    <td><i class="fa-solid fa-eye" style="color:var(--primary)"></i> <i class="fa-solid fa-video" style="color:var(--info)"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- AI Surveillance Overview -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>AI Surveillance Overview</h3>
+                        <select style="border:1px solid var(--border-color); border-radius:6px; padding:4px 8px; font-size:11px;">
+                            <option>This Month</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:12px; font-size:12px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span><i class="fa-solid fa-circle" style="color:#ef4444; font-size:8px;"></i> Face Not Detected</span>
+                            <strong>10 (31.2%)</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span><i class="fa-solid fa-circle" style="color:#f59e0b; font-size:8px;"></i> Multiple Faces</span>
+                            <strong>8 (25.0%)</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span><i class="fa-solid fa-circle" style="color:#3b82f6; font-size:8px;"></i> Looking Away</span>
+                            <strong>6 (18.8%)</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span><i class="fa-solid fa-circle" style="color:#8b5cf6; font-size:8px;"></i> Phone Detected</span>
+                            <strong>5 (15.6%)</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: Live CCTV Camera Feeds & Quick Action Alerts -->
+            <div class="grid-2-col">
+                <!-- CCTV & Front Camera Access Section -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Live Camera Feeds & Surveillance</h3>
+                        <a href="#">View All</a>
+                    </div>
+                    
+                    <!-- Tabs for CCTV vs Online Student Front Camera -->
+                    <div class="camera-tabs">
+                        <button class="tab-btn active" id="btnCctvTab">Room CCTV Cameras</button>
+                        <button class="tab-btn" id="btnStudentCamTab">Student Mobile Front Cams (Online Exam)</button>
+                    </div>
+
+                    <!-- CCTV Grid -->
+                    <div class="camera-grid" id="cctvGrid">
+                        <div class="camera-card">
+                            <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=400&q=80" alt="Room 101 Feed">
+                            <div class="camera-overlay">
+                                <span>Room 101</span>
+                                <span class="cam-live-indicator">Live</span>
+                            </div>
+                        </div>
+                        <div class="camera-card">
+                            <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=400&q=80" alt="Room 102 Feed">
+                            <div class="camera-overlay">
+                                <span>Room 102</span>
+                                <span class="cam-live-indicator">Live</span>
+                            </div>
+                        </div>
+                        <div class="camera-card">
+                            <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=400&q=80" alt="Room 103 Feed">
+                            <div class="camera-overlay">
+                                <span>Room 103</span>
+                                <span class="cam-live-indicator">Live</span>
+                            </div>
+                        </div>
+                        <div class="camera-card">
+                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=400&q=80" alt="Room 201 Feed">
+                            <div class="camera-overlay">
+                                <span>Room 201</span>
+                                <span class="cam-live-indicator">Live</span>
+                            </div>
+                        </div>
+                        <div class="camera-card">
+                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&q=80" alt="Room 202 Feed">
+                            <div class="camera-overlay">
+                                <span>Room 202</span>
+                                <span class="cam-live-indicator">Live</span>
+                            </div>
+                        </div>
+                        <div class="camera-card">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=400&q=80" alt="Room 203 Feed">
+                            <div class="camera-overlay">
+                                <span>Room 203</span>
+                                <span class="cam-live-indicator">Live</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Action Input & Alerts Panel -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Alerts & Admin Quick Actions</h3>
+                        <a href="#">View All</a>
+                    </div>
+
+                    <!-- Dynamic Admin Input Action Bar -->
+                    <div class="quick-action-box">
+                        <input type="text" id="adminActionInput" placeholder="Add custom action/alert for invigilator...">
+                        <button class="btn-add-action" id="btnAddAction">Add Alert</button>
+                    </div>
+
+                    <div class="alerts-list" id="alertsList">
+                        <div class="alert-item danger">
+                            <i class="fa-solid fa-mobile-screen-button" style="color:var(--danger)"></i>
+                            <div class="alert-content">
+                                <h5>High number of phone detections</h5>
+                                <p>Room 101 - Data Structures | 09:45 AM</p>
+                            </div>
+                        </div>
+                        <div class="alert-item warning">
+                            <i class="fa-solid fa-users" style="color:var(--warning)"></i>
+                            <div class="alert-content">
+                                <h5>Multiple faces detected</h5>
+                                <p>Room 103 - Database Systems | 09:22 AM</p>
+                            </div>
+                        </div>
+                        <div class="alert-item warning">
+                            <i class="fa-solid fa-triangle-exclamation" style="color:var(--warning)"></i>
+                            <div class="alert-content">
+                                <h5>Student looking away for long time</h5>
+                                <p>Room 102 - Artificial Intelligence | 09:37 AM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Summary Bar -->
+            <div class="bottom-summary-bar">
+                <div class="summary-item">
+                    <label>AI Detection Accuracy</label>
+                    <div class="val" style="color:var(--success)">98.6% <small style="font-size:10px;"><i class="fa-solid fa-arrow-up"></i> 2.3%</small></div>
+                </div>
+                <div class="summary-item">
+                    <label>Screens Monitored</label>
+                    <div class="val">24 <small style="font-size:10px; color:var(--success);">Live</small></div>
+                </div>
+                <div class="summary-item">
+                    <label>Total Flags Today</label>
+                    <div class="val">32 <small style="font-size:10px; color:var(--success);"><i class="fa-solid fa-arrow-up"></i> 10</small></div>
+                </div>
+                <div class="summary-item">
+                    <label>Resolved Today</label>
+                    <div class="val">18 <small style="font-size:10px; color:var(--success);"><i class="fa-solid fa-arrow-up"></i> 5</small></div>
+                </div>
+                <div class="summary-item">
+                    <label>Average Response Time</label>
+                    <div class="val">2.4 min <small style="font-size:10px; color:var(--success);"><i class="fa-solid fa-arrow-down"></i> 0.6 min</small></div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div>
+                © 2024 University of Haripur. All rights reserved.
+            </div>
+            <div class="footer-badges">
+                <div class="f-badge"><i class="fa-solid fa-lock" style="color:var(--primary)"></i> Secure Access</div>
+                <div class="f-badge"><i class="fa-solid fa-microchip" style="color:var(--primary)"></i> AI Powered</div>
+                <div class="f-badge"><i class="fa-solid fa-shield-halved" style="color:var(--primary)"></i> Privacy Protected</div>
+                <div class="f-badge"><i class="fa-solid fa-file-contract" style="color:var(--primary)"></i> Audit Ready</div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- JAVASCRIPT FOR RESPONSIVENESS AND BACKEND INTEGRATION READY HOOKS -->
+    <script>
+        // 1. Mobile Sidebar Toggle via 3-dots
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('mobile-open');
+            sidebarOverlay.classList.toggle('active');
+        }
+
+        mobileToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        // 2. Notification Dropdown Toggle
+        const notifBtn = document.getElementById('notifBtn');
+        const notifDropdown = document.getElementById('notifDropdown');
+
+        if (notifBtn && notifDropdown) {
+            notifBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notifDropdown.classList.toggle('show');
+            });
+        }
+
+        document.addEventListener('click', () => {
+            if (notifDropdown) notifDropdown.classList.remove('show');
+        });
+
+        // 3. Dynamic Admin Quick Action Input Handling
+        const btnAddAction = document.getElementById('btnAddAction');
+        const adminActionInput = document.getElementById('adminActionInput');
+        const alertsList = document.getElementById('alertsList');
+
+        btnAddAction.addEventListener('click', () => {
+            const text = adminActionInput.value.trim();
+            if(text !== "") {
+                const newAlert = document.createElement('div');
+                newAlert.className = 'alert-item warning';
+                newAlert.innerHTML = `
+                    <i class="fa-solid fa-user-gear" style="color:var(--primary)"></i>
+                    <div class="alert-content">
+                        <h5>${text}</h5>
+                        <p>Added by Admin | Just Now</p>
+                    </div>
+                `;
+                alertsList.prepend(newAlert);
+                adminActionInput.value = '';
+            }
+        });
+
+        // 4. CCTV vs Online Student Front Camera Toggle
+        const btnCctvTab = document.getElementById('btnCctvTab');
+        const btnStudentCamTab = document.getElementById('btnStudentCamTab');
+        const cctvGrid = document.getElementById('cctvGrid');
+
+        btnStudentCamTab.addEventListener('click', () => {
+            btnStudentCamTab.classList.add('active');
+            btnCctvTab.classList.remove('active');
+            
+            // Switch grid to Mobile Student Front Camera Streams
+            cctvGrid.innerHTML = `
+                <div class="camera-card">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" alt="Student Cam">
+                    <div class="camera-overlay">
+                        <span>Student: Ali Hassan (Front Cam)</span>
+                        <span class="cam-live-indicator">Live Mobile</span>
+                    </div>
+                </div>
+                <div class="camera-card">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80" alt="Student Cam">
+                    <div class="camera-overlay">
+                        <span>Student: Usman Tariq (Front Cam)</span>
+                        <span class="cam-live-indicator">Live Mobile</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        btnCctvTab.addEventListener('click', () => {
+            btnCctvTab.classList.add('active');
+            btnStudentCamTab.classList.remove('active');
+            location.reload(); // Restores CCTV Grid
+        });
+
+        // 5. Backend Realtime Notification Hook Template
+        function pushRealtimeNotification(title, detail) {
+            const badge = document.getElementById('notifBadge');
+            if (badge) badge.innerText = parseInt(badge.innerText) + 1;
+            
+            const notifList = document.getElementById('notifList');
+            const item = document.createElement('div');
+            item.className = 'notif-item';
+            item.innerHTML = `
+                <i class="fa-solid fa-bell" style="color:var(--primary)"></i>
+                <div>
+                    <strong>${title}</strong>
+                    <p>${detail}</p>
+                </div>
+            `;
+            notifList.prepend(item);
+        }
+    </script>
+</body>
+</html>

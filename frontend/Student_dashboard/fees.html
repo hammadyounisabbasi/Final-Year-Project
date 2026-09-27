@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fees - Student Portal | The University of Haripur</title>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js CDN for Payment Overview Donut Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="fee-assistant.css">
+    
+    <style>
+        :root {
+            --sidebar-bg: #091024;
+            --sidebar-hover: #132042;
+            --sidebar-text: #94a3b8;
+            --sidebar-active-bg: #1d61f2;
+            --sidebar-active-text: #ffffff;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --primary-blue: #2563eb;
+            --primary-blue-bg: #eff6ff;
+            --green-bg: #f0fdf4;
+            --green-text: #16a34a;
+            --green-badge-bg: #dcfce7;
+            --green-badge-text: #15803d;
+            --red-text: #dc2626;
+            --red-bg: #fef2f2;
+            --red-badge-bg: #fee2e2;
+            --amber-bg: #fffbebfb;
+            --amber-border: #fde68a;
+            --amber-text: #b45309;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* PORTAL CONTAINER */
+        #portalContainer {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* ---------------- SIDEBAR ---------------- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* UNIVERSITY LOGO STYLING */
+        .uoh-logo-img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: #ffffff;
+            padding: 2px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .logo-text h2 {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            color: var(--sidebar-text);
+            margin-top: 2px;
+        }
+
+        .nav-section {
+            padding: 15px 12px 5px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            letter-spacing: 0.8px;
+            padding: 0 12px 8px;
+            text-transform: uppercase;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background-color: var(--sidebar-hover);
+            color: #ffffff;
+        }
+
+        .nav-item.active {
+            background-color: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+        }
+
+        .nav-item i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .sidebar-footer {
+            padding: 18px 20px;
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.6;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* ---------------- MAIN WRAPPER ---------------- */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* ---------------- TOPBAR ---------------- */
+        .topbar {
+            height: 70px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            gap: 15px;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            max-width: 550px;
+        }
+
+        .mobile-toggle-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        .mobile-toggle-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 14px;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .search-box i {
+            color: #94a3b8;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 13.5px;
+            color: var(--text-primary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* SINGLE NOTIFICATION BELL WITH BADGE & MODAL */
+        .notification-btn {
+            position: relative;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            color: #475569;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .user-profile:hover {
+            background-color: #f8fafc;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        .user-info {
+            line-height: 1.25;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* ---------------- CONTENT AREA ---------------- */
+        .content-area {
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .page-header-flex {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .page-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dropdown-btn, .btn-secondary, .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-btn, .btn-secondary {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .dropdown-btn:hover, .btn-secondary:hover {
+            background-color: #f8fafc;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* METRICS STATS CARDS GRID */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+
+        .metric-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .metric-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .metric-icon.blue   { background-color: #eff6ff; color: #2563eb; }
+        .metric-icon.green  { background-color: #f0fdf4; color: #16a34a; }
+        .metric-icon.red    { background-color: #fef2f2; color: #dc2626; }
+        .metric-icon.purple { background-color: #f3e8ff; color: #9333ea; }
+
+        .metric-data .label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: capitalize;
+        }
+
+        .metric-data .value {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 2px 0;
+        }
+
+        .metric-data .subtext {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* MAIN DYNAMIC CONTENT SECTION LAYOUT */
+        .fee-cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px 360px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* IF SCHOLARSHIP IS HIDDEN, ADJUST GRID AUTOMATICALLY */
+        .fee-cards-grid.no-scholarship {
+            grid-template-columns: 1fr 340px;
+        }
+
+        .card-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        /* TABLES */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .data-table th {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+            background-color: #f8fafc;
+        }
+
+        .data-table td {
+            padding: 12px;
+            font-size: 12.5px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .data-table tr.total-row td {
+            font-weight: 800;
+            font-size: 13.5px;
+            border-top: 2px solid var(--border-color);
+            border-bottom: none;
+            background-color: #ffffff;
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-status.unpaid { background-color: var(--red-badge-bg); color: var(--red-text); }
+        .badge-status.paid   { background-color: var(--green-badge-bg); color: var(--green-badge-text); }
+
+        /* PAYMENT OVERVIEW DONUT CHART CARD */
+        .donut-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 10px auto 20px;
+        }
+
+        .donut-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .donut-center-text h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .donut-center-text span {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .chart-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .legend-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .btn-pay-full {
+            width: 100%;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-pay-full:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-pay-full span {
+            font-size: 11px;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        /* SCHOLARSHIP CARD STYLES */
+        .scholarship-card {
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .scholarship-banner {
+            background-color: #f0fdf4;
+            border: 1px dashed #86efac;
+            border-radius: 8px;
+            padding: 14px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .scholarship-banner h4 {
+            color: #16a34a;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .scholarship-banner p {
+            font-size: 11.5px;
+            color: #475569;
+            margin-top: 3px;
+        }
+
+        .scholarship-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 12.5px;
+            margin-bottom: 16px;
+        }
+
+        .scholarship-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .scholarship-item .label {
+            color: var(--text-secondary);
+        }
+
+        .scholarship-item .val {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .scholarship-item.final .val {
+            color: #16a34a;
+            font-size: 15px;
+        }
+
+        /* BOTTOM 2 COLUMNS LAYOUT */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* IMPORTANT INFORMATION WARNING BOX */
+        .info-callout-box {
+            background-color: var(--amber-bg);
+            border: 1px solid var(--amber-border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .info-callout-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--amber-text);
+            font-weight: 700;
+            font-size: 14.5px;
+            margin-bottom: 14px;
+        }
+
+        .info-grid-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px 20px;
+            list-style: none;
+        }
+
+        .info-grid-list li {
+            font-size: 12px;
+            color: #78350f;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.4;
+        }
+
+        .info-grid-list li::before {
+            content: "•";
+            color: var(--amber-text);
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 12px;
+        }
+
+        /* QUICK ACTION DYNAMIC ADDER */
+        .add-action-wrapper {
+            margin-top: 14px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .add-action-wrapper input {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .add-action-wrapper button {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* NOTIFICATION POPUP MODAL */
+        .notification-modal {
+            display: none;
+            position: absolute;
+            top: 65px;
+            right: 28px;
+            width: 320px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 10000;
+            padding: 16px;
+        }
+
+        .notification-modal.show {
+            display: block;
+        }
+
+        .notification-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .notification-modal-header h4 {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            font-size: 12px;
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-blue);
+        }
+
+        /* PRINT STYLINGS */
+        @media print {
+            .sidebar, .topbar, .page-header-actions, .btn-pay-full, .add-action-wrapper {
+                display: none !important;
+            }
+            .main-wrapper {
+                margin-left: 0 !important;
+            }
+            body {
+                background: white;
+            }
+        }
+
+        /* ---------------- RESPONSIVE MEDIA QUERIES ---------------- */
+        @media (max-width: 1280px) {
+            .fee-cards-grid {
+                grid-template-columns: 1fr;
+            }
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+            .metrics-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 868px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .main-wrapper {
+                margin-left: 0;
+            }
+            .mobile-toggle-btn {
+                display: flex;
+            }
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .topbar {
+                padding: 0 16px;
+            }
+            .user-info {
+                display: none;
+            }
+            .content-area {
+                padding: 16px;
+            }
+            .info-grid-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .page-header-flex {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .page-header-actions {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            .dropdown-btn, .btn-secondary, .btn-primary {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+    <div id="portalContainer">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <!-- LOGO AREA WITH EXACT RELATIVE PATH & FALLBACK CSS -->
+                <div class="sidebar-header">
+                    <img src="../login_page/uoh-logo.png" alt="The University of Haripur" class="uoh-logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/44?text=UOH'">
+                    <div class="logo-text">
+                        <h2>The University of Haripur</h2>
+                        <p>Intelligent Ecosystem (IES)</p>
+                    </div>
+                </div>
+
+                <!-- NAVIGATION ITEMS -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Student Portal</div>
+                    <a href="stu_dashboard.html" class="nav-item">
+                        <i data-lucide="home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="my-courses.html" class="nav-item">
+                        <i data-lucide="book-open"></i>
+                        <span>My Courses</span>
+                    </a>
+                    <a href="attendance.html" class="nav-item">
+                        <i data-lucide="user-check"></i>
+                        <span>Attendance</span>
+                    </a>
+                    <a href="assignments.html" class="nav-item">
+                        <i data-lucide="file-text"></i>
+                        <span>Assignments</span>
+                    </a>
+                    <a href="exams.html" class="nav-item">
+                        <i data-lucide="edit-3"></i>
+                        <span>Exams</span>
+                    </a>
+                    <a href="results.html" class="nav-item">
+                        <i data-lucide="bar-chart-2"></i>
+                        <span>Results & CGPA</span>
+                    </a>
+                    <!-- STAYS ON THIS PAGE WHEN CLICKED -->
+                    <a href="fees.html" class="nav-item active" onclick="event.preventDefault();">
+                        <i data-lucide="credit-card"></i>
+                        <span>Fees</span>
+                    </a>
+                    <a href="library.html" class="nav-item">
+                        <i data-lucide="book"></i>
+                        <span>Library</span>
+                    </a>
+                    <a href="timetable.html" class="nav-item">
+                        <i data-lucide="calendar"></i>
+                        <span>Timetable</span>
+                    </a>
+                    
+                    <a href="profile.html" class="nav-item">
+                        <i data-lucide="user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="settings.html" class="nav-item">
+                        <i data-lucide="settings"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="support.html" class="nav-item">
+                        <i data-lucide="help-circle"></i>
+                        <span>Support</span>
+                    </a>
+                    <a href="../landing_page/index.html" class="nav-item">
+                        <i data-lucide="log-out"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <p>© 2024 University of Haripur</p>
+                <p>All rights reserved.</p>
+                <p style="margin-top: 4px; color: #475569;">IES v1.0</p>
+            </div>
+        </aside>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+            
+            <!-- TOPBAR -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <!-- 3 DOTS MOBILE SIDEBAR TOGGLE BUTTON -->
+                    <button class="mobile-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle Navigation">
+                        <i data-lucide="more-vertical"></i>
+                    </button>
+
+                    <!-- RESPONSIVE SEARCH BOX (VISIBLE ON MOBILE & DESKTOP) -->
+                    <div class="search-box">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="feeSearchInput" placeholder="Search courses, subjects, notices..." onkeyup="handleGlobalSearch(this.value)">
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <!-- SINGLE RESPONSIVE NOTIFICATION BELL -->
+                    
+
+                    <!-- NOTIFICATION POPUP MODAL -->
+                    <div class="notification-modal" id="notificationModal">
+                        <div class="notification-modal-header">
+                            <h4>Notifications</h4>
+                            <span style="font-size: 11px; color: var(--primary-blue); cursor: pointer;" onclick="markNotificationsRead()">Mark all read</span>
+                        </div>
+                        <div class="notification-list" id="notificationList">
+                            <div class="notification-item">Spring 2025 Challan generated!</div>
+                            <div class="notification-item">Merit Scholarship applied to Spring 2025.</div>
+                            <div class="notification-item">Fall 2024 Fee receipt processed successfully.</div>
+                        </div>
+                    </div>
+
+                    <!-- USER PROFILE -->
+                    <div class="user-profile">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student Profile" class="user-avatar" id="topbarUserAvatar">
+                        <div class="user-info">
+                            <div class="user-name" id="topbarUserName">Loading...</div>
+                            <div class="user-role" id="topbarUserRole">BS Computer Science</div>
+                        </div>
+                        <i data-lucide="chevron-down" style="width: 16px; height: 16px; color: #64748b;"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- CONTENT AREA -->
+            <main class="content-area">
+
+                <!-- PAGE HEADER & ACTIONS -->
+                <div class="page-header-flex">
+                    <div class="page-header">
+                        <h1>Fees</h1>
+                        <p>View your fee details, payment status and scholarship information.</p>
+                    </div>
+
+                    <div class="page-header-actions">
+                        <button class="dropdown-btn" onclick="alert('Semester filter options')">
+                            <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
+                            <span id="selectedSemesterLabel">Spring 2025</span>
+                            <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i>
+                        </button>
+
+                        <button class="btn-secondary" onclick="downloadChallan()">
+                            <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                            <span>Download Fee Challan</span>
+                        </button>
+
+                        <button class="btn-secondary" onclick="viewPaymentHistory()">
+                            <i data-lucide="history" style="width: 16px; height: 16px;"></i>
+                            <span>Payment History</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- METRICS GRID CARDS -->
+                <section class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon blue">
+                            <i data-lucide="wallet"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Total Semester Fee</div>
+                            <div class="value" id="valTotalFee">PKR 63,500</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon green">
+                            <i data-lucide="check-circle-2"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Paid Amount</div>
+                            <div class="value" style="color: #16a34a;" id="valPaidAmount">PKR 0</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon red">
+                            <i data-lucide="receipt"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Outstanding Amount</div>
+                            <div class="value" style="color: #dc2626;" id="valOutstandingAmount">PKR 63,500</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon purple">
+                            <i data-lucide="calendar"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Due Date</div>
+                            <div class="value" style="font-size: 16px;" id="valDueDate">31 May 2025</div>
+                            <div class="subtext" id="valDueSemester">Spring 2025</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon blue">
+                            <i data-lucide="shield-check"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Fee Status</div>
+                            <div class="value" style="color: #dc2626;" id="valFeeStatus">Unpaid</div>
+                            <div class="subtext">Clear dues before due date</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MIDDLE DYNAMIC 3-COLUMN / 2-COLUMN GRID SECTION -->
+                <div class="fee-cards-grid" id="mainFeeCardsGrid">
+
+                    <!-- 1. FEE BREAKDOWN CARD -->
+                    <div class="card-box">
+                        <div class="card-title" id="feeBreakdownTitle">Fee Breakdown - Spring 2025</div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Fee Head</th>
+                                        <th style="text-align: right;">Amount (PKR)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="feeBreakdownBody">
+                                    <!-- Dynamic Rows Rendered by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 2. PAYMENT OVERVIEW DONUT CHART CARD -->
+                    <div class="card-box">
+                        <div class="card-title">Payment Overview</div>
+                        
+                        <div class="donut-container">
+                            <canvas id="paymentDonutChart"></canvas>
+                            <div class="donut-center-text">
+                                <h2 id="donutCenterPct">0%</h2>
+                                <span>Paid</span>
+                            </div>
+                        </div>
+
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-label">
+                                    <span class="legend-dot" style="background-color: #16a34a;"></span>
+                                    <span>Paid</span>
+                                </div>
+                                <strong id="legendPaidText">PKR 0 (0%)</strong>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-label">
+                                    <span class="legend-dot" style="background-color: #ef4444;"></span>
+                                    <span>Outstanding</span>
+                                </div>
+                                <strong id="legendOutstandingText">PKR 63,500 (100%)</strong>
+                            </div>
+                        </div>
+
+                        <button class="btn-pay-full" onclick="initiatePayment()">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i data-lucide="credit-card" style="width: 18px; height: 18px;"></i>
+                                <span>Pay Full Fee</span>
+                            </div>
+                            <span>Pay full fee before the due date</span>
+                        </button>
+                    </div>
+
+                    <!-- 3. SCHOLARSHIP STATUS CARD (DYNAMICALLY HIDDEN IF NOT A SCHOLARSHIP HOLDER) -->
+                    <div class="card-box scholarship-card" id="scholarshipCard">
+                        <div class="card-title" style="display: flex; align-items: center; gap: 8px;">
+                            <i data-lucide="graduation-cap" style="color: var(--primary-blue);"></i>
+                            <span>Scholarship Status</span>
+                        </div>
+
+                        <div class="scholarship-banner">
+                            <div>
+                                <h4 id="scholarshipStatusText">Approved</h4>
+                                <p id="scholarshipSubtext">Your scholarship has been approved for Spring 2025 semester.</p>
+                            </div>
+                            <i data-lucide="award" style="width: 28px; height: 28px; color: #16a34a;"></i>
+                        </div>
+
+                        <div class="scholarship-list">
+                            <div class="scholarship-item">
+                                <span class="label">Scholarship Type</span>
+                                <span class="val" id="scholarshipType">Merit Scholarship</span>
+                            </div>
+                            <div class="scholarship-item">
+                                <span class="label">Scholarship Amount</span>
+                                <span class="val" id="scholarshipAmount">PKR 10,000</span>
+                            </div>
+                            <div class="scholarship-item">
+                                <span class="label">Adjustment Applied</span>
+                                <span class="val" id="scholarshipAdjustment">PKR 10,000</span>
+                            </div>
+                            <div class="scholarship-item final" style="padding-top: 8px; border-top: 1px dashed var(--border-color);">
+                                <span class="label" style="font-weight: 700; color: var(--text-primary);">Final Payable Amount</span>
+                                <span class="val" id="scholarshipFinalPayable">PKR 53,500</span>
+                            </div>
+                            <div class="scholarship-item">
+                                <span class="label">Status</span>
+                                <span class="badge-status paid" id="scholarshipBadge">Active</span>
+                            </div>
+                        </div>
+
+                        <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 12px; display: flex; gap: 10px; font-size: 11.5px; color: #1e40af;">
+                            <i data-lucide="info" style="width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px;"></i>
+                            <span>Scholarship amount has been adjusted in your final payable amount.</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BOTTOM 2 COLUMNS LAYOUT -->
+                <div class="bottom-grid">
+
+                    <!-- FEE SUMMARY (ALL SEMESTERS) -->
+                    <div class="card-box">
+                        <div class="card-title">Fee Summary (All Semesters)</div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Semester</th>
+                                        <th>Total Fee (PKR)</th>
+                                        <th>Paid (PKR)</th>
+                                        <th>Outstanding (PKR)</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allSemestersSummaryBody">
+                                    <!-- Dynamic Data -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- PAYMENT HISTORY -->
+                    <div class="card-box">
+                        <div class="card-title" style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Payment History</span>
+                            <a href="#" style="font-size: 12px; color: var(--primary-blue); text-decoration: none; font-weight: 600;" onclick="event.preventDefault(); alert('Loading all history records...');">View All</a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                        <th>Amount (PKR)</th>
+                                        <th>Receipt No.</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentHistoryBody">
+                                    <!-- Dynamic Data -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- IMPORTANT INFORMATION CALLOUT BOX -->
+                <div class="info-callout-box">
+                    <div class="info-callout-title">
+                        <i data-lucide="alert-triangle" style="width: 20px; height: 20px;"></i>
+                        <span>Important Information</span>
+                    </div>
+
+                    <ul class="info-grid-list">
+                        <li>Full fee must be paid before the due date.</li>
+                        <li>No installment option is available.</li>
+                        <li>Late fee of PKR 500 per day will be charged after the due date.</li>
+                        <li>Scholarship disbursement is subject to university policy and performance.</li>
+                        <li>Please keep your fee receipt for future reference.</li>
+                        <li>Your registration may be blocked if dues are not cleared.</li>
+                    </ul>
+
+                    <!-- CUSTOM QUICK ACTION DYNAMIC ADDER -->
+                    <div class="add-action-wrapper">
+                        <input type="text" id="customActionInput" placeholder="Add custom action or note...">
+                        <button onclick="addCustomQuickAction()">Add Note</button>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT ENGINE & REALTIME BACKEND READY STATE DATA -->
+    <script>
+        // API Base URL
+        const API_BASE_URL = window.ACOS_CONFIG.API_BASE_URL;
+
+        // Initialize Lucide Icons
+        if (window.lucide) lucide.createIcons();
+
+        // ---------------- BACKEND DATA MODEL ----------------
+        let studentFeeState = {
+            student: {
+                name: "Loading...",
+                program: "BS Computer Science",
+                isScholarshipHolder: false
+            },
+            currentSemester: "Loading...",
+            totalFee: 0,
+            paidAmount: 0,
+            dueDate: "-",
+            feeStatus: "Pending",
+            
+            feeBreakdown: [],
+            scholarship: {
+                statusText: "None",
+                subtext: "",
+                type: "None",
+                amount: 0,
+                adjustmentApplied: 0,
+                statusBadge: "Inactive"
+            },
+            semesterSummary: [],
+            paymentHistory: [],
+            available_semesters: []
+        };
+
+        // SIDEBAR TOGGLE FOR MOBILE (3 DOTS BUTTON)
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+
+        sidebarToggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('mobile-open');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 868) {
+                if (!sidebar.contains(e.target) && !sidebarToggleBtn.contains(e.target)) {
+                    sidebar.classList.remove('mobile-open');
+                }
+            }
+        });
+
+        // ---------------- DYNAMIC RENDER FUNCTIONS ----------------
+        function renderFeePortal() {
+            const data = studentFeeState;
+
+            // Update topbar student info
+            if (data.student) {
+                const nameEl = document.getElementById('topbarUserName');
+                const roleEl = document.getElementById('topbarUserRole');
+                const avatarEl = document.getElementById('topbarUserAvatar');
+                if (nameEl && data.student.name && data.student.name !== "Loading...") {
+                    nameEl.innerText = data.student.name;
+                }
+                if (roleEl && data.student.program) {
+                    roleEl.innerText = `${data.student.program} (Semester ${data.student.semester || 1})`;
+                }
+                if (avatarEl && data.student.profile_photo) {
+                    avatarEl.src = data.student.profile_photo;
+                }
+            }
+
+            // Header semester label & Fee Breakdown card title
+            const semLabelEl = document.getElementById('selectedSemesterLabel');
+            if (semLabelEl && data.currentSemester) {
+                semLabelEl.innerText = data.currentSemester;
+            }
+            const breakdownTitleEl = document.getElementById('feeBreakdownTitle');
+            if (breakdownTitleEl && data.currentSemester) {
+                breakdownTitleEl.innerText = `Fee Breakdown - ${data.currentSemester}`;
+            }
+
+            // 1. Metric Cards Updates
+            const outstanding = data.totalFee - data.paidAmount;
+            document.getElementById('valTotalFee').innerText = `PKR ${data.totalFee.toLocaleString()}`;
+            document.getElementById('valPaidAmount').innerText = `PKR ${data.paidAmount.toLocaleString()}`;
+            document.getElementById('valOutstandingAmount').innerText = `PKR ${outstanding.toLocaleString()}`;
+            document.getElementById('valDueDate').innerText = data.dueDate;
+            document.getElementById('valDueSemester').innerText = data.currentSemester;
+            
+            const feeStatusEl = document.getElementById('valFeeStatus');
+            feeStatusEl.innerText = data.feeStatus;
+            if (data.feeStatus.toLowerCase() === 'paid') {
+                feeStatusEl.style.color = '#16a34a';
+            } else {
+                feeStatusEl.style.color = '#dc2626';
+            }
+
+            // 2. Scholarship Card Dynamic Conditional Display Requirement
+            const scholarshipCard = document.getElementById('scholarshipCard');
+            const mainGrid = document.getElementById('mainFeeCardsGrid');
+
+            if (data.student.isScholarshipHolder) {
+                scholarshipCard.style.display = 'block';
+                mainGrid.classList.remove('no-scholarship');
+
+                // Render scholarship details
+                document.getElementById('scholarshipStatusText').innerText = data.scholarship.statusText;
+                document.getElementById('scholarshipSubtext').innerText = data.scholarship.subtext;
+                document.getElementById('scholarshipType').innerText = data.scholarship.type;
+                document.getElementById('scholarshipAmount').innerText = `PKR ${data.scholarship.amount.toLocaleString()}`;
+                document.getElementById('scholarshipAdjustment').innerText = `PKR ${data.scholarship.adjustmentApplied.toLocaleString()}`;
+                
+                const finalPayable = outstanding - data.scholarship.adjustmentApplied;
+                document.getElementById('scholarshipFinalPayable').innerText = `PKR ${Math.max(0, finalPayable).toLocaleString()}`;
+                document.getElementById('scholarshipBadge').innerText = data.scholarship.statusBadge;
+            } else {
+                // HIDE SCHOLARSHIP CARD COMPLETELY FOR NON-SCHOLARSHIP HOLDERS
+                scholarshipCard.style.display = 'none';
+                mainGrid.classList.add('no-scholarship');
+            }
+
+            // 3. Fee Breakdown Table
+            const feeBody = document.getElementById('feeBreakdownBody');
+            feeBody.innerHTML = '';
+            let sumTotal = 0;
+
+            if (data.feeBreakdown && data.feeBreakdown.length > 0) {
+                data.feeBreakdown.forEach((item, index) => {
+                    sumTotal += item.amount;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td style="font-weight: 600;">${item.head}</td>
+                        <td style="text-align: right; font-weight: 600;">${item.amount.toLocaleString()}</td>
+                    `;
+                    feeBody.appendChild(tr);
+                });
+            } else {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="3" style="text-align: center; color: var(--text-secondary); padding: 16px;">No fee breakdown available</td>`;
+                feeBody.appendChild(tr);
+            }
+
+            // Total Row
+            const totalTr = document.createElement('tr');
+            totalTr.className = 'total-row';
+            totalTr.innerHTML = `
+                <td colspan="2">Total</td>
+                <td style="text-align: right;">${sumTotal.toLocaleString()}</td>
+            `;
+            feeBody.appendChild(totalTr);
+
+            // 4. All Semesters Fee Summary Table
+            const summaryBody = document.getElementById('allSemestersSummaryBody');
+            summaryBody.innerHTML = '';
+            if (data.semesterSummary && data.semesterSummary.length > 0) {
+                data.semesterSummary.forEach(row => {
+                    const tr = document.createElement('tr');
+                    const badgeClass = row.status.toLowerCase() === 'paid' ? 'paid' : 'unpaid';
+                    tr.innerHTML = `
+                        <td style="font-weight: 600;">${row.semester}</td>
+                        <td>${row.total.toLocaleString()}</td>
+                        <td>${row.paid.toLocaleString()}</td>
+                        <td>${row.outstanding.toLocaleString()}</td>
+                        <td><span class="badge-status ${badgeClass}">${row.status}</span></td>
+                    `;
+                    summaryBody.appendChild(tr);
+                });
+            } else {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 16px;">No semester records found</td>`;
+                summaryBody.appendChild(tr);
+            }
+
+            // 5. Payment History Table
+            const historyBody = document.getElementById('paymentHistoryBody');
+            historyBody.innerHTML = '';
+            if (data.paymentHistory && data.paymentHistory.length > 0) {
+                data.paymentHistory.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item.date}</td>
+                        <td style="font-weight: 600;">${item.desc}</td>
+                        <td>${item.amount}</td>
+                        <td style="color: var(--primary-blue); font-weight: 600;">${item.receipt}</td>
+                        <td><span class="badge-status paid">${item.status}</span></td>
+                    `;
+                    historyBody.appendChild(tr);
+                });
+            } else {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 16px;">No payment records found</td>`;
+                historyBody.appendChild(tr);
+            }
+
+            // 6. Update Donut Chart
+            renderDonutChart(data.paidAmount, outstanding, data.totalFee);
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // ---------------- DONUT CHART INITIALIZATION ----------------
+        let donutChartInstance = null;
+
+        function renderDonutChart(paid, outstanding, total) {
+            const ctx = document.getElementById('paymentDonutChart').getContext('2d');
+            const safeTotal = total > 0 ? total : 1;
+            const paidPct = total > 0 ? Math.round((paid / safeTotal) * 100) : 0;
+            const outPct = 100 - paidPct;
+
+            document.getElementById('donutCenterPct').innerText = `${paidPct}%`;
+            document.getElementById('legendPaidText').innerText = `PKR ${paid.toLocaleString()} (${paidPct}%)`;
+            document.getElementById('legendOutstandingText').innerText = `PKR ${outstanding.toLocaleString()} (${outPct}%)`;
+
+            if (!window.Chart) return;
+
+            if (donutChartInstance) {
+                donutChartInstance.destroy();
+            }
+
+            donutChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Paid', 'Outstanding'],
+                    datasets: [{
+                        data: [paid, Math.max(0, outstanding)],
+                        backgroundColor: ['#16a34a', '#ef4444'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    cutout: '78%',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    }
+                }
+            });
+        }
+
+        // ---------------- FETCH REAL DATA FROM BACKEND ----------------
+        async function loadStudentFeeData(targetSemester = null) {
+            let token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
+
+            if (!token) {
+                window.location.href = "../login_page/student-login.html";
+                return;
+            }
+
+            try {
+                let url = `${API_BASE_URL}/student/fees`;
+                if (targetSemester !== null) {
+                    url += `?semester=${targetSemester}`;
+                }
+
+                const resp = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!resp.ok) {
+                    if (resp.status === 401 || resp.status === 403) {
+                        localStorage.removeItem("access_token");
+                        sessionStorage.removeItem("access_token");
+                        window.location.href = "../login_page/student-login.html";
+                        return;
+                    }
+                    throw new Error(`HTTP error: ${resp.status}`);
+                }
+
+                const data = await resp.json();
+                studentFeeState = data;
+                renderFeePortal();
+            } catch (error) {
+                console.error("Failed to load student fee data:", error);
+            }
+        }
+
+        // INITIAL LOAD
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStudentFeeData();
+        });
+
+        // ---------------- ACTION HANDLERS ----------------
+        function toggleNotifications() {
+            document.getElementById('notificationModal').classList.toggle('show');
+        }
+
+        function markNotificationsRead() {
+            document.getElementById('notifBadge').style.display = 'none';
+            document.getElementById('notificationModal').classList.remove('show');
+            alert('All notifications marked as read!');
+        }
+
+        function downloadChallan() {
+            const studentName = (studentFeeState.student && studentFeeState.student.name) || "Student";
+            const sem = studentFeeState.currentSemester || "Current Semester";
+            alert(`Downloading Official Fee Challan (PDF)...\nStudent: ${studentName}\nSemester: ${sem}`);
+            window.print();
+        }
+
+        function viewPaymentHistory() {
+            alert("Opening detailed payment ledger and digital receipt history.");
+        }
+
+        function initiatePayment() {
+            alert("Redirecting to Secure Bank Payment Gateway (1Link / HBL / Easypaisa)...");
+        }
+
+        function handleGlobalSearch(query) {
+            console.log("Searching for:", query);
+        }
+
+        function addCustomQuickAction() {
+            const input = document.getElementById('customActionInput');
+            const val = input.value.trim();
+            if (val) {
+                alert(`Added custom note to fee portal: "${val}"`);
+                input.value = '';
+            }
+        }
+
+        // Logout Handler
+        function handleLogout(e) {
+            if (e) e.preventDefault();
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("token_type");
+            localStorage.removeItem("student_profile");
+            sessionStorage.removeItem("access_token");
+            window.location.href = "../login_page/student-login.html";
+        }
+
+        document.querySelectorAll('a[href="logout.html"]').forEach(link => {
+            link.href = "#";
+            link.addEventListener('click', handleLogout);
+        });
+    </script>
+<!-- Student Topbar Hydration -->
+<script src="../shared/student-topbar.js"></script>
+<script src="fee-assistant.js"></script>
+</body>
+</html>

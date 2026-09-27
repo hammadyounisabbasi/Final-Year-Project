@@ -11,6 +11,8 @@ env/
 
 # Environment Variables
 .env
+.env.*
+!.env.example
 
 # VS Code
 .vscode/
@@ -18,6 +20,9 @@ env/
 # SQLite
 *.db
 *.sqlite3
+*.db-shm
+*.db-wal
+database/backups/
 
 # FAISS
 *.faiss
@@ -26,6 +31,7 @@ env/
 # Logs
 logs/
 *.log
+*.out
 
 # OS Files
 .DS_Store
@@ -37,17 +43,42 @@ Thumbs.db
 # Build
 dist/
 build/
+.vercel/
 
 # Node
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Coverage
 .coverage
 htmlcov/
+.coverage.*
+coverage.xml
 
 # Temporary Files
 *.tmp
 *.bak
+tmp/
+temp/
+tree.txt
+out.json
+
+# Runtime uploads and generated indexes
+backend/backend/uploads/
+backend/backend/vectorstore/faiss_index/
 backend/vectorstore/faiss_index/
 *.faiss
 *.pkl
+
+# Local editor and audit artifacts
+.idea/
+.agents/
+.codex/
+audit-context/
+
+# Python tooling
+.mypy_cache/
+.ruff_cache/
+.tox/

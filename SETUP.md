@@ -1,434 +1,109 @@
 # Setup Guide
 
-## Project
-**Autonomous Campus Operating System (ACOS)**
+## Requirements
 
-**Version:** 1.0
+- Python 3.12+
+- Git
+- A modern browser
+- Ollama only if you want the optional local AI provider
 
-**Document Type:** Environment Setup & Installation Guide
+## Local installation
 
----
-
-# 1. Introduction
-
-This document explains how to set up the development environment for the Autonomous Campus Operating System (ACOS). It covers the installation of required software, project dependencies, database initialization, AI model setup, and steps to run the application.
-
-The project is designed to use a local development environment based on Python, FastAPI, SQLite, LangGraph, FAISS, and Ollama.
-
----
-
-# 2. System Requirements
-
-## Hardware Requirements
-
-| Component | Minimum Requirement |
-|-----------|---------------------|
-| Processor | Intel Core i5 (8th Generation or newer) |
-| RAM | 8 GB (16 GB Recommended) |
-| Storage | 20 GB Free Space |
-| Internet | Required for initial setup |
-
----
-
-## Operating System
-
-Supported operating systems:
-
-- Windows 10 / 11
-- Ubuntu 22.04+
-- macOS 13+
-
----
-
-# 3. Required Software
-
-Install the following software before running the project.
-
-| Software | Purpose |
-|----------|---------|
-| Git | Version Control |
-| Python 3.12+ | Backend Development |
-| Visual Studio Code | Code Editor |
-| SQLite | Database |
-| Ollama | Local LLM Runtime |
-
----
-
-# 4. Clone the Repository
-
-Clone the project from GitHub.
+From the repository root:
 
 ```bash
-git clone https://github.com/your-username/autonomous-campus-operating-system.git
-
-cd autonomous-campus-operating-system
+python -m venv venv
 ```
 
-Replace the repository URL with your own GitHub repository.
+Activate the environment:
 
----
-
-# 5. Create Virtual Environment
-
-Windows
+```powershell
+# Windows PowerShell
+.\venv\Scripts\Activate.ps1
+```
 
 ```bash
-python -m venv .venv
+# Linux or macOS
+source venv/bin/activate
 ```
 
-Activate
+Install runtime dependencies:
 
 ```bash
-.venv\Scripts\activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 ```
 
-Linux/macOS
+For tests and browser automation, install the development manifest instead:
 
 ```bash
-python3 -m venv .venv
-
-source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+python -m playwright install chromium
 ```
 
----
+## Environment configuration
 
-# 6. Install Dependencies
+Copy the tracked template to an ignored local file:
 
-Install Python packages.
+```powershell
+Copy-Item .env.example .env
+```
 
 ```bash
-pip install -r requirements.txt
+cp .env.example .env
 ```
 
-Verify installation
+Replace `SECRET_KEY` with a random secret. AI keys are optional because deterministic database-grounded fallbacks remain available. Never commit `.env`.
 
-```bash
-pip list
-```
+## Database
 
----
-
-# 7. Install Ollama
-
-Download and install Ollama from:
-
-https://ollama.com/download
-
-Verify installation.
-
-```bash
-ollama --version
-```
-
----
-
-# 8. Download AI Model
-
-Example:
-
-```bash
-ollama pull llama3.1:8b
-```
-
-Verify available models.
-
-```bash
-ollama list
-```
-
----
-
-# 9. Configure Environment Variables
-
-Create a file named:
-
-```
-.env
-```
-
-Example configuration:
-
-```env
-DATABASE_URL=database/campus.db
-
-OLLAMA_MODEL=llama3.1:8b
-
-FAISS_INDEX_PATH=backend/vectorstore/faiss_index
-
-SECRET_KEY=your-secret-key
-
-DEBUG=True
-```
-
-Never commit the `.env` file to GitHub.
-
----
-
-# 10. Database Initialization
-
-SQLite will be used as the relational database.
-
-Create the database.
+The SQLite database is generated and intentionally excluded from Git:
 
 ```bash
 python scripts/setup_database.py
 ```
 
-The script will:
-
-- Create the SQLite database
-- Create all tables
-- Apply schema
-- Prepare the project for development
-
-Database location:
-
-```
-database/campus.db
-```
-
----
-
-# 11. FAISS Initialization
-
-Initialize the vector database.
+The command refuses to overwrite an existing database. To deliberately rebuild it:
 
 ```bash
-python scripts/initialize_faiss.py
+python scripts/setup_database.py --force
 ```
 
-This process will:
+Use `--without-seed` for an empty schema. The default development database is `database/university.db`.
 
-- Create the FAISS index
-- Prepare vector storage
-- Initialize semantic search
+## Run the application
 
-Output directory:
-
-```
-backend/vectorstore/faiss_index/
-```
-
----
-
-# 12. Download Embeddings
-
-If required, download the embedding model.
-
-Example:
-
-```python
-sentence-transformers/all-MiniLM-L6-v2
-```
-
-This model converts documents into embeddings for semantic search.
-
----
-
-# 13. Run FastAPI
-
-Start the backend server.
+Start FastAPI from the repository root:
 
 ```bash
-uvicorn backend.app.main:app --reload
+uvicorn app.main:app --app-dir backend/backend --reload --host 127.0.0.1 --port 8000
 ```
 
-Default URL
+In a second terminal, serve the frontend:
 
+```bash
+python -m http.server 3000 --directory frontend
 ```
-http://127.0.0.1:8000
-```
-
-API documentation
-
-```
-http://127.0.0.1:8000/docs
-```
-
-Interactive ReDoc
-
-```
-http://127.0.0.1:8000/redoc
-```
-
----
-
-# 14. Run Frontend
 
 Open:
 
-```
-frontend/index.html
-```
+- Landing page: `http://127.0.0.1:3000/landing_page/index.html`
+- Student login: `http://127.0.0.1:3000/login_page/student-login.html`
+- API health: `http://127.0.0.1:8000/health`
+- Swagger UI: `http://127.0.0.1:8000/docs`
 
-or run a local web server.
+The shared browser configuration in `frontend/shared/config.js` automatically uses the local API while developing.
+Development CORS accepts `localhost` and `127.0.0.1` on any port, including common Live Server ports such as `5500`. Production accepts only the explicit `CORS_ORIGINS` list.
 
-Example:
-
-```bash
-python -m http.server
-```
-
----
-
-# 15. Verify Installation
-
-The setup is successful if:
-
-- Python is installed
-- Git is installed
-- Ollama is running
-- SQLite database is created
-- FAISS index is initialized
-- FastAPI starts successfully
-- API documentation is accessible
-- Frontend loads correctly
-
----
-
-# 16. Project Structure
-
-```
-frontend/
-
-backend/
-
-ai/
-
-database/
-
-scripts/
-
-tests/
-
-docs/
-```
-
----
-
-# 17. Troubleshooting
-
-## Python Not Found
-
-Verify installation.
+## Verification
 
 ```bash
-python --version
+python -m compileall -q backend/backend/app scripts tests
+python -m pytest tests/unit -q
 ```
 
----
+API and browser suites may create or modify test records, so run them against a disposable database. See `tests/README.md` for the focused commands.
 
-## Virtual Environment Not Activated
+## Production
 
-Windows
-
-```bash
-.venv\Scripts\activate
-```
-
----
-
-## Ollama Not Running
-
-Start Ollama.
-
-```bash
-ollama serve
-```
-
----
-
-## Missing Python Packages
-
-Install dependencies again.
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Database Missing
-
-Run:
-
-```bash
-python scripts/setup_database.py
-```
-
----
-
-## FAISS Index Missing
-
-Run:
-
-```bash
-python scripts/initialize_faiss.py
-```
-
----
-
-# 18. Development Workflow
-
-```
-Clone Repository
-
-↓
-
-Create Virtual Environment
-
-↓
-
-Install Dependencies
-
-↓
-
-Configure Environment Variables
-
-↓
-
-Install Ollama
-
-↓
-
-Download AI Model
-
-↓
-
-Initialize Database
-
-↓
-
-Initialize FAISS
-
-↓
-
-Run FastAPI
-
-↓
-
-Open Frontend
-
-↓
-
-Start Development
-```
-
----
-
-# 19. Future Setup
-
-Later development phases will include:
-
-- PostgreSQL support
-- Docker deployment
-- CI/CD pipelines
-- Automated database migrations
-- Cloud deployment
-- Production configuration
-
----
-
-# 20. Conclusion
-
-This setup guide provides a standardized process for preparing the development environment for the Autonomous Campus Operating System. Following these steps ensures that all developers use a consistent configuration, simplifying collaboration and reducing environment-related issues during development.
+Production requires HTTPS, a strong `SECRET_KEY`, explicit `CORS_ORIGINS`, and persistent storage for both SQLite and uploads. See [DEPLOYMENT.md](DEPLOYMENT.md) before publishing the repository or creating a Vercel preview.

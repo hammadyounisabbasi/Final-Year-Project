@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Intelligent Ecosystem (IES)</title>
+    <!-- Fonts & FontAwesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --sidebar-bg: #090e1a;
+            --sidebar-hover: #121929;
+            --sidebar-active: #2563eb;
+            --sidebar-text: #94a3b8;
+            --main-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --primary-blue: #2563eb;
+            --accent-purple: #8b5cf6;
+            --success-green: #10b981;
+            --warning-amber: #f59e0b;
+            --danger-red: #ef4444;
+            --font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background-color: var(--main-bg);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR STYLING --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* Custom Logo Styling */
+        .uoh-logo-img {
+            height: 42px;
+            width: auto;
+            max-width: 45px;
+            object-fit: contain;
+        }
+
+        .sidebar-header-text h3 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .sidebar-header-text p {
+            font-size: 0.72rem;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #475569;
+            padding: 18px 20px 8px;
+            font-weight: 700;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 12px;
+        }
+
+        .sidebar-menu-item {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            gap: 12px;
+        }
+
+        .sidebar-link i {
+            font-size: 1.05rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-link:hover {
+            background-color: var(--sidebar-hover);
+            color: #ffffff;
+        }
+
+        .sidebar-link.active {
+            background-color: var(--sidebar-active);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .badge-new {
+            background-color: #6366f1;
+            color: #fff;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 16px 20px;
+            font-size: 0.72rem;
+            color: #475569;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- MAIN CONTENT AREA --- */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* --- TOPBAR STYLING --- */
+        .topbar {
+            height: 70px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mobile-toggle-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        .mobile-toggle-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .welcome-text h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .welcome-text p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 320px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 16px 9px 38px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: #f8fafc;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-blue);
+            background-color: #fff;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Topbar Icons */
+        .icon-btn {
+            position: relative;
+            background: #f1f5f9;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: #e2e8f0;
+            color: var(--text-primary);
+        }
+
+        .icon-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: var(--danger-red);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-info {
+            line-height: 1.2;
+        }
+
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .user-role {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+
+        /* Notification Dropdown Panel */
+        .notification-panel {
+            position: absolute;
+            top: 60px;
+            right: 80px;
+            width: 320px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 1050;
+            overflow: hidden;
+        }
+
+        .notification-panel.show {
+            display: block;
+        }
+
+        .notification-header {
+            padding: 14px 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background: #f8fafc;
+        }
+
+        /* --- DASHBOARD GRID CONTAINER --- */
+        .dashboard-content {
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .metric-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .metric-info h4 {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .metric-info .value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 2px 0;
+        }
+
+        .metric-info .subtext {
+            font-size: 0.68rem;
+            font-weight: 600;
+        }
+
+        /* Layout Columns */
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .card-link {
+            font-size: 0.75rem;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Tables & Lists */
+        .schedule-list, .task-list, .announcement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 0.82rem;
+        }
+
+        .pill {
+            font-size: 0.68rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .pill-blue { background: #dbeafe; color: #1d4ed8; }
+        .pill-orange { background: #ffedd5; color: #c2410c; }
+        .pill-green { background: #dcfce7; color: #15803d; }
+
+        /* Performance Overview Donut */
+        .chart-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: space-around;
+        }
+
+        .donut-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #10b981 0% 33%, 
+                #3b82f6 33% 66%, 
+                #f59e0b 66% 83%, 
+                #ef4444 83% 100%
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .donut-inner {
+            width: 80px;
+            height: 80px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* AI Academic Insights (Highlighted Card) */
+        .ai-insights-card {
+            background: linear-gradient(135deg, #f5f3ff 0%, #eff6ff 100%);
+            border: 1px solid #c7d2fe;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .ai-insights-card.highlight-pulse {
+            border: 2px solid #6366f1;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            transform: scale(1.01);
+        }
+
+        /* Quick Access Icons */
+        .quick-access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 12px;
+        }
+
+        .quick-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 8px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            gap: 8px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .quick-btn:hover {
+            background: #eff6ff;
+            border-color: var(--primary-blue);
+        }
+
+        .quick-btn i {
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+        }
+
+        /* AI Chat Drawer Modal */
+        .ai-modal {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 380px;
+            height: 500px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 1px solid var(--border-color);
+            display: none;
+            flex-direction: column;
+            z-index: 1100;
+            overflow: hidden;
+        }
+
+        .ai-modal.active {
+            display: flex;
+        }
+
+        .ai-modal-header {
+            background: #0f172a;
+            color: #fff;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-modal-body {
+            flex: 1;
+            padding: 14px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #f8fafc;
+        }
+
+        .ai-msg {
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            max-width: 85%;
+            line-height: 1.4;
+        }
+
+        .ai-msg.system {
+            background: #e0e7ff;
+            color: #3730a3;
+            align-self: flex-start;
+        }
+
+        .ai-msg.user {
+            background: var(--primary-blue);
+            color: #ffffff;
+            align-self: flex-end;
+        }
+
+        .ai-modal-footer {
+            padding: 10px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 8px;
+        }
+
+        .ai-modal-footer input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            outline: none;
+            font-size: 0.8rem;
+        }
+
+        .ai-modal-footer button {
+            background: var(--primary-blue);
+            color: #fff;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* --- RESPONSIVE MEDIA QUERIES --- */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            .mobile-toggle-btn {
+                display: block;
+            }
+
+            .dashboard-row {
+                grid-template-columns: 1fr;
+            }
+
+            .col-8, .col-4, .col-6 {
+                grid-column: span 12 / span 12;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .search-box {
+                width: 140px;
+            }
+
+            .welcome-text h1 {
+                font-size: 1rem;
+            }
+
+            .welcome-text p {
+                display: none;
+            }
+
+            .dashboard-content {
+                padding: 16px;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .ai-modal {
+                width: 90%;
+                right: 5%;
+                bottom: 10px;
+            }
+        }
+
+        /* Span helpers */
+        .col-12 { grid-column: span 12; }
+        .col-8 { grid-column: span 8; }
+        .col-6 { grid-column: span 6; }
+        .col-4 { grid-column: span 4; }
+    </style>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+    <!-- OVERLAY FOR MOBILE SIDEBAR -->
+    <div id="sidebar-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999;" onclick="toggleSidebar()"></div>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <!-- University Logo configured with requested path -->
+            <img src="../login_page/uoh-logo.png" alt="University Logo" class="uoh-logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/40?text=UoH';">
+            <div class="sidebar-header-text">
+                <h3>The University of Haripur</h3>
+                <p>Intelligent Ecosystem (IES)</p>
+            </div>
+        </div>
+
+        <div class="sidebar-section-title">Student Portal</div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+                <a href="#" class="sidebar-link active">
+                    <i class="fa-solid fa-border-all"></i> Dashboard
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="my-courses.html" class="sidebar-link">
+                    <i class="fa-solid fa-book-open"></i> My Courses
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="attendance.html" class="sidebar-link">
+                    <i class="fa-regular fa-calendar-check"></i> Attendance
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="assignments.html" class="sidebar-link">
+                    <i class="fa-regular fa-file-lines"></i> Assignments
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="exams.html" class="sidebar-link">
+                    <i class="fa-solid fa-graduation-cap"></i> Exams
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="results.html" class="sidebar-link">
+                    <i class="fa-solid fa-chart-line"></i> Results & CGPA
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="fees.html" class="sidebar-link">
+                    <i class="fa-solid fa-wallet"></i> Fees
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="library.html" class="sidebar-link">
+                    <i class="fa-solid fa-book"></i> Library
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="timetable.html" class="sidebar-link">
+                    <i class="fa-regular fa-clock"></i> Timetable
+                </a>
+            </li>
+            
+            <li class="sidebar-menu-item">
+                <a href="profile.html" class="sidebar-link">
+                    <i class="fa-regular fa-user"></i> Profile
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="settings.html" class="sidebar-link">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-section-title">Quick Access</div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+                <a href="javascript:void(0)" onclick="triggerAIAssistant()" class="sidebar-link">
+                    <i class="fa-solid fa-robot" style="color:#8b5cf6;"></i> AI Academic Assistant
+                    <span class="badge-new">New</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-section-title">System</div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+                <a href="support.html" class="sidebar-link">
+                    <i class="fa-regular fa-headset"></i> Support
+                </a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="../landing_page/index.html" class="sidebar-link">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <p>© 2026 University of Haripur</p>
+            <p>All rights reserved. IES v1.0</p>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <div class="main-wrapper">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <!-- 3-dots / menu toggle button for Mobile -->
+                <button class="mobile-toggle-btn" onclick="toggleSidebar()" aria-label="Toggle Navigation">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+                <div class="welcome-text">
+                    <h1 id="welcomeName">Welcome back! 👋</h1>
+                    <p id="welcomeSubtitle">Here's what's happening in your academic journey today.</p>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search courses, assignments, notices...">
+                </div>
+
+                <!-- Interactive Single Notification Icon -->
+                
+
+                <!-- Notifications Panel -->
+                <div class="notification-panel" id="notificationPanel">
+                    <div class="notification-header">
+                        <strong style="font-size:0.85rem;">Notifications</strong>
+                        <span style="font-size:0.7rem; color:var(--primary-blue); cursor:pointer;">Mark all read</span>
+                    </div>
+                    <div class="notification-item">
+                        <strong>Mid Term Schedule Released</strong>
+                        <p style="color:var(--text-secondary); font-size:0.75rem; margin-top:2px;">Spring 2026 Mid Terms starting from 10th June.</p>
+                    </div>
+                </div>
+
+                <!-- User Profile Dropdown -->
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Student Profile" class="user-avatar" id="topbarUserAvatar">
+                    <div class="user-info">
+                        <div class="user-name" id="profileName">Loading...</div>
+                        <div class="user-role" id="profileProgram">BS Computer Science</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; color: var(--text-secondary);"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD CONTAINER -->
+        <main class="dashboard-content">
+            <!-- TOP METRICS ROW -->
+            <section class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#e0e7ff; color:#4f46e5;"><i class="fa-solid fa-book-bookmark"></i></div>
+                    <div class="metric-info">
+                        <h4>Enrolled Courses</h4>
+                        <div class="value" id="enrolledCourses">0</div>
+                        <div class="subtext" id="currentSemesterText" style="color:var(--text-secondary);"> Loading... </div>
+                        <div class="subtext" style="color:var(--text-secondary);">Spring 2026</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#dcfce7; color:#16a34a;"><i class="fa-regular fa-calendar-check"></i></div>
+                    <div class="metric-info">
+                        <h4>Attendance</h4>
+                        <div class="value">87%</div>
+                        <div class="subtext" style="color:var(--success-green);">Good Standing</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-award"></i></div>
+                    <div class="metric-info">
+                        <h4>CGPA</h4>
+                        <div class="value" id="cgpaValue">0.00</div>
+                        <div class="subtext" style="color:var(--text-secondary);">Out of 4.00</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#fee2e2; color:#dc2626;"><i class="fa-regular fa-file-code"></i></div>
+                    <div class="metric-info">
+                        <h4>Pending Assignments</h4>
+                        <div class="value">3</div>
+                        <div class="subtext" style="color:var(--danger-red);">Due Soon</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#ccfbf1; color:#0d9488;"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="metric-info">
+                        <h4>Fee Status</h4>
+                        <div class="value">Paid</div>
+                        <div class="subtext" style="color:var(--success-green);">Up to Date</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="background:#f3e8ff; color:#9333ea;"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="metric-info">
+                        <h4>Academic Standing</h4>
+                        <div class="value" id="academicStanding" style="font-size:1.1rem; margin-top:4px;"> Loading </div>
+                        <div class="subtext" id="standingSubtext" style="color:var(--success-green);"> Please wait...</div>
+                        <!-- <div class="subtext" style="color:var(--success-green);">Keep it up!</div> -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECOND ROW: SCHEDULE, TASKS, ANNOUNCEMENTS -->
+            <section class="dashboard-row">
+                <!-- Today's Schedule -->
+                <div class="card col-4">
+                    <div class="card-header">
+                        <span class="card-title">Today's Schedule</span>
+                        <a href="timetable.html" class="card-link">View Timetable</a>
+                    </div>
+                    <div class="schedule-list">
+                        <div class="list-item">
+                            <div>
+                                <strong>Data Structures</strong>
+                                <div style="font-size:0.72rem; color:var(--text-secondary);">08:00 AM - 09:00 AM • CSC-302</div>
+                            </div>
+                            <span class="pill pill-blue">In Progress</span>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Database Systems</strong>
+                                <div style="font-size:0.72rem; color:var(--text-secondary);">10:00 AM - 11:00 AM • CSC-304</div>
+                            </div>
+                            <span class="pill pill-orange">Upcoming</span>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Software Engineering</strong>
+                                <div style="font-size:0.72rem; color:var(--text-secondary);">12:00 PM - 01:00 PM • CSC-306</div>
+                            </div>
+                            <span class="pill pill-orange">Upcoming</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Tasks -->
+                <div class="card col-4">
+                    <div class="card-header">
+                        <span class="card-title">My Tasks</span>
+                        <a href="assignments.html" class="card-link">View All</a>
+                    </div>
+                    <div class="task-list">
+                        <div class="list-item">
+                            <div>
+                                <strong>Lab Report: Data Structures</strong>
+                                <div style="font-size:0.72rem; color:var(--text-secondary);">CSC-302</div>
+                            </div>
+                            <span class="pill pill-orange">Due Tomorrow</span>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Database Design Assignment</strong>
+                                <div style="font-size:0.72rem; color:var(--text-secondary);">CSC-304</div>
+                            </div>
+                            <span class="pill pill-orange">Due in 3 Days</span>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>SRS Documentation</strong>
+                                <div style="font-size:0.72rem; color:var(--text-secondary);">CSC-306</div>
+                            </div>
+                            <span class="pill pill-orange">Due in 5 Days</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Important Announcements -->
+                <div class="card col-4">
+                    <div class="card-header">
+                        <span class="card-title">Important Announcements</span>
+                        
+                    </div>
+                    <div class="announcement-list">
+                        <div class="list-item">
+                            <div>
+                                <strong>Mid Term Examinations Schedule</strong>
+                                <div style="font-size:0.72rem; color:var(--text-secondary);">Spring 2026 mid terms will start from 10th June.</div>
+                            </div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Library Timing Update</strong>
+                                <div style="font-size:0.72rem; color:var(--text-secondary);">Library will remain open till 10:00 PM during exams.</div>
+                            </div>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>Fee Deadline Reminder</strong>
+                                <div style="font-size:0.72rem; color:var(--text-secondary);">Please clear outstanding dues by 15th June.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- THIRD ROW: ACADEMIC OVERVIEW, ATTENDANCE, AI INSIGHTS -->
+            <section class="dashboard-row">
+                <!-- Academic Performance Overview -->
+                <div class="card col-4">
+                    <div class="card-header">
+                        <span class="card-title">Academic Performance Overview</span>
+                    </div>
+                    <div class="chart-container">
+                        <div class="donut-wrapper">
+                            <div class="donut-inner">
+                                <span style="font-weight:700; font-size:1.1rem;">3.42</span>
+                                <span style="font-size:0.65rem; color:var(--text-secondary);">CGPA</span>
+                            </div>
+                        </div>
+                        <div style="font-size:0.75rem; display:flex; flex-direction:column; gap:6px;">
+                            <div><i class="fa-solid fa-circle" style="color:#10b981;"></i> Excellent (A): 2</div>
+                            <div><i class="fa-solid fa-circle" style="color:#3b82f6;"></i> Good (B): 2</div>
+                            <div><i class="fa-solid fa-circle" style="color:#f59e0b;"></i> Average (C): 1</div>
+                            <div><i class="fa-solid fa-circle" style="color:#ef4444;"></i> Improvement: 1</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attendance Overview -->
+                <div class="card col-4">
+                    <div class="card-header">
+                        <span class="card-title">Attendance Overview</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:10px; font-size:0.8rem;">
+                        <div style="display:flex; justify-content:space-between;"><span>Data Structures</span><strong>91%</strong></div>
+                        <div style="display:flex; justify-content:space-between;"><span>Database Systems</span><strong>85%</strong></div>
+                        <div style="display:flex; justify-content:space-between;"><span>Software Engineering</span><strong>80%</strong></div>
+                        <div style="display:flex; justify-content:space-between;"><span>Discrete Mathematics</span><strong>89%</strong></div>
+                    </div>
+                </div>
+
+                <!-- AI Academic Insights Section -->
+                <div class="card col-4 ai-insights-card" id="ai-academic-insights">
+                    <div class="card-header">
+                        <span class="card-title" style="color:#4338ca;"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Academic Insights <span class="badge-new">BETA</span></span>
+                    </div>
+                    <p style="font-size:0.82rem; color:#3730a3; line-height:1.4; margin-bottom:14px;">
+                        <strong>Personalized Insight for You:</strong><br>
+                        You have 3 assignments due this week. Focus on the Data Structures lab report to maintain your performance. Your overall attendance is good at 87%!
+                    </p>
+                    <button onclick="triggerAIAssistant()" style="background:#4f46e5; color:#fff; border:none; padding:10px 16px; border-radius:8px; font-size:0.8rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-robot"></i> Ask AI Assistant
+                    </button>
+                </div>
+            </section>
+
+            <!-- FOURTH ROW: QUICK ACCESS & UPCOMING EVENTS -->
+            <section class="dashboard-row">
+                <!-- Quick Access Grid (Admin Action Modifiable) -->
+                <div class="card col-8">
+                    <div class="card-header">
+                        <span class="card-title">Quick Access</span>
+                        <!-- Dynamic Admin Injector Button -->
+                        <button onclick="adminAddQuickAction()" style="background:none; border:1px dashed var(--primary-blue); color:var(--primary-blue); padding:4px 10px; border-radius:6px; font-size:0.75rem; cursor:pointer;">+ Add Quick Action (Admin)</button>
+                    </div>
+                    <div class="quick-access-grid" id="quickAccessGrid">
+                        <a href="#" class="quick-btn"><i class="fa-solid fa-file-arrow-down"></i> Download E-Content</a>
+                        <a href="#" class="quick-btn"><i class="fa-solid fa-folder-open"></i> Course Materials</a>
+                        <a href="#" class="quick-btn"><i class="fa-regular fa-calendar-days"></i> Academic Calendar</a>
+                        <a href="#" class="quick-btn"><i class="fa-solid fa-pen-to-square"></i> Exam Schedule</a>
+                        <a href="#" class="quick-btn"><i class="fa-solid fa-graduation-cap"></i> Grade Sheet</a>
+                        <a href="#" class="quick-btn"><i class="fa-solid fa-user-tie"></i> Advising Request</a>
+                        <a href="#" class="quick-btn"><i class="fa-solid fa-scroll"></i> Transcript Request</a>
+                        <a href="#" class="quick-btn"><i class="fa-solid fa-hotel"></i> Apply for Hostel</a>
+                        <a href="#" class="quick-btn"><i class="fa-solid fa-bus"></i> Transport Schedule</a>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                <div class="card col-4">
+                    <div class="card-header">
+                        <span class="card-title">Upcoming Events</span>
+                        <a href="calendar.html" class="card-link">View All</a>
+                    </div>
+                    <div class="task-list">
+                        <div class="list-item">
+                            <div style="text-align:center; padding-right:12px; border-right:2px solid var(--primary-blue);">
+                                <strong style="font-size:1.1rem; display:block;">10</strong>
+                                <span style="font-size:0.65rem; color:var(--text-secondary);">JUN</span>
+                            </div>
+                            <div style="flex:1; padding-left:12px;">
+                                <strong>Mid Term Examinations Start</strong>
+                                <div style="font-size:0.7rem; color:var(--text-secondary);">All Programs • All Day</div>
+                            </div>
+                        </div>
+                        <div class="list-item">
+                            <div style="text-align:center; padding-right:12px; border-right:2px solid var(--accent-purple);">
+                                <strong style="font-size:1.1rem; display:block;">12</strong>
+                                <span style="font-size:0.65rem; color:var(--text-secondary);">JUN</span>
+                            </div>
+                            <div style="flex:1; padding-left:12px;">
+                                <strong>Guest Lecture on AI & ML</strong>
+                                <div style="font-size:0.7rem; color:var(--text-secondary);">Seminar Hall • 11:00 AM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- AI ACADEMIC ASSISTANT AGENT MODAL -->
+    <div class="ai-modal" id="aiModal">
+        <div class="ai-modal-header">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-robot" style="color:#818cf8;"></i>
+                <strong style="font-size:0.88rem;">AI Academic Agent</strong>
+            </div>
+            <button onclick="toggleAIModal()" style="background:none; border:none; color:#fff; cursor:pointer; font-size:1rem;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="ai-modal-body" id="aiChatBody">
+            <div class="ai-msg system" id="aiGreetingMsg">
+                Hello! I am your AI Academic Agent. How can I assist you with your courses, timetable, or exam preparations today?
+            </div>
+        </div>
+        <div class="ai-modal-footer">
+            <input type="text" id="aiInput" placeholder="Ask your academic agent..." onkeypress="handleAIEter(event)">
+            <button onclick="sendAIMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+    // =========================================================
+    // STUDENT DASHBOARD - REAL DATABASE CONNECTION
+    // =========================================================
+
+    const API_BASE_URL = window.ACOS_CONFIG.API_BASE_URL;
+
+
+    // =========================================================
+    // AUTH TOKEN
+    // =========================================================
+
+    function getAuthToken() {
+        return (
+            localStorage.getItem("access_token") ||
+            sessionStorage.getItem("access_token")
+        );
+    }
+
+
+    // =========================================================
+    // LOAD REAL STUDENT DASHBOARD
+    // =========================================================
+
+    async function loadStudentDashboard() {
+
+        const token = getAuthToken();
+
+        if (!token) {
+            console.error("No authentication token found.");
+
+            // Change this path if your login page has another location
+            window.location.href = "../login_page/login.html";
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                `${API_BASE_URL}/student/dashboard`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+
+            // =================================================
+            // ERROR HANDLING
+            // =================================================
+
+            if (!response.ok) {
+
+                if (response.status === 401) {
+
+                    console.error("Token expired or invalid.");
+
+                    localStorage.removeItem("access_token");
+                    sessionStorage.removeItem("access_token");
+
+                    window.location.href =
+                        "../login_page/login.html";
+
+                    return;
+                }
+
+                if (response.status === 403) {
+
+                    console.error(
+                        "This account does not have student access."
+                    );
+
+                    alert("Student access required.");
+
+                    return;
+                }
+
+                throw new Error(
+                    `HTTP Error: ${response.status}`
+                );
+            }
+
+
+            // =================================================
+            // JSON RESPONSE
+            // =================================================
+
+            const data = await response.json();
+
+            console.log(
+                "REAL STUDENT DASHBOARD DATA:",
+                data
+            );
+
+
+            // =================================================
+            // UPDATE DASHBOARD
+            // =================================================
+
+            updateStudentInfo(data);
+
+            updateAcademicInfo(data);
+
+            updateCoursesInfo(data);
+
+            updatePerformance(data);
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Dashboard loading error:",
+                error
+            );
+
+            showDashboardError();
+        }
+    }
+
+
+    // =========================================================
+    // STUDENT INFORMATION
+    // =========================================================
+
+    function updateStudentInfo(data) {
+
+        const student = data.student;
+
+        if (!student) return;
+
+
+        const firstName =
+            student.first_name || "";
+
+        const fullName =
+            student.name ||
+            `${student.first_name || ""} ${student.last_name || ""}`.trim();
+
+
+        // -----------------------------------------------------
+        // Welcome
+        // -----------------------------------------------------
+
+        const welcomeName =
+            document.getElementById("welcomeName");
+
+        if (welcomeName) {
+
+            welcomeName.textContent =
+                `Welcome back, ${firstName}! 👋`;
+        }
+
+
+        // -----------------------------------------------------
+        // Dynamic AI Assistant Greeting
+        // -----------------------------------------------------
+
+        const aiGreeting =
+            document.getElementById("aiGreetingMsg");
+
+        if (aiGreeting && firstName) {
+
+            aiGreeting.textContent =
+                `Hello ${firstName}! 👋 I'm your AI Academic Assistant. How can I assist you with your courses, timetable, or exam preparations today?`;
+        }
+
+
+        // -----------------------------------------------------
+        // Welcome subtitle
+        // -----------------------------------------------------
+
+        const welcomeSubtitle =
+            document.getElementById("welcomeSubtitle");
+
+        if (welcomeSubtitle) {
+
+            welcomeSubtitle.textContent =
+                `${student.program} • Semester ${student.semester} • Section ${student.section || "-"}`;
+        }
+
+
+        // -----------------------------------------------------
+        // Top-right profile
+        // -----------------------------------------------------
+
+        const profileName =
+            document.getElementById("profileName");
+
+        if (profileName) {
+
+            profileName.textContent =
+                fullName;
+        }
+
+
+        const profileProgram =
+            document.getElementById("profileProgram");
+
+        if (profileProgram) {
+
+            profileProgram.textContent =
+                student.program;
+        }
+
+    }
+
+
+    // =========================================================
+    // ACADEMIC INFORMATION
+    // =========================================================
+
+    function updateAcademicInfo(data) {
+
+        const academic =
+            data.academic || {};
+
+        const student =
+            data.student || {};
+
+        const cgpa =
+            academic.cgpa || {};
+
+        const semesterGPA =
+            academic.semester_gpa || {};
+
+
+        // -----------------------------------------------------
+        // ENROLLED COURSES
+        // -----------------------------------------------------
+
+        const enrolledCourses =
+            document.getElementById("enrolledCourses");
+
+        if (enrolledCourses) {
+
+            enrolledCourses.textContent =
+                academic.enrolled_courses ?? 0;
+        }
+
+
+        // -----------------------------------------------------
+        // CURRENT SEMESTER
+        // -----------------------------------------------------
+
+        const semesterText =
+            document.getElementById("currentSemesterText");
+
+        if (semesterText) {
+
+            semesterText.textContent =
+                `Semester ${student.semester || academic.current_semester || "-"}`;
+        }
+
+
+        // -----------------------------------------------------
+        // CGPA
+        // -----------------------------------------------------
+
+        const cgpaValue =
+            document.getElementById("cgpaValue");
+
+        if (cgpaValue) {
+
+            cgpaValue.textContent =
+                Number(cgpa.overall_cgpa || 0).toFixed(2);
+        }
+
+
+        // -----------------------------------------------------
+        // ACADEMIC STANDING
+        // -----------------------------------------------------
+
+        const academicStanding =
+            document.getElementById("academicStanding");
+
+        const standing =
+            cgpa.academic_status ||
+            data.academic_standing ||
+            "Good Standing";
+
+        if (academicStanding) {
+
+            academicStanding.textContent =
+                standing;
+        }
+
+
+        // -----------------------------------------------------
+        // STANDING SUBTEXT
+        // -----------------------------------------------------
+
+        const standingSubtext =
+            document.getElementById("standingSubtext");
+
+        if (standingSubtext) {
+
+            if (standing === "Good Standing") {
+
+                standingSubtext.textContent =
+                    "Keep it up!";
+
+                standingSubtext.style.color =
+                    "var(--success-green)";
+
+            } else {
+
+                standingSubtext.textContent =
+                    standing;
+
+                standingSubtext.style.color =
+                    "var(--warning-amber)";
+            }
+        }
+
+    }
+
+
+    // =========================================================
+    // COURSE INFORMATION
+    // =========================================================
+
+    function updateCoursesInfo(data) {
+
+        const courses =
+            data.courses || [];
+
+        console.log(
+            "Current enrolled courses:",
+            courses
+        );
+
+    }
+
+
+    // =========================================================
+    // PERFORMANCE OVERVIEW
+    // =========================================================
+
+    function updatePerformance(data) {
+
+        const results =
+            data.results || {};
+
+        const summary =
+            results.grade_summary || {};
+
+        console.log(
+            "Grade Summary:",
+            summary
+        );
+
+    }
+
+
+    // =========================================================
+    // ERROR DISPLAY
+    // =========================================================
+
+    function showDashboardError() {
+
+        const welcomeName =
+            document.getElementById("welcomeName");
+
+        if (welcomeName) {
+
+            welcomeName.textContent =
+                "Unable to load dashboard";
+        }
+
+    }
+
+
+    // =========================================================
+    // MOBILE SIDEBAR
+    // =========================================================
+
+    function toggleSidebar() {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        const overlay =
+            document.getElementById("sidebar-overlay");
+
+        sidebar.classList.toggle("show");
+
+        overlay.style.display =
+            sidebar.classList.contains("show")
+                ? "block"
+                : "none";
+    }
+
+
+    // =========================================================
+    // NOTIFICATIONS
+    // =========================================================
+
+    function toggleNotifications() {
+
+        const panel =
+            document.getElementById("notificationPanel");
+
+        panel.classList.toggle("show");
+    }
+
+
+    // =========================================================
+    // AI ASSISTANT
+    // =========================================================
+
+    function triggerAIAssistant() {
+
+        const insightsCard =
+            document.getElementById(
+                "ai-academic-insights"
+            );
+
+        if (insightsCard) {
+
+            insightsCard.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+            insightsCard.classList.add(
+                "highlight-pulse"
+            );
+
+            setTimeout(() => {
+
+                insightsCard.classList.remove(
+                    "highlight-pulse"
+                );
+
+            }, 3000);
+        }
+
+        openAIModal();
+    }
+
+
+    function toggleAIModal() {
+
+        const modal =
+            document.getElementById("aiModal");
+
+        modal.classList.toggle("active");
+    }
+
+
+    function openAIModal() {
+
+        const modal =
+            document.getElementById("aiModal");
+
+        modal.classList.add("active");
+    }
+
+
+    // =========================================================
+    // AI MESSAGE & CONVERSATION SYSTEM
+    // =========================================================
+
+    let aiChatHistory = [];
+    let isAIBusy = false;
+
+    function formatAIMarkdown(text) {
+        if (!text) return "";
+        let escaped = text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+
+        // Bold **text**
+        escaped = escaped.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        // Inline code `text`
+        escaped = escaped.replace(/`([^`]+)`/g, "<code style='background:rgba(255,255,255,0.15); padding:1px 4px; border-radius:4px; font-family:monospace;'>$1</code>");
+        // Unordered lists
+        escaped = escaped.replace(/^[\s]*[-*]\s+(.*)$/gm, "<div style='display:flex; gap:6px; margin:2px 0;'><span style='color:#818cf8;'>•</span><div>$1</div></div>");
+        // Line breaks (preserving existing list divs)
+        escaped = escaped.replace(/\n\n/g, "<br><br>").replace(/\n/g, "<br>");
+        return escaped;
+    }
+
+    async function sendAIMessage() {
+        if (isAIBusy) return;
+
+        const input = document.getElementById("aiInput");
+        if (!input) return;
+
+        const message = input.value.trim();
+        if (!message) return;
+
+        const chatBody = document.getElementById("aiChatBody");
+        if (!chatBody) return;
+
+        const token = getAuthToken();
+        if (!token) {
+            alert("Authentication session expired. Please log in again.");
+            return;
+        }
+
+        // 1. Append User Message Bubble
+        const userMsg = document.createElement("div");
+        userMsg.className = "ai-msg user";
+        userMsg.textContent = message;
+        chatBody.appendChild(userMsg);
+
+        // Record in conversation history
+        aiChatHistory.push({ role: "user", content: message });
+
+        input.value = "";
+        isAIBusy = true;
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+        // 2. Show Animated Loading Indicator
+        const loadingIndicator = document.createElement("div");
+        loadingIndicator.className = "ai-msg system";
+        loadingIndicator.id = "aiLoadingIndicator";
+        loadingIndicator.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin" style="color:#818cf8; margin-right:6px;"></i> Analyzing academic records...`;
+        chatBody.appendChild(loadingIndicator);
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/student/ai/chat`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: message,
+                    history: aiChatHistory.slice(-6)
+                })
+            });
+
+            // Remove loading indicator
+            const currentLoader = document.getElementById("aiLoadingIndicator");
+            if (currentLoader) {
+                currentLoader.remove();
+            }
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    throw new Error("Your session has expired. Please log in again.");
+                }
+                if (response.status === 403) {
+                    throw new Error("Student authentication access is required.");
+                }
+                throw new Error("Unable to connect to the academic agent service.");
+            }
+
+            const data = await response.json();
+            const aiText = data.response || "I have received your request, but no response was generated.";
+
+            // 3. Append Assistant Message Bubble
+            const aiMsg = document.createElement("div");
+            aiMsg.className = "ai-msg system";
+            aiMsg.innerHTML = formatAIMarkdown(aiText);
+            chatBody.appendChild(aiMsg);
+
+            // Record in conversation history
+            aiChatHistory.push({ role: "assistant", content: aiText });
+
+        } catch (error) {
+            console.error("AI Assistant error:", error);
+
+            const currentLoader = document.getElementById("aiLoadingIndicator");
+            if (currentLoader) {
+                currentLoader.remove();
+            }
+
+            const errorMsg = document.createElement("div");
+            errorMsg.className = "ai-msg system";
+            errorMsg.innerHTML = `<span style="color:#ef4444;"><i class="fa-solid fa-circle-exclamation"></i> ${error.message || "I am currently unable to answer your query. Please try again."}</span>`;
+            chatBody.appendChild(errorMsg);
+        } finally {
+            isAIBusy = false;
+            chatBody.scrollTop = chatBody.scrollHeight;
+            input.focus();
+        }
+    }
+
+    function handleAIEter(event) {
+        if (event.key === "Enter") {
+            sendAIMessage();
+        }
+    }
+
+
+    // =========================================================
+    // ADMIN QUICK ACTION
+    // =========================================================
+
+    function adminAddQuickAction() {
+
+        const actionTitle =
+            prompt(
+                "Admin Panel: Enter new Quick Action Title:"
+            );
+
+        if (!actionTitle) return;
+
+
+        const grid =
+            document.getElementById(
+                "quickAccessGrid"
+            );
+
+        const newCard =
+            document.createElement("a");
+
+        newCard.href = "#";
+
+        newCard.className =
+            "quick-btn";
+
+        newCard.innerHTML =
+            `<i class="fa-solid fa-plus-circle"></i> ${actionTitle}`;
+
+        grid.appendChild(
+            newCard
+        );
+    }
+
+
+    // =========================================================
+    // LOGOUT HANDLER
+    // =========================================================
+
+    function handleLogout(event) {
+        if (event) event.preventDefault();
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("token_type");
+        sessionStorage.removeItem("access_token");
+        window.location.href = "../login_page/student-login.html";
+    }
+
+
+    // =========================================================
+    // START DASHBOARD
+    // =========================================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            loadStudentDashboard();
+
+        }
+    );
+
+</script>
+<!-- Student Topbar Hydration -->
+<script src="../shared/student-topbar.js"></script>
+</body>
+</html>

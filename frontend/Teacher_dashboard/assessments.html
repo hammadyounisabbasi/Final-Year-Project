@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assessments - The University of Haripur</title>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --sidebar-bg: #0b132b;
+      --sidebar-hover: #1c2a4f;
+      --sidebar-active: #2563eb;
+      --sidebar-text: #94a3b8;
+      --sidebar-text-white: #ffffff;
+      --body-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      --purple: #8b5cf6;
+      --purple-light: #f5f3ff;
+      --info: #0284c7;
+      --radius: 12px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--body-bg);
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* --- SIDEBAR NAVIGATION --- */
+    .sidebar {
+      width: 270px;
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      z-index: 10000;
+      transition: var(--transition);
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .sidebar-header {
+      padding: 20px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .uoh-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: #ffffff;
+      padding: 2px;
+    }
+
+    .brand-titles h2 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--sidebar-text-white);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .brand-titles p {
+      font-size: 0.65rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .menu-section-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #475569;
+      padding: 16px 20px 8px;
+    }
+
+    .nav-list { list-style: none; padding: 0 10px; }
+    .nav-item { margin-bottom: 3px; }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--sidebar-text);
+      font-size: 0.86rem;
+      font-weight: 500;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .nav-link i {
+      width: 24px;
+      font-size: 0.95rem;
+      margin-right: 10px;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      background-color: var(--sidebar-hover);
+      color: var(--sidebar-text-white);
+    }
+
+    .nav-link.active {
+      background-color: var(--sidebar-active);
+      color: var(--sidebar-text-white);
+      font-weight: 600;
+    }
+
+    .sidebar-user {
+      margin-top: auto;
+      padding: 16px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .user-profile-left { display: flex; align-items: center; gap: 12px; }
+    .user-avatar-wrap { position: relative; }
+    .user-avatar-wrap img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+
+    .status-indicator {
+      width: 10px; height: 10px;
+      background-color: var(--success);
+      border: 2px solid var(--sidebar-bg);
+      border-radius: 50%;
+      position: absolute; bottom: 0; right: 0;
+    }
+
+    .user-info h4 { font-size: 0.82rem; color: var(--sidebar-text-white); font-weight: 600; }
+    .user-info p { font-size: 0.68rem; color: #64748b; }
+
+    /* --- MAIN WRAPPER --- */
+    .main-wrapper {
+      margin-left: 270px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      transition: var(--transition);
+    }
+
+    /* --- TOPBAR --- */
+    .topbar {
+      height: 70px;
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: var(--text-main);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+    }
+
+    .page-title-box h1 { font-size: 1.35rem; font-weight: 800; color: var(--text-main); }
+
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+
+    .search-box { position: relative; width: 280px; }
+    .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem; }
+    .search-box input {
+      width: 100%; padding: 9px 14px 9px 38px;
+      border-radius: 20px; border: 1px solid var(--border-color);
+      background-color: var(--body-bg); font-size: 0.82rem; outline: none; transition: var(--transition);
+    }
+    .search-box input:focus { border-color: var(--primary); background-color: #ffffff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+    .semester-picker {
+      padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color);
+      font-size: 0.8rem; font-weight: 700; background: #ffffff; color: var(--text-main); cursor: pointer; outline: none;
+    }
+
+    .icon-action-btn {
+      position: relative;
+      background: var(--body-bg);
+      border: 1px solid var(--border-color);
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-main); transition: var(--transition);
+    }
+    .icon-action-btn:hover { background: var(--primary-light); color: var(--primary); }
+
+    .icon-badge {
+      position: absolute; top: -2px; right: -2px;
+      background-color: var(--danger); color: white;
+      font-size: 0.65rem; font-weight: 700; width: 18px; height: 18px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white;
+    }
+
+    .user-profile-pill { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 4px 8px; border-radius: 20px; }
+    .user-profile-pill img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+    .user-profile-pill .profile-meta { display: flex; flex-direction: column; }
+    .user-profile-pill span { font-size: 0.82rem; font-weight: 700; }
+    .user-profile-pill small { font-size: 0.68rem; color: var(--text-muted); }
+
+    /* Notification Dropdown Panel */
+    .notification-dropdown {
+      position: absolute; top: 65px; right: 80px; width: 330px;
+      background: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      border: 1px solid var(--border-color); display: none; flex-direction: column; z-index: 1000; overflow: hidden;
+    }
+    .notification-dropdown.show { display: flex; }
+    .noti-header { padding: 14px 16px; background: #f8fafc; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .noti-header h3 { font-size: 0.85rem; font-weight: 700; }
+    .noti-list { max-height: 280px; overflow-y: auto; }
+    .noti-item { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px; font-size: 0.78rem; cursor: pointer; }
+    .noti-item:hover { background-color: var(--primary-light); }
+
+    /* --- CONTENT AREA --- */
+    .dashboard-content { padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; }
+
+    .card { background: var(--card-bg); border-radius: var(--radius); border: 1px solid var(--border-color); padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02); }
+
+    /* Filter Bar Top */
+    .filters-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    }
+    .filter-inputs-group { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; flex: 1; }
+    .filter-item { display: flex; flex-direction: column; gap: 4px; min-width: 170px; }
+    .filter-item label { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); }
+    .filter-select {
+      padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border-color);
+      font-size: 0.82rem; font-weight: 600; color: var(--text-main); background: #ffffff; outline: none; transition: var(--transition);
+    }
+    .filter-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+    .btn-primary {
+      padding: 10px 18px; border-radius: 8px; border: none;
+      background: var(--primary); color: white; font-size: 0.82rem; font-weight: 700;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-outline {
+      padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color);
+      background: #ffffff; color: var(--text-main); font-size: 0.8rem; font-weight: 700;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: var(--transition);
+    }
+    .btn-outline:hover { background: var(--body-bg); border-color: var(--text-muted); }
+
+    /* Top Stats Grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+
+    .stat-card {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: var(--radius); padding: 18px; display: flex; align-items: center; gap: 16px;
+    }
+    .stat-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
+    }
+    .stat-info h3 { font-size: 1.35rem; font-weight: 800; color: var(--text-main); line-height: 1; }
+    .stat-info p { font-size: 0.78rem; font-weight: 700; color: var(--text-main); margin-top: 4px; }
+    .stat-info span { font-size: 0.68rem; color: var(--text-muted); }
+
+    /* Main Grid Layout (Left 2.2fr, Right 1fr) */
+    .dashboard-main-grid { display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; }
+    .left-column, .right-column { display: flex; flex-direction: column; gap: 20px; }
+
+    /* Tabs Styling */
+    .tabs-header { display: flex; align-items: center; gap: 24px; border-bottom: 1px solid var(--border-color); margin-bottom: 16px; padding-bottom: 2px; }
+    .tab-btn {
+      background: none; border: none; padding: 10px 4px; font-size: 0.82rem; font-weight: 700;
+      color: var(--text-muted); cursor: pointer; position: relative; transition: var(--transition);
+    }
+    .tab-btn.active { color: var(--primary); }
+    .tab-btn.active::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: var(--primary); border-radius: 2px;
+    }
+
+    /* Table Styling */
+    .table-responsive { overflow-x: auto; }
+    .assessments-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .assessments-table th {
+      text-align: left; padding: 12px 14px; color: var(--text-muted); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; border-bottom: 1px solid var(--border-color); background: #f8fafc;
+    }
+    .assessments-table td { padding: 14px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+
+    .title-meta strong { font-size: 0.85rem; font-weight: 700; color: var(--text-main); display: block; }
+    .title-meta span { font-size: 0.7rem; color: var(--text-muted); }
+
+    .badge-type { padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 700; display: inline-block; }
+    .badge-type.quiz { background: var(--success-light); color: var(--success); }
+    .badge-type.midterm { background: var(--primary-light); color: var(--primary); }
+    .badge-type.final { background: var(--danger-light); color: var(--danger); }
+    .badge-type.viva { background: var(--purple-light); color: var(--purple); }
+
+    .badge-mode { padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 700; display: inline-block; }
+    .badge-mode.online { background: #eff6ff; color: #2563eb; }
+    .badge-mode.offline { background: #f1f5f9; color: #475569; }
+
+    .badge-status { padding: 3px 8px; border-radius: 12px; font-size: 0.68rem; font-weight: 700; display: inline-block; }
+    .badge-status.active { background: var(--success-light); color: var(--success); }
+    .badge-status.upcoming { background: var(--primary-light); color: var(--primary); }
+    .badge-status.scheduled { background: var(--warning-light); color: var(--warning); }
+
+    .progress-bar-wrap { width: 100px; background: #e2e8f0; height: 5px; border-radius: 10px; overflow: hidden; margin-top: 4px; }
+    .progress-fill { height: 100%; background: var(--success); border-radius: 10px; }
+
+    /* Pagination */
+    .pagination-bar { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; font-size: 0.78rem; color: var(--text-muted); }
+    .pagination-controls { display: flex; align-items: center; gap: 6px; }
+    .page-num { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 700; }
+    .page-num.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* Sub-Grid Bottom Left */
+    .bottom-sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    /* Right Column Widgets */
+    /* Donut Chart Visual */
+    .donut-chart-container { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+    .donut-graphic {
+      width: 110px; height: 110px; border-radius: 50%;
+      background: conic-gradient(
+        var(--success) 0% 33.3%,
+        var(--primary) 33.3% 50%,
+        var(--danger) 50% 66.7%,
+        var(--purple) 66.7% 83.4%,
+        var(--info) 83.4% 100%
+      );
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .donut-center {
+      width: 70px; height: 70px; background: white; border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    }
+    .donut-center strong { font-size: 1.1rem; font-weight: 800; line-height: 1; }
+    .donut-center span { font-size: 0.65rem; color: var(--text-muted); }
+
+    .chart-legend { display: flex; flex-direction: column; gap: 8px; flex: 1; margin-left: 20px; }
+    .legend-item { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; }
+    .legend-label { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* Quick Action List */
+    .quick-actions-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .quick-action-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px;
+      border: 1px solid var(--border-color); border-radius: 10px; cursor: pointer; transition: var(--transition);
+    }
+    .quick-action-item:hover { border-color: var(--primary); background: var(--primary-light); }
+    .action-icon {
+      width: 36px; height: 36px; border-radius: 8px; background: var(--primary-light); color: var(--primary);
+      display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0;
+    }
+    .action-text h4 { font-size: 0.8rem; font-weight: 700; color: var(--text-main); }
+    .action-text p { font-size: 0.68rem; color: var(--text-muted); margin-top: 1px; }
+
+    /* Upcoming Assessments Cards */
+    .upcoming-list { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+    .upcoming-item {
+      display: flex; align-items: center; justify-content: space-between; padding: 12px;
+      border: 1px solid var(--border-color); border-radius: 10px; background: #ffffff;
+    }
+    .upcoming-meta strong { font-size: 0.8rem; font-weight: 700; display: block; }
+    .upcoming-meta span { font-size: 0.68rem; color: var(--text-muted); }
+    .time-badge { padding: 4px 8px; border-radius: 6px; background: var(--success-light); color: var(--success); font-size: 0.68rem; font-weight: 700; }
+
+    /* MODALS */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 19, 43, 0.5);
+      display: none; align-items: center; justify-content: center; z-index: 20000; backdrop-filter: blur(3px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card { background: white; width: 92%; max-width: 620px; border-radius: 14px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+    .modal-header h3 { font-size: 1.05rem; font-weight: 800; }
+    .close-modal { cursor: pointer; font-size: 1.2rem; color: var(--text-muted); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .form-group.full { grid-column: span 2; }
+    .form-group label { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+    .form-control {
+      width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color);
+      font-size: 0.82rem; outline: none; transition: var(--transition);
+    }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+    .file-upload-box {
+      border: 2px dashed var(--border-color); border-radius: 10px; padding: 18px; text-align: center;
+      background: var(--body-bg); cursor: pointer; transition: var(--transition);
+    }
+    .file-upload-box:hover { border-color: var(--primary); background: var(--primary-light); }
+    .file-upload-box i { font-size: 1.8rem; color: var(--primary); margin-bottom: 6px; }
+
+    .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: none; }
+    .sidebar-overlay.mobile-open { display: block !important; }
+
+    /* RESPONSIVE DESIGN BREAKPOINTS */
+    @media (max-width: 1100px) {
+      .dashboard-main-grid { grid-template-columns: 1fr; }
+      .bottom-sub-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.mobile-open { transform: translateX(0) !important; }
+      .main-wrapper { margin-left: 0; }
+      .mobile-menu-btn { display: inline-block !important; }
+
+      .topbar { padding: 0 16px; }
+      .search-box { width: 150px; }
+      .semester-picker { display: none; }
+      .user-profile-pill .profile-meta { display: none; }
+      .dashboard-content { padding: 16px; }
+      .filters-bar { flex-direction: column; align-items: stretch; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: span 1; }
+    }
+
+    @media (max-width: 480px) {
+      .search-box { width: 120px; }
+      .page-title-box h1 { font-size: 1.1rem; }
+    }
+  </style>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+  <!-- Mobile Overlay Backdrop -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- --- SIDEBAR NAVIGATION --- -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img src="../login_page/uoh-logo.png" alt="UOH Logo" class="uoh-logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/2563eb/ffffff?text=UOH';">
+      <div class="brand-titles">
+        <h2>The University of Haripur</h2>
+        <p>Intelligent Ecosystem (IES)</p>
+      </div>
+    </div>
+
+    <div class="menu-section-title">Teacher Portal</div>
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="tea-dashboard.html" class="nav-link" onclick="navigateTo('tea-dashboard.html', event)">
+          <i class="fa-solid fa-house"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="my_courses.html" class="nav-link" onclick="navigateTo('my_courses.html', event)">
+          <i class="fa-solid fa-book-open"></i>
+          <span>My Courses</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="classes_schedule.html" class="nav-link" onclick="navigateTo('classes_schedule.html', event)">
+          <i class="fa-regular fa-calendar-days"></i>
+          <span>Classes & Schedule</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="attendance.html" class="nav-link" onclick="navigateTo('attendance.html', event)">
+          <i class="fa-solid fa-user-check"></i>
+          <span>Attendance</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="assignments.html" class="nav-link" onclick="navigateTo('assignments.html', event)">
+          <i class="fa-solid fa-file-pen"></i>
+          <span>Assignments</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="assessments.html" class="nav-link active" onclick="navigateTo('assessments.html', event)">
+          <i class="fa-solid fa-list-check"></i>
+          <span>Assessments</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="gradebook.html" class="nav-link" onclick="navigateTo('gradebook.html', event)">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Gradebook</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="students.html" class="nav-link" onclick="navigateTo('students.html', event)">
+          <i class="fa-solid fa-users"></i>
+          <span>Students</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="library.html" class="nav-link" onclick="navigateTo('library.html', event)">
+          <i class="fa-solid fa-book"></i>
+          <span>Library</span>
+        </a>
+      </li>
+      
+    </ul>
+
+    <div class="menu-section-title">System</div>
+      <li class="nav-item">
+        <a href="../landing_page/index.html" class="nav-link" onclick="navigateTo('../landing_page/index.html', event)">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-user">
+      <div class="user-profile-left">
+        <div class="user-avatar-wrap">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Dr. Usman Tariq">
+          <div class="status-indicator"></div>
+        </div>
+        <div class="user-info">
+          <h4>Dr. Usman Tariq</h4>
+          <p>Assistant Professor<br>Computer Science</p>
+        </div>
+      </div>
+      <i class="fa-solid fa-chevron-up" style="font-size:0.75rem; color:#64748b; cursor:pointer;"></i>
+    </div>
+  </aside>
+
+  <!-- --- MAIN WRAPPER --- -->
+  <div class="main-wrapper">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn" title="Toggle Menu">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <div class="page-title-box">
+          <h1>Assessments</h1>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Search Option (Responsive on Mobile) -->
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="globalSearchInput" placeholder="Search assessments..." onkeyup="filterAssessments()">
+        </div>
+
+        <select class="semester-picker">
+          <option>Spring 2026</option>
+          <option>Fall 2025</option>
+        </select>
+
+        <!-- Notification Icon with Alert Badge -->
+        
+
+        
+
+        <!-- User Profile Pill -->
+        <div class="user-profile-pill">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Dr. Usman Tariq">
+          <div class="profile-meta">
+            <span>Dr. Usman Tariq</span>
+            <small>Assistant Professor</small>
+          </div>
+          <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: var(--text-muted); margin-left: 4px;"></i>
+        </div>
+      </div>
+
+      <!-- Notification Dropdown Panel -->
+      <div class="notification-dropdown" id="notificationDropdown">
+        <div class="noti-header">
+          <h3>Notifications & Alerts</h3>
+          <span style="font-size:0.72rem; color:var(--primary); cursor:pointer;" onclick="clearNotis()">Clear all</span>
+        </div>
+        <div class="noti-list" id="notiList">
+          <div class="noti-item">
+            <i class="fa-solid fa-clock" style="color:var(--warning);"></i>
+            <div>
+              <strong>Quiz 1 Active</strong>
+              <p>Quiz 1 - Arrays & Linked Lists is live now.</p>
+            </div>
+          </div>
+          <div class="noti-item">
+            <i class="fa-solid fa-file-check" style="color:var(--success);"></i>
+            <div>
+              <strong>Midterm Submissions Ready</strong>
+              <p>31 students submitted Midterm Exam paper.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD MAIN CONTENT -->
+    <main class="dashboard-content">
+
+      <!-- TOP FILTERS BAR -->
+      <section class="card filters-bar">
+        <div class="filter-inputs-group">
+          <div class="filter-item">
+            <label>Course</label>
+            <select class="filter-select" id="courseFilter" onchange="filterAssessments()">
+              <option value="ALL">All Courses</option>
+              <option value="CS-301">CS-301 Data Structures</option>
+              <option value="CS-302">CS-302 Database Systems</option>
+              <option value="CS-401">CS-401 Algorithms</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label>Section</label>
+            <select class="filter-select" id="sectionFilter" onchange="filterAssessments()">
+              <option value="ALL">All Sections</option>
+              <option value="Section A">Section A</option>
+              <option value="Section B">Section B</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label>Assessment Type</label>
+            <select class="filter-select" id="typeFilter" onchange="filterAssessments()">
+              <option value="ALL">All Types</option>
+              <option value="Quiz">Quiz</option>
+              <option value="Midterm">Midterm Exam</option>
+              <option value="Final">Final Exam</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label>Status</label>
+            <select class="filter-select" id="statusFilter" onchange="filterAssessments()">
+              <option value="ALL">All Status</option>
+              <option value="Active">Active / Running</option>
+              <option value="Upcoming">Upcoming</option>
+              <option value="Scheduled">Scheduled</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="openCreateModal()">
+          <i class="fa-solid fa-plus"></i> Create New Assessment
+        </button>
+      </section>
+
+      <!-- TOP METRIC CARDS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: var(--primary-light); color: var(--primary);">
+            <i class="fa-regular fa-clipboard"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="statTotal">12</h3>
+            <p>Total Assessments</p>
+            <span>All Types</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: var(--success-light); color: var(--success);">
+            <i class="fa-solid fa-clipboard-check"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="statActive">07</h3>
+            <p>Active Assessments</p>
+            <span>Currently Running</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: var(--warning-light); color: var(--warning);">
+            <i class="fa-regular fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="statUpcoming">03</h3>
+            <p>Upcoming Assessments</p>
+            <span>Scheduled</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: var(--purple-light); color: var(--purple);">
+            <i class="fa-solid fa-shield-check"></i>
+          </div>
+          <div class="stat-info">
+            <h3>02</h3>
+            <p>Completed</p>
+            <span>Evaluated</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT GRID -->
+      <div class="dashboard-main-grid">
+
+        <!-- LEFT COLUMN -->
+        <div class="left-column">
+
+          <!-- Main Assessments Table Card -->
+          <div class="card">
+            <!-- Tabs Header -->
+            <div class="tabs-header">
+              <button class="tab-btn active" onclick="switchTab('ALL', this)">All Assessments</button>
+              <button class="tab-btn" onclick="switchTab('Quiz', this)">Quizzes</button>
+              <button class="tab-btn" onclick="switchTab('Midterm', this)">Midterm Exams</button>
+              <button class="tab-btn" onclick="switchTab('Final', this)">Final Exams</button>
+              <button class="tab-btn" onclick="switchTab('Viva', this)">Viva</button>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+              <table class="assessments-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Assessment Title</th>
+                    <th>Type</th>
+                    <th>Mode</th>
+                    <th>Start / End Date</th>
+                    <th>Duration</th>
+                    <th>Submissions</th>
+                    <th>Status</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="assessmentsTableBody">
+                  <!-- Dynamic Injection via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination Bar -->
+            <div class="pagination-bar">
+              <div>Showing 1 to 6 of 12 assessments</div>
+              <div class="pagination-controls">
+                <div class="page-num">&lt;</div>
+                <div class="page-num active">1</div>
+                <div class="page-num">2</div>
+                <div class="page-num">&gt;</div>
+                <select class="filter-select" style="padding:4px 8px; margin-left:8px;">
+                  <option>10 / page</option>
+                  <option>20 / page</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Sub-Grid -->
+          <div class="bottom-sub-grid">
+
+            <!-- Recent Submissions Table -->
+            <div class="card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h3 style="font-size:0.95rem; font-weight:800;">Recent Submissions</h3>
+                <a href="#" style="font-size:0.75rem; color:var(--primary); font-weight:700;">View All</a>
+              </div>
+
+              <div class="table-responsive">
+                <table class="assessments-table" style="font-size:0.75rem;">
+                  <thead>
+                    <tr>
+                      <th>Student</th>
+                      <th>Assessment</th>
+                      <th>Submitted On</th>
+                      <th>Score</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentSubmissionsBody">
+                    <tr>
+                      <td>
+                        <strong>Ahmad Khan</strong>
+                        <div style="font-size:0.65rem; color:var(--text-muted);">23CS30101</div>
+                      </td>
+                      <td>Quiz 1 - Arrays & Linked Lists</td>
+                      <td>10 May 2026<br><span style="color:var(--text-muted);">10:45 AM</span></td>
+                      <td>9 / 10 <br><small style="color:var(--text-muted);">(90%)</small></td>
+                      <td><span class="badge-status active">Graded</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Sara Khan</strong>
+                        <div style="font-size:0.65rem; color:var(--text-muted);">23CS30103</div>
+                      </td>
+                      <td>Quiz 1 - Arrays & Linked Lists</td>
+                      <td>10 May 2026<br><span style="color:var(--text-muted);">10:52 AM</span></td>
+                      <td>8 / 10 <br><small style="color:var(--text-muted);">(80%)</small></td>
+                      <td><span class="badge-status active">Graded</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Assessment Type Overview -->
+            <div class="card">
+              <h3 style="font-size:0.95rem; font-weight:800; margin-bottom:14px;">Assessment Type Overview</h3>
+
+              <div class="table-responsive">
+                <table class="assessments-table" style="font-size:0.75rem;">
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Assessments</th>
+                      <th>Avg. Score</th>
+                      <th>Submissions</th>
+                      <th>Completion Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody id="assessmentTypeOverviewBody">
+                    <tr>
+                      <td><strong>Quizzes</strong></td>
+                      <td>4</td>
+                      <td>81.2%</td>
+                      <td>128/128</td>
+                      <td>
+                        <div class="progress-bar-wrap" style="width:70px;"><div class="progress-fill" style="width: 100%;"></div></div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Midterm Exams</strong></td>
+                      <td>2</td>
+                      <td>74.6%</td>
+                      <td>63/64</td>
+                      <td>
+                        <div class="progress-bar-wrap" style="width:70px;"><div class="progress-fill" style="width: 98%;"></div></div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Final Exams</strong></td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td>0/0</td>
+                      <td>
+                        <div class="progress-bar-wrap" style="width:70px;"><div class="progress-fill" style="width: 0%;"></div></div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Viva</strong></td>
+                      <td>2</td>
+                      <td>-</td>
+                      <td>0/0</td>
+                      <td>
+                        <div class="progress-bar-wrap" style="width:70px;"><div class="progress-fill" style="width: 0%;"></div></div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="right-column">
+
+          <!-- Donut Chart Average Score Distribution -->
+          <div class="card">
+            <h3 style="font-size:0.95rem; font-weight:800; margin-bottom:12px;">Average Score (Distribution)</h3>
+            
+            <div class="donut-chart-container">
+              <div class="donut-graphic">
+                <div class="donut-center">
+                  <strong>12</strong>
+                  <span>Total</span>
+                </div>
+              </div>
+
+              <div class="chart-legend">
+                <div class="legend-item">
+                  <div class="legend-label"><div class="legend-dot" style="background:var(--success);"></div> Quizzes (4)</div>
+                  <strong>33.3%</strong>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-label"><div class="legend-dot" style="background:var(--primary);"></div> Midterms (2)</div>
+                  <strong>16.7%</strong>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-label"><div class="legend-dot" style="background:var(--danger);"></div> Final Exams (2)</div>
+                  <strong>16.7%</strong>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-label"><div class="legend-dot" style="background:var(--purple);"></div> Viva (2)</div>
+                  <strong>16.7%</strong>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-label"><div class="legend-dot" style="background:var(--info);"></div> Other (2)</div>
+                  <strong>16.7%</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="card">
+            <h3 style="font-size:0.95rem; font-weight:800;">Quick Actions</h3>
+            <div class="quick-actions-list">
+              <div class="quick-action-item" onclick="openCreateModal('Quiz')">
+                <div class="action-icon"><i class="fa-solid fa-file-circle-plus"></i></div>
+                <div class="action-text">
+                  <h4>Create Online Quiz</h4>
+                  <p>Create a new online quiz</p>
+                </div>
+              </div>
+
+              <div class="quick-action-item" onclick="openCreateModal('Midterm')">
+                <div class="action-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                <div class="action-text">
+                  <h4>Upload Question Paper</h4>
+                  <p>Upload question paper for exam</p>
+                </div>
+              </div>
+
+              <div class="quick-action-item" onclick="openQuickActionInputModal('Question Bank Item')">
+                <div class="action-icon"><i class="fa-solid fa-database"></i></div>
+                <div class="action-text">
+                  <h4>Manage Question Bank</h4>
+                  <p>Add / Edit questions</p>
+                </div>
+              </div>
+
+              <div class="quick-action-item" onclick="openCreateModal('Viva')">
+                <div class="action-icon"><i class="fa-solid fa-comments"></i></div>
+                <div class="action-text">
+                  <h4>Schedule Viva</h4>
+                  <p>Schedule viva for students</p>
+                </div>
+              </div>
+
+              <div class="quick-action-item" onclick="openQuickActionInputModal('Assessment Rule Setting')">
+                <div class="action-icon"><i class="fa-solid fa-sliders"></i></div>
+                <div class="action-text">
+                  <h4>Assessment Settings</h4>
+                  <p>Configure rules & accessibility</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upcoming Assessments -->
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="font-size:0.95rem; font-weight:800;">Upcoming Assessments</h3>
+              <a href="#" style="font-size:0.72rem; color:var(--primary); font-weight:700;">View Calendar</a>
+            </div>
+
+            <div class="upcoming-list">
+              <div class="upcoming-item">
+                <div class="upcoming-meta">
+                  <strong>Quiz 2 - Trees</strong>
+                  <span>12 Jun 2026, 10:00 AM</span>
+                </div>
+                <span class="time-badge">In 7 days</span>
+              </div>
+
+              <div class="upcoming-item">
+                <div class="upcoming-meta">
+                  <strong>Final Term Exam</strong>
+                  <span>25 Jun 2026, 09:00 AM</span>
+                </div>
+                <span class="time-badge">In 20 days</span>
+              </div>
+
+              <div class="upcoming-item">
+                <div class="upcoming-meta">
+                  <strong>Viva - Data Structures</strong>
+                  <span>15 Jul 2026, 10:00 AM</span>
+                </div>
+                <span class="time-badge">In 40 days</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- --- CREATE ASSESSMENT / PAPER UPLOAD MODAL --- -->
+  <div class="modal-overlay" id="createAssessmentModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-file-circle-plus" style="color:var(--primary); margin-right:8px;"></i> Create Assessment / Upload Paper</h3>
+        <span class="close-modal" id="closeCreateModal">&times;</span>
+      </div>
+
+      <form id="createAssessmentForm" onsubmit="handleCreateAssessment(event)">
+        <div class="form-grid">
+          
+          <div class="form-group full">
+            <label>Assessment Title</label>
+            <input type="text" id="newTitle" class="form-control" placeholder="e.g., Quiz 2 - Trees / Midterm Examination" required>
+          </div>
+
+          <div class="form-group">
+            <label>Select Course</label>
+            <select id="newCourse" class="form-control" required>
+              <option value="CS-301">CS-301 Data Structures (BSCS 3rd)</option>
+              <option value="CS-302">CS-302 Database Systems (BSCS 5th)</option>
+              <option value="CS-401">CS-401 Algorithms (BSCS 6th)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Section</label>
+            <select id="newSection" class="form-control" required>
+              <option value="Section A">Section A</option>
+              <option value="Section B">Section B</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Assessment Type</label>
+            <select id="newType" class="form-control" required>
+              <option value="Quiz">Quiz</option>
+              <option value="Midterm">Midterm Exam</option>
+              <option value="Final">Final Exam</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Mode</label>
+            <select id="newMode" class="form-control">
+              <option value="Online">Online Test</option>
+              <option value="Offline">Offline / Physical Exam</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Start Date & Time</label>
+            <input type="datetime-local" id="newStartDateTime" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label>End Date & Time (Auto Submit Trigger)</label>
+            <input type="datetime-local" id="newEndDateTime" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label>Duration (Minutes)</label>
+            <input type="number" id="newDuration" class="form-control" value="60" required>
+          </div>
+
+          <div class="form-group">
+            <label>Total Marks</label>
+            <input type="number" id="newTotalMarks" class="form-control" value="20" required>
+          </div>
+
+          <!-- Excel File Upload for MCQs / Question Paper -->
+          <div class="form-group full">
+            <label>Import MCQs from Excel / CSV (.xlsx, .csv)</label>
+            <div class="file-upload-box" onclick="document.getElementById('fileInput').click()">
+              <i class="fa-solid fa-file-excel"></i>
+              <p style="font-size:0.8rem; font-weight:700;">Click or drag file here to attach</p>
+              <p style="font-size:0.68rem; color:var(--text-muted); margin-top:2px;">Required columns: Question, Option A-D, Correct Answer, Marks</p>
+              <input type="file" id="fileInput" style="display:none;" onchange="updateFileName(this)">
+            </div>
+            <span id="fileNameDisplay" style="font-size:0.75rem; color:var(--primary); font-weight:700; margin-top:4px;"></span>
+          </div>
+
+          <div class="form-group full">
+            <label>Paper Audience</label>
+            <select id="assessmentAudience" class="form-control">
+              <option value="all">All currently enrolled students in this section</option>
+              <option value="selected">Selected students only</option>
+            </select>
+            <div id="targetStudentList" style="display:none; max-height:150px; overflow:auto; margin-top:8px; border:1px solid var(--border-color); border-radius:7px; padding:8px;"></div>
+          </div>
+
+          <div class="form-group full">
+            <label>MCQs</label>
+            <div id="mcqEditor"></div>
+            <button type="button" class="btn-outline" style="margin-top:8px" onclick="addMcqRow()"><i class="fa-solid fa-plus"></i> Add MCQ</button>
+            <small style="display:block;margin-top:6px;color:var(--text-muted)">Add questions here, or upload a CSV/XLSX with Question, Option A-D, Correct Answer and Marks.</small>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:12px; margin-top:10px;">
+          Publish & Activate Assessment
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- --- TEACHER QUICK ACTION INPUT MODAL --- -->
+  <div class="modal-overlay" id="quickActionInputModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="quickActionModalTitle">Quick Action Input</h3>
+        <span class="close-modal" id="closeQuickInputModal">&times;</span>
+      </div>
+
+      <form id="quickActionForm" onsubmit="handleQuickActionSubmit(event)">
+        <div class="form-group full">
+          <label id="quickInputLabel">Add Detail / Note</label>
+          <textarea id="quickInputText" class="form-control" rows="4" placeholder="Enter configuration details or question bank data..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:10px;">
+          Save Action Entry
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Real assessments are loaded from the authenticated teacher API below.
+    let assessmentsList = [];
+
+    let currentTabFilter = 'ALL';
+
+    document.addEventListener("DOMContentLoaded", function () {
+      
+      // Auto Set Real System Dates for Create Modal Inputs
+      const now = new Date();
+      const end = new Date(now.getTime() + 60*60*1000);
+      const toLocalInput = value => new Date(value.getTime() - value.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+      document.getElementById('newStartDateTime').value = toLocalInput(now);
+      document.getElementById('newEndDateTime').value = toLocalInput(end);
+
+      renderAssessmentsTable(assessmentsList);
+
+      // Navigation Links
+      window.navigateTo = function(targetUrl, event) {
+        if(event) event.preventDefault();
+        if (targetUrl === 'assessments.html') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+        window.location.href = targetUrl;
+      };
+
+      // Mobile Menu Controls
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+      if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          sidebar.classList.toggle('mobile-open');
+          sidebarOverlay.classList.toggle('mobile-open');
+        });
+      }
+
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', () => {
+          sidebar.classList.remove('mobile-open');
+          sidebarOverlay.classList.remove('mobile-open');
+        });
+      }
+
+      // Notification Drawer Toggle
+      const notificationBtn = document.getElementById('notificationBtn');
+      const notificationDropdown = document.getElementById('notificationDropdown');
+
+      if (notificationBtn) {
+        notificationBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          notificationDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!notificationDropdown.contains(e.target) && e.target !== notificationBtn) {
+            notificationDropdown.classList.remove('show');
+          }
+        });
+      }
+
+      // Live Auto-Submit Expiration Engine Check
+      setInterval(checkAutoSubmitExpirations, 30000);
+    });
+
+    // Render Table Data
+    function renderAssessmentsTable(list) {
+      const tbody = document.getElementById('assessmentsTableBody');
+      tbody.innerHTML = '';
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--text-muted);">No assessments found.</td></tr>`;
+        return;
+      }
+
+      list.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        const percent = item.totalStudents > 0 ? Math.round((item.submittedCount / item.totalStudents) * 100) : 0;
+
+        let typeClass = item.type.toLowerCase();
+        let statusClass = item.status.toLowerCase();
+        let modeClass = item.mode.toLowerCase();
+
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>
+            <div class="title-meta">
+              <strong>${item.title}</strong>
+              <span>${item.chapter} &bull; ${item.course}</span>
+            </div>
+          </td>
+          <td><span class="badge-type ${typeClass}">${item.type}</span></td>
+          <td><span class="badge-mode ${modeClass}">${item.mode}</span></td>
+          <td>
+            <div style="font-size:0.75rem; font-weight:700;">${item.startDateTime.split(',')[0]}</div>
+            <div style="font-size:0.68rem; color:var(--text-muted);">${item.startDateTime.split(',')[1]} - ${item.endDateTime.split(',')[1]}</div>
+          </td>
+          <td>${item.duration}</td>
+          <td>
+            <div style="font-size:0.75rem; font-weight:700;">${item.submittedCount > 0 ? `${item.submittedCount}/${item.totalStudents}` : '-'}</div>
+            <div style="font-size:0.65rem; color:var(--text-muted);">(${percent}%)</div>
+            <div class="progress-bar-wrap"><div class="progress-fill" style="width: ${percent}%;"></div></div>
+          </td>
+          <td><span class="badge-status ${statusClass}">${item.status}</span></td>
+          <td style="text-align:right;">
+            <button class="btn-outline" style="padding:4px 6px;" title="View Submissions" onclick="alert('Viewing submissions for ${item.title}')"><i class="fa-regular fa-eye"></i></button>
+            <button class="btn-outline" style="padding:4px 6px;" title="Analytics" onclick="alert('Analytics for ${item.title}')"><i class="fa-solid fa-chart-bar"></i></button>
+            <button class="btn-outline" style="padding:4px 6px; color:var(--danger);" title="Delete" onclick="deleteAssessment(${item.id})"><i class="fa-solid fa-trash-can"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Update Top Dynamic Stats
+      document.getElementById('statTotal').textContent = assessmentsList.length < 10 ? '0' + assessmentsList.length : assessmentsList.length;
+      const activeCount = assessmentsList.filter(a => a.status === 'Active').length;
+      document.getElementById('statActive').textContent = activeCount < 10 ? '0' + activeCount : activeCount;
+      const upcomingCount = assessmentsList.filter(a => a.status === 'Upcoming' || a.status === 'Scheduled').length;
+      document.getElementById('statUpcoming').textContent = upcomingCount < 10 ? '0' + upcomingCount : upcomingCount;
+    }
+
+    // Filter Logic
+    function filterAssessments() {
+      const courseVal = document.getElementById('courseFilter').value;
+      const sectionVal = document.getElementById('sectionFilter').value;
+      const typeVal = document.getElementById('typeFilter').value;
+      const statusVal = document.getElementById('statusFilter').value;
+      const searchVal = document.getElementById('globalSearchInput').value.toLowerCase();
+
+      const filtered = assessmentsList.filter(item => {
+        const matchCourse = (courseVal === 'ALL' || item.course === courseVal);
+        const matchSection = (sectionVal === 'ALL' || item.section === sectionVal);
+        const matchType = (typeVal === 'ALL' || item.type === typeVal);
+        const matchStatus = (statusVal === 'ALL' || item.status === statusVal);
+        const matchTab = (currentTabFilter === 'ALL' || item.type === currentTabFilter);
+        const matchSearch = item.title.toLowerCase().includes(searchVal) || item.course.toLowerCase().includes(searchVal);
+
+        return matchCourse && matchSection && matchType && matchStatus && matchTab && matchSearch;
+      });
+
+      renderAssessmentsTable(filtered);
+    }
+
+    // Tab Switcher
+    function switchTab(type, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTabFilter = type;
+      filterAssessments();
+    }
+
+    // File Upload Handler
+    function updateFileName(input) {
+      if (input.files && input.files[0]) {
+        document.getElementById('fileNameDisplay').textContent = "Selected: " + input.files[0].name;
+      }
+    }
+
+    // Modal Handlers
+    function openCreateModal(presetType = null) {
+      if (presetType) {
+        document.getElementById('newType').value = presetType;
+      }
+      document.getElementById('createAssessmentModal').classList.add('active');
+    }
+
+    document.getElementById('closeCreateModal').addEventListener('click', () => {
+      document.getElementById('createAssessmentModal').classList.remove('active');
+    });
+
+    // Create Form Handler
+    function handleCreateAssessment(e) {
+      e.preventDefault();
+
+      const title = document.getElementById('newTitle').value;
+      const course = document.getElementById('newCourse').value;
+      const section = document.getElementById('newSection').value;
+      const type = document.getElementById('newType').value;
+      const mode = document.getElementById('newMode').value;
+      const startDT = new Date(document.getElementById('newStartDateTime').value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+      const endDT = new Date(document.getElementById('newEndDateTime').value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+      const duration = document.getElementById('newDuration').value + " mins";
+
+      const newAssessment = {
+        id: Date.now(),
+        title: title,
+        chapter: "Custom Paper Upload",
+        course: course,
+        section: section,
+        type: type,
+        mode: mode,
+        startDateTime: startDT,
+        endDateTime: endDT,
+        duration: duration,
+        submittedCount: 0,
+        totalStudents: 32,
+        status: "Active"
+      };
+
+      assessmentsList.unshift(newAssessment);
+      filterAssessments();
+
+      alert(`Assessment "${title}" activated! End Time arrive hoty hi student tests auto-submit ho jayain gy.`);
+      document.getElementById('createAssessmentForm').reset();
+      document.getElementById('fileNameDisplay').textContent = "";
+      document.getElementById('createAssessmentModal').classList.remove('active');
+    }
+
+    // Quick Action Input Modal
+    function openQuickActionInputModal(actionTitle) {
+      document.getElementById('quickActionModalTitle').textContent = actionTitle;
+      document.getElementById('quickInputLabel').textContent = `Enter details for ${actionTitle}:`;
+      document.getElementById('quickActionInputModal').classList.add('active');
+    }
+
+    document.getElementById('closeQuickInputModal').addEventListener('click', () => {
+      document.getElementById('quickActionInputModal').classList.remove('active');
+    });
+
+    function handleQuickActionSubmit(e) {
+      e.preventDefault();
+      alert("Quick Action details saved successfully!");
+      document.getElementById('quickActionForm').reset();
+      document.getElementById('quickActionInputModal').classList.remove('active');
+    }
+
+    function deleteAssessment(id) {
+      if(confirm("Are you sure you want to delete this assessment?")) {
+        assessmentsList = assessmentsList.filter(a => a.id !== id);
+        filterAssessments();
+      }
+    }
+
+    function checkAutoSubmitExpirations() {
+      // Background monitor for papers reaching end-time
+      console.log("Auto-submit time monitor active...");
+    }
+
+    function clearNotis() {
+      document.getElementById('notiList').innerHTML = '<div style="padding:15px; text-align:center; font-size:0.8rem; color:#64748b;">No active alerts</div>';
+      document.getElementById('notiBadgeCount').style.display = 'none';
+    }
+  </script>
+  <script>
+    // datetime-local is local browser time. Persist UTC so server timing and
+    // every portal display the exact same instant.
+    const utcStorageValue = inputValue => new Date(inputValue).toISOString().slice(0, 19);
+    /* Online paper API bridge. It replaces the former sample assessment data. */
+    const EXAM_API = window.ACOS_CONFIG.API_BASE_URL;
+    let realAssessments = [], teacherCourses = [];
+    const authHeaders = () => ({Authorization: `Bearer ${localStorage.getItem('access_token') || sessionStorage.getItem('access_token')}`, 'Content-Type':'application/json'});
+    const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    function addMcqRow(question={}) { const n=document.querySelectorAll('.mcq-row').length+1; document.getElementById('mcqEditor').insertAdjacentHTML('beforeend', `<div class="mcq-row" style="border:1px solid var(--border-color);padding:10px;border-radius:7px;margin:8px 0"><input class="form-control mcq-question" placeholder="Question ${n}" value="${escapeHtml(question.question||'')}" required><div class="form-grid" style="margin-top:7px"><input class="form-control mcq-a" placeholder="Option A" value="${escapeHtml(question.option_a||'')}" required><input class="form-control mcq-b" placeholder="Option B" value="${escapeHtml(question.option_b||'')}" required><input class="form-control mcq-c" placeholder="Option C" value="${escapeHtml(question.option_c||'')}" required><input class="form-control mcq-d" placeholder="Option D" value="${escapeHtml(question.option_d||'')}" required><select class="form-control mcq-correct"><option value="A">Correct: A</option><option value="B">Correct: B</option><option value="C">Correct: C</option><option value="D">Correct: D</option></select><input type="number" min="0.1" step="0.1" class="form-control mcq-marks" placeholder="Marks" value="${question.marks||''}" required></div><button type="button" class="btn-outline" style="margin-top:7px" onclick="this.closest('.mcq-row').remove()">Remove</button></div>`); const row=document.querySelector('#mcqEditor .mcq-row:last-child'); if(question.correct_option) row.querySelector('.mcq-correct').value=question.correct_option; }
+    function populateExamSelectors() { const course=document.getElementById('newCourse'), filter=document.getElementById('courseFilter'); const entries=teacherCourses.map(c=>`<option value="${c.course_id}">${escapeHtml(c.course_code)} ${escapeHtml(c.course_title)}</option>`).join(''); course.innerHTML=entries || '<option value="">No currently enrolled courses available</option>'; filter.innerHTML='<option value="ALL">All Courses</option>'+teacherCourses.map(c=>`<option value="${c.course_code}">${escapeHtml(c.course_code)}</option>`).join(''); updateExamSections(); }
+    function updateExamSections() { const selected=teacherCourses.find(c=>String(c.course_id)===document.getElementById('newCourse').value); const sections=selected?.sections||[]; const select=document.getElementById('newSection'); select.innerHTML=sections.length ? sections.map((s,index)=>`<option value="${index}">${escapeHtml(s.section)} — ${escapeHtml(s.academic_year)}</option>`).join('') : '<option value="">No currently enrolled section available</option>'; renderTargetStudents(); }
+    function selectedExamSection() { const course=teacherCourses.find(c=>String(c.course_id)===document.getElementById('newCourse').value); return {course, section: course?.sections?.[Number(document.getElementById('newSection').value)]}; }
+    function renderTargetStudents() { const {section}=selectedExamSection(); const box=document.getElementById('targetStudentList'); const students=section?.students||[]; box.innerHTML=students.length ? students.map(s=>`<label style="display:block;padding:3px"><input type="checkbox" class="target-student" value="${s.student_id}"> ${escapeHtml(s.roll_number)} — ${escapeHtml(s.name)}</label>`).join('') : '<span style="color:var(--text-muted)">No enrolled students found.</span>'; }
+    async function loadRealAssessments(){ const [coursesResponse, examsResponse]=await Promise.all([fetch(`${EXAM_API}/teacher/exams/options`,{headers:authHeaders()}),fetch(`${EXAM_API}/teacher/exams`,{headers:authHeaders()})]); if(!coursesResponse.ok||!examsResponse.ok) throw Error('Could not load assessment data'); teacherCourses=(await coursesResponse.json()).courses; realAssessments=(await examsResponse.json()).assessments; populateExamSelectors(); document.getElementById('sectionFilter').innerHTML='<option value="ALL">All Sections</option>'+[...new Set(realAssessments.map(x=>x.section))].map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join(''); renderRealAssessments(); }
+    function renderRealAssessments(){ const now=new Date(), q=document.getElementById('globalSearchInput').value.toLowerCase(), course=document.getElementById('courseFilter').value, section=document.getElementById('sectionFilter').value, type=document.getElementById('typeFilter').value, status=document.getElementById('statusFilter').value; const rows=realAssessments.filter(x=>(course==='ALL'||x.course_code===course)&&(section==='ALL'||x.section===section)&&(type==='ALL'||x.type===type)&&(status==='ALL'||x.status===status)&&(`${x.title} ${x.course_code}`.toLowerCase().includes(q))); const tbody=document.getElementById('assessmentsTableBody'); tbody.innerHTML=rows.length?rows.map((x,i)=>{const p=x.eligible_count?Math.round(100*x.submitted_count/x.eligible_count):0;return `<tr><td>${i+1}</td><td><div class="title-meta"><strong>${escapeHtml(x.title)}</strong><span>${escapeHtml(x.course_code)} · ${escapeHtml(x.section)}</span></div></td><td><span class="badge-type ${x.type.toLowerCase()}">${x.type}</span></td><td><span class="badge-mode online">Online</span></td><td><div style="font-size:.75rem;font-weight:700">${new Date(x.start_at+'Z').toLocaleDateString()}</div><div style="font-size:.68rem;color:var(--text-muted)">${new Date(x.start_at+'Z').toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} - ${new Date(x.end_at+'Z').toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></td><td>${x.duration_minutes} mins</td><td><div style="font-size:.75rem;font-weight:700">${x.submitted_count}/${x.eligible_count}</div><div class="progress-bar-wrap"><div class="progress-fill" style="width:${p}%"></div></div></td><td><span class="badge-status ${x.status.toLowerCase()}">${x.status}</span></td><td style="text-align:right"><button class="btn-outline" onclick="viewExamResults(${x.assessment_id})"><i class="fa-regular fa-eye"></i></button></td></tr>`}).join(''):'<tr><td colspan="9" style="text-align:center;padding:20px">No online papers found.</td></tr>'; document.getElementById('statTotal').textContent=String(realAssessments.length).padStart(2,'0'); document.getElementById('statActive').textContent=String(realAssessments.filter(x=>x.status==='Published'&&new Date(x.start_at+'Z')<=now&&now<new Date(x.end_at+'Z')).length).padStart(2,'0'); document.getElementById('statUpcoming').textContent=String(realAssessments.filter(x=>new Date(x.start_at+'Z')>now).length).padStart(2,'0'); }
+    window.filterAssessments=renderRealAssessments; document.getElementById('newCourse').addEventListener('change',updateExamSections); document.getElementById('newSection').addEventListener('change',renderTargetStudents); document.getElementById('assessmentAudience').addEventListener('change',e=>{document.getElementById('targetStudentList').style.display=e.target.value==='selected'?'block':'none';});
+    window.handleCreateAssessment=async e=>{e.preventDefault(); const questions=[...document.querySelectorAll('.mcq-row')].map(row=>({question:row.querySelector('.mcq-question').value,option_a:row.querySelector('.mcq-a').value,option_b:row.querySelector('.mcq-b').value,option_c:row.querySelector('.mcq-c').value,option_d:row.querySelector('.mcq-d').value,correct_option:row.querySelector('.mcq-correct').value,marks:Number(row.querySelector('.mcq-marks').value)})); const course=teacherCourses.find(c=>String(c.course_id)===document.getElementById('newCourse').value); const payload={course_id:course.course_id,academic_year:(course.sections.find(s=>s.section===document.getElementById('newSection').value)||{}).academic_year,title:document.getElementById('newTitle').value,section:document.getElementById('newSection').value,assessment_type:document.getElementById('newType').value,start_at:document.getElementById('newStartDateTime').value,end_at:document.getElementById('newEndDateTime').value,duration_minutes:Number(document.getElementById('newDuration').value),total_marks:Number(document.getElementById('newTotalMarks').value),questions,publish:!document.getElementById('fileInput').files[0]}; let response=await fetch(`${EXAM_API}/teacher/exams`,{method:'POST',headers:authHeaders(),body:JSON.stringify(payload)}); let body=await response.json(); if(!response.ok){alert(body.detail||'Unable to create paper');return;} const file=document.getElementById('fileInput').files[0]; if(file){let fd=new FormData();fd.append('file',file);response=await fetch(`${EXAM_API}/teacher/exams/${body.assessment_id}/questions/import`,{method:'POST',headers:{Authorization:authHeaders().Authorization},body:fd});body=await response.json();if(!response.ok){alert(body.detail?.message||body.detail||'Import failed. The draft was kept.');return;} response=await fetch(`${EXAM_API}/teacher/exams/${body.assessment_id}/publish`,{method:'POST',headers:authHeaders()});if(!response.ok){alert('Questions imported but paper could not be published');return;}} alert('Online paper published.');document.getElementById('createAssessmentModal').classList.remove('active');e.target.reset();document.getElementById('mcqEditor').innerHTML='';loadRealAssessments();};
+    window.viewExamResults=async id=>{const r=await fetch(`${EXAM_API}/teacher/exams/${id}/results`,{headers:authHeaders()});const d=await r.json();alert(!d.results?.length?'No submissions yet.':d.results.map(x=>`${x.roll_number} — ${x.student_name}: ${x.obtained_marks}/${x.total_marks} (${x.status})`).join('\n'));};
+    document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>loadRealAssessments().catch(e=>{document.getElementById('assessmentsTableBody').innerHTML='<tr><td colspan="9">Unable to load online papers.</td></tr>';}),0)});
+  </script>
+  <script>
+    function displayApiError(detail) {
+      if (Array.isArray(detail)) return detail.map(x => `${x.loc?.slice(-1)[0] || 'Field'}: ${x.msg}`).join('\n');
+      if (detail && typeof detail === 'object') return detail.message || detail.errors?.join('\n') || JSON.stringify(detail);
+      return detail || 'Unable to save paper.';
+    }
+    async function loadAssessmentOverview() {
+      const response = await fetch(`${EXAM_API}/teacher/exams/overview`, {headers: authHeaders()});
+      if (!response.ok) return;
+      const data = await response.json();
+      const recent = document.getElementById('recentSubmissionsBody');
+      recent.innerHTML = data.recent_submissions.length ? data.recent_submissions.map(item => {
+        const when = item.submitted_at ? new Date(item.submitted_at + 'Z') : null;
+        const percentage = item.total_marks ? Math.round(item.obtained_marks / item.total_marks * 100) : 0;
+        return `<tr><td><strong>${escapeHtml(item.student_name)}</strong><div style="font-size:.65rem;color:var(--text-muted)">${escapeHtml(item.roll_number)}</div></td><td>${escapeHtml(item.assessment_title)}</td><td>${when ? when.toLocaleDateString() + '<br><span style="color:var(--text-muted)">' + when.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) + '</span>' : '—'}</td><td>${item.obtained_marks} / ${item.total_marks}<br><small style="color:var(--text-muted)">(${percentage}%)</small></td><td><span class="badge-status active">${escapeHtml(item.status)}</span></td></tr>`;
+      }).join('') : '<tr><td colspan="5" style="text-align:center;padding:18px;color:var(--text-muted)">No submitted online papers yet.</td></tr>';
+      const overview = document.getElementById('assessmentTypeOverviewBody');
+      overview.innerHTML = data.type_overview.map(item => `<tr><td><strong>${item.type === 'Quiz' ? 'Quizzes' : item.type + ' Exams'}</strong></td><td>${item.assessments}</td><td>${item.average_percentage == null ? '—' : item.average_percentage + '%'}</td><td>${item.submissions}/${item.eligible}</td><td><div class="progress-bar-wrap" style="width:70px"><div class="progress-fill" style="width:${item.completion_rate}%"></div></div></td></tr>`).join('');
+    }
+    const originalLoadRealAssessments = loadRealAssessments;
+    loadRealAssessments = async function () { await originalLoadRealAssessments(); await loadAssessmentOverview(); };
+    window.handleCreateAssessment = async function (event) {
+      event.preventDefault();
+      const file = document.getElementById('fileInput').files[0];
+      const rows = [...document.querySelectorAll('.mcq-row')];
+      if (!file && !rows.length) { alert('Add at least one MCQ manually or upload one CSV/XLSX file.'); return; }
+      if (file && rows.length) { alert('Choose one source only: manual MCQs or one CSV/XLSX file.'); return; }
+      const questions = rows.map(row => ({question: row.querySelector('.mcq-question').value.trim(), option_a: row.querySelector('.mcq-a').value.trim(), option_b: row.querySelector('.mcq-b').value.trim(), option_c: row.querySelector('.mcq-c').value.trim(), option_d: row.querySelector('.mcq-d').value.trim(), correct_option: row.querySelector('.mcq-correct').value, marks: Number(row.querySelector('.mcq-marks').value)}));
+      const {course, section: sectionData} = selectedExamSection();
+      const section = sectionData?.section;
+      if (!course || !sectionData) { alert('Select a valid assigned course and enrolled section.'); return; }
+      const manualTotal = questions.reduce((sum, question) => sum + question.marks, 0);
+      const student_ids = document.getElementById('assessmentAudience').value === 'selected' ? [...document.querySelectorAll('.target-student:checked')].map(input => Number(input.value)) : [];
+      if (document.getElementById('assessmentAudience').value === 'selected' && !student_ids.length) { alert('Select at least one student, or choose all enrolled students.'); return; }
+      const payload = {course_id: course.course_id, academic_year: sectionData.academic_year, section, title: document.getElementById('newTitle').value.trim(), assessment_type: document.getElementById('newType').value, start_at: utcStorageValue(document.getElementById('newStartDateTime').value), end_at: utcStorageValue(document.getElementById('newEndDateTime').value), duration_minutes: Number(document.getElementById('newDuration').value), total_marks: file ? Number(document.getElementById('newTotalMarks').value) : manualTotal, questions, student_ids, publish: !file};
+      let response = await fetch(`${EXAM_API}/teacher/exams`, {method:'POST', headers:authHeaders(), body:JSON.stringify(payload)});
+      let body = await response.json();
+      if (!response.ok) { alert(displayApiError(body.detail)); return; }
+      if (file) { const form = new FormData(); form.append('file', file); response = await fetch(`${EXAM_API}/teacher/exams/${body.assessment_id}/questions/import`, {method:'POST',headers:{Authorization:authHeaders().Authorization},body:form}); body = await response.json(); if (!response.ok) { alert(displayApiError(body.detail)); return; } response = await fetch(`${EXAM_API}/teacher/exams/${body.assessment_id}/publish`, {method:'POST',headers:authHeaders()}); body = await response.json(); if (!response.ok) { alert(displayApiError(body.detail)); return; } }
+      alert('Online paper saved and published successfully.'); event.target.reset(); document.getElementById('mcqEditor').innerHTML=''; document.getElementById('fileNameDisplay').textContent=''; document.getElementById('createAssessmentModal').classList.remove('active'); await loadRealAssessments();
+    };
+  </script>
+  <script src="teacher-auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exams - Student Portal | The University of Haripur</title>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --sidebar-bg: #0b1329;
+            --sidebar-hover: #132247;
+            --sidebar-text: #94a3b8;
+            --sidebar-active-bg: #1d61f2;
+            --sidebar-active-text: #ffffff;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --primary-blue: #2563eb;
+            --primary-blue-bg: #eff6ff;
+            --green-bg: #f0fdf4;
+            --green-text: #16a34a;
+            --orange-bg: #fff7ed;
+            --orange-text: #ea580c;
+            --purple-bg: #faf5ff;
+            --purple-text: #9333ea;
+            --red-bg: #fef2f2;
+            --red-text: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none; /* Prevents selecting text during exam */
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* PORTAL WRAPPER */
+        #portalContainer {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* ---------------- SIDEBAR ---------------- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .uoh-logo-img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: #ffffff;
+            padding: 2px;
+        }
+
+        .logo-text h2 {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            color: var(--sidebar-text);
+            margin-top: 2px;
+        }
+
+        .nav-section {
+            padding: 15px 12px 5px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            letter-spacing: 0.8px;
+            padding: 0 12px 8px;
+            text-transform: uppercase;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background-color: var(--sidebar-hover);
+            color: #ffffff;
+        }
+
+        .nav-item.active {
+            background-color: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+        }
+
+        .nav-item i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .sidebar-footer {
+            padding: 18px 20px;
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.6;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* ---------------- MAIN CONTAINER ---------------- */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* ---------------- TOPBAR ---------------- */
+        .topbar {
+            height: 70px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .mobile-toggle-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        .mobile-toggle-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 14px;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .search-box i {
+            color: #94a3b8;
+            width: 18px;
+            height: 18px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 13.5px;
+            color: var(--text-primary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            color: #475569;
+            transition: background 0.2s;
+        }
+
+        .notification-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background-color: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .user-profile:hover {
+            background-color: #f8fafc;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-info {
+            line-height: 1.2;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* ---------------- CONTENT AREA ---------------- */
+        .content-area {
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* METRICS CARDS GRID */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+
+        .metric-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .metric-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .metric-icon.purple { background-color: #f3e8ff; color: #9333ea; }
+        .metric-icon.green  { background-color: #dcfce7; color: #16a34a; }
+        .metric-icon.orange { background-color: #ffedd5; color: #ea580c; }
+        .metric-icon.red    { background-color: #ffe4e6; color: #e11d48; }
+        .metric-icon.blue   { background-color: #dbeafe; color: #2563eb; }
+
+        .metric-data .label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: capitalize;
+        }
+
+        .metric-data .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 2px 0;
+        }
+
+        .metric-data .subtext {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .metric-data a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* TWO COLUMN LAYOUT */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
+        }
+
+        .left-column, .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .card-header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .card-title-flex {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title-flex h2 {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .btn-light {
+            background-color: #f1f5f9;
+            color: #2563eb;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-light:hover {
+            background-color: #e2e8f0;
+        }
+
+        /* TABLE STYLING */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .exam-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .exam-table th {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+        }
+
+        .exam-table td {
+            padding: 14px 10px;
+            font-size: 12.5px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .subject-col strong {
+            display: block;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .subject-col span {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .badge-number {
+            width: 24px;
+            height: 24px;
+            background-color: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .date-col span {
+            display: block;
+            color: var(--red-text);
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            background-color: #eff6ff;
+            color: #2563eb;
+        }
+
+        .btn-start-exam {
+            background-color: #16a34a;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(22, 163, 74, 0.2);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .info-blue-box {
+            background-color: #eff6ff;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #1e40af;
+        }
+
+        /* IMPORTANT NOTICE BANNER */
+        .notice-banner {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1px solid #fde68a;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .notice-content h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .notice-content ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .notice-content li {
+            font-size: 12px;
+            color: #78350f;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notice-content li::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            background-color: #d97706;
+            border-radius: 50%;
+        }
+
+        .notice-illustration {
+            width: 100px;
+            opacity: 0.8;
+        }
+
+        /* RIGHT SIDEBAR CARDS */
+        .guidelines-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .guidelines-list li {
+            font-size: 12px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.4;
+        }
+
+        .guidelines-list i {
+            color: #16a34a;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .link-footer {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .link-footer a {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-blue);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* IMPORTANT DATES */
+        .dates-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .date-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .date-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+        }
+
+        .date-item-left i {
+            color: var(--text-secondary);
+            width: 16px;
+            height: 16px;
+        }
+
+        .date-item-val {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* QUICK ACTIONS GRID & INPUT */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .action-card-btn {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .action-card-btn:hover {
+            background-color: #eff6ff;
+            border-color: #bfdbfe;
+            color: var(--primary-blue);
+        }
+
+        .action-card-btn i {
+            color: var(--primary-blue);
+            width: 20px;
+            height: 20px;
+        }
+
+        .quick-action-input-wrapper {
+            margin-top: 10px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .quick-action-input-wrapper input {
+            flex: 1;
+            padding: 8px 10px;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .quick-action-input-wrapper button {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ---------------- STRICT FULLSCREEN EXAM LOCK MODE ---------------- */
+        .exam-lock-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff;
+            z-index: 9999999;
+            flex-direction: column;
+        }
+
+        .exam-lock-header {
+            background-color: var(--sidebar-bg);
+            color: white;
+            padding: 16px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #2563eb;
+        }
+
+        .student-exam-meta {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .student-info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-info-item span.title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .student-info-item span.value {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .exam-right-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .violation-pill {
+            font-weight: 700;
+            font-size: 12px;
+            color: #ea580c;
+            background: rgba(234, 88, 12, 0.15);
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1px solid rgba(234, 88, 12, 0.3);
+        }
+
+        .timer-pill {
+            font-weight: 700;
+            font-size: 13px;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .exam-lock-body {
+            flex: 1;
+            padding: 28px;
+            max-width: 960px;
+            margin: 0 auto;
+            width: 100%;
+            overflow-y: auto;
+        }
+
+        .quiz-question {
+            margin-bottom: 24px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .quiz-question h4 {
+            margin-bottom: 14px;
+            font-size: 15px;
+            color: #0f172a;
+        }
+
+        .quiz-options label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            font-size: 13.5px;
+            cursor: pointer;
+            background: #ffffff;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            transition: border-color 0.2s;
+        }
+
+        .quiz-options label:hover {
+            border-color: #2563eb;
+        }
+
+        .btn-submit-exam {
+            background-color: #16a34a;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.3);
+            margin-top: 10px;
+            margin-bottom: 40px;
+        }
+
+        /* RESPONSIVE MEDIA QUERIES */
+        @media (max-width: 1200px) {
+            .metrics-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 868px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .main-wrapper {
+                margin-left: 0;
+            }
+            .mobile-toggle-btn {
+                display: flex;
+            }
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .topbar {
+                padding: 0 16px;
+            }
+            .user-info {
+                display: none;
+            }
+            .content-area {
+                padding: 16px;
+            }
+            .student-exam-meta {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+            .exam-lock-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+            .exam-right-meta {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+    <!-- PORTAL CONTAINER WRAPPER -->
+    <div id="portalContainer">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <!-- LOGO AREA -->
+                <div class="sidebar-header">
+                    <img src="../login_page/uoh-logo.png" alt="UOH Logo" class="uoh-logo-img" onerror="this.src='https://via.placeholder.com/42?text=UOH'">
+                    <div class="logo-text">
+                        <h2>The University of Haripur</h2>
+                        <p>Intelligent Ecosystem (IES)</p>
+                    </div>
+                </div>
+
+                <!-- NAV SECTION: STUDENT PORTAL -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Student Portal</div>
+                    <a href="stu_dashboard.html" class="nav-item">
+                        <i data-lucide="home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="my-courses.html" class="nav-item">
+                        <i data-lucide="book-open"></i>
+                        <span>My Courses</span>
+                    </a>
+                    <a href="attendance.html" class="nav-item">
+                        <i data-lucide="user-check"></i>
+                        <span>Attendance</span>
+                    </a>
+                    <a href="assignments.html" class="nav-item">
+                        <i data-lucide="file-text"></i>
+                        <span>Assignments</span>
+                    </a>
+                    <a href="#" class="nav-item active" onclick="event.preventDefault();">
+                        <i data-lucide="edit-3"></i>
+                        <span>Exams</span>
+                    </a>
+                    <a href="results.html" class="nav-item">
+                        <i data-lucide="bar-chart-2"></i>
+                        <span>Results & CGPA</span>
+                    </a>
+                    <a href="fees.html" class="nav-item">
+                        <i data-lucide="credit-card"></i>
+                        <span>Fees</span>
+                    </a>
+                    <a href="library.html" class="nav-item">
+                        <i data-lucide="book"></i>
+                        <span>Library</span>
+                    </a>
+                    <a href="timetable.html" class="nav-item">
+                        <i data-lucide="calendar"></i>
+                        <span>Timetable</span>
+                    </a>
+                    
+                    <a href="profile.html" class="nav-item">
+                        <i data-lucide="user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="settings.html" class="nav-item">
+                        <i data-lucide="settings"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+
+                <!-- NAV SECTION: SYSTEM -->
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="support.html" class="nav-item">
+                        <i data-lucide="help-circle"></i>
+                        <span>Support</span>
+                    </a>
+                    <a href="../landing_page/index.html" class="nav-item">
+                        <i data-lucide="log-out"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <p>© 2024 University of Haripur</p>
+                <p>All rights reserved.</p>
+                <p style="margin-top: 4px; color: #475569;">IES v1.0</p>
+            </div>
+        </aside>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+            
+            <!-- TOPBAR -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="mobile-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle Sidebar">
+                        <i data-lucide="more-vertical"></i>
+                    </button>
+
+                    <div class="search-box">
+                        <i data-lucide="search"></i>
+                        <input type="text" placeholder="Search courses, subjects...">
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    
+
+                    <div class="user-profile">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="user-avatar" id="topbarUserAvatar">
+                        <div class="user-info">
+                            <div class="user-name" id="topbarUserName">Loading...</div>
+                            <div class="user-role" id="topbarUserRole">BS Computer Science</div>
+                        </div>
+                        <i data-lucide="chevron-down" style="width: 16px; height: 16px; color: #64748b;"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- CONTENT AREA -->
+            <main class="content-area">
+
+                <div class="page-header">
+                    <h1>Exams</h1>
+                    <p>View your upcoming exams, exam schedule and important instructions.</p>
+                </div>
+
+                <!-- METRIC CARDS GRID -->
+                <section class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon purple">
+                            <i data-lucide="file-text"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Total Exams</div>
+                            <div class="value">5</div>
+                            <div class="subtext">This Semester</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon green">
+                            <i data-lucide="calendar"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Completed</div>
+                            <div class="value">0</div>
+                            <div class="subtext">Exams</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon orange">
+                            <i data-lucide="clock"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Upcoming</div>
+                            <div class="value" id="upcomingCount">5</div>
+                            <div class="subtext">Exams</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon red">
+                            <i data-lucide="file-check"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Admit Card</div>
+                            <div class="value">Available</div>
+                            <div class="subtext"><a href="#">Download</a></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon blue">
+                            <i data-lucide="percent"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Exam Weightage</div>
+                            <div class="value">40%</div>
+                            <div class="subtext">Of Total Marks</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- DASHBOARD MAIN LAYOUT -->
+                <div class="dashboard-layout">
+
+                    <!-- LEFT COLUMN -->
+                    <div class="left-column">
+                        
+                        <div class="card-box">
+                            <div class="card-header-flex">
+                                <div class="card-title-flex">
+                                    <h2>Upcoming Exams</h2>
+                                    <i data-lucide="info" style="width: 16px; height: 16px; color: #94a3b8;"></i>
+                                </div>
+                                <button class="btn-light">View Calendar</button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="exam-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Subject</th>
+                                            <th>Date</th>
+                                            <th>Day</th>
+                                            <th>Time</th>
+                                            <th>Duration</th>
+                                            <th>Venue</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="examTableBody">
+                                        <!-- Dynamic Rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="info-blue-box">
+                                <i data-lucide="info" style="width: 18px; height: 18px; flex-shrink: 0;"></i>
+                                <span>Exam schedule is subject to change. Please check regularly for updates.</span>
+                            </div>
+                        </div>
+
+                        <!-- IMPORTANT NOTICE BANNER -->
+                        <div class="notice-banner">
+                            <div class="notice-content">
+                                <h3>
+                                    <i data-lucide="alert-triangle" style="width: 20px; height: 20px; color: #d97706;"></i>
+                                    Important Notice
+                                </h3>
+                                <ul>
+                                    <li>Admit card is mandatory to appear in the exam.</li>
+                                    <li>Keep your belongings safe. University is not responsible for any loss.</li>
+                                    <li>Any unfair means will result in strict disciplinary action.</li>
+                                    <li>Make sure to check your exam venue and time carefully.</li>
+                                </ul>
+                            </div>
+                            <div class="notice-illustration">
+                                <i data-lucide="clipboard-check" style="width: 80px; height: 80px; color: #f59e0b; opacity: 0.4;"></i>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT COLUMN -->
+                    <div class="right-column">
+
+                        <div class="card-box">
+                            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 16px;">Exam Guidelines</h3>
+                            <ul class="guidelines-list">
+                                <li>
+                                    <i data-lucide="check-circle-2"></i>
+                                    Reach the exam hall 15 minutes before the exam time.
+                                </li>
+                                <li>
+                                    <i data-lucide="check-circle-2"></i>
+                                    Bring your original CNIC and admit card.
+                                </li>
+                                <li>
+                                    <i data-lucide="check-circle-2"></i>
+                                    Mobile phones and smart watches are not allowed.
+                                </li>
+                                <li>
+                                    <i data-lucide="check-circle-2"></i>
+                                    Read all instructions on the question paper carefully.
+                                </li>
+                                <li>
+                                    <i data-lucide="check-circle-2"></i>
+                                    No talking or copying is allowed during the exam.
+                                </li>
+                            </ul>
+                            <div class="link-footer">
+                                <a href="#">View All Guidelines <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="card-box">
+                            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 16px;">Important Dates</h3>
+                            <div class="dates-list">
+                                <div class="date-item">
+                                    <div class="date-item-left">
+                                        <i data-lucide="calendar"></i>
+                                        <span>Exams Start</span>
+                                    </div>
+                                    <div class="date-item-val">20 May 2025</div>
+                                </div>
+                                <div class="date-item">
+                                    <div class="date-item-left">
+                                        <i data-lucide="calendar"></i>
+                                        <span>Exams End</span>
+                                    </div>
+                                    <div class="date-item-val">03 Jun 2025</div>
+                                </div>
+                                <div class="date-item">
+                                    <div class="date-item-left">
+                                        <i data-lucide="calendar"></i>
+                                        <span>Result Declaration</span>
+                                    </div>
+                                    <div class="date-item-val">10 Jun 2025 (Tentative)</div>
+                                </div>
+                                <div class="date-item">
+                                    <div class="date-item-left">
+                                        <i data-lucide="calendar"></i>
+                                        <span>Rechecking Last Date</span>
+                                    </div>
+                                    <div class="date-item-val">15 Jun 2025</div>
+                                </div>
+                            </div>
+                            <div class="link-footer">
+                                <a href="#">View Academic Calendar <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="card-box">
+                            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 16px;">Quick Actions</h3>
+                            <div class="quick-actions-grid" id="quickActionsGrid">
+                                <a href="#" class="action-card-btn">
+                                    <i data-lucide="download"></i>
+                                    Download Admit Card
+                                </a>
+                                <a href="#" class="action-card-btn">
+                                    <i data-lucide="calendar"></i>
+                                    Exam Routine (PDF)
+                                </a>
+                                <a href="#" class="action-card-btn">
+                                    <i data-lucide="map-pin"></i>
+                                    Exam Centers & Venues
+                                </a>
+                                <a href="#" class="action-card-btn">
+                                    <i data-lucide="file-spreadsheet"></i>
+                                    Marks Distribution
+                                </a>
+                            </div>
+
+                            <div class="quick-action-input-wrapper">
+                                <input type="text" id="customActionInput" placeholder="Add custom action...">
+                                <button onclick="addQuickAction()">Add</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- STRICT PROCTORED FULL-SCREEN EXAM OVERLAY -->
+    <div class="exam-lock-overlay" id="examLockOverlay">
+        
+        <!-- TOP STUDENT & EXAM INFORMATION HEADER -->
+        <div class="exam-lock-header">
+            <div class="student-exam-meta">
+                <div class="student-info-item">
+                    <span class="title">Student Name</span>
+                    <span class="value" id="examOverlayStudentName">Loading...</span>
+                </div>
+                <div class="student-info-item">
+                    <span class="title">Roll Number</span>
+                    <span class="value" id="examOverlayRollNumber">---</span>
+                </div>
+                <div class="student-info-item">
+                    <span class="title">Semester / Section</span>
+                    <span class="value" id="examOverlayTerm">Loading...</span>
+                </div>
+                <div class="student-info-item">
+                    <span class="title">Exam Course</span>
+                    <span class="value" id="activeExamTitle" style="color: #60a5fa;">Loading...</span>
+                </div>
+            </div>
+
+            <div class="exam-right-meta">
+                <div class="violation-pill">
+                    Warnings: <span id="violationCount">0</span>/3
+                </div>
+                <div class="timer-pill">
+                    <i data-lucide="clock" style="width: 16px; height: 16px;"></i>
+                    <span id="examTimer">60:00</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- EXAM CONTENT AREA -->
+        <div class="exam-lock-body">
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 12.5px; color: #1e40af;">
+                <strong>Strict Lockdown Active:</strong> Do not exit full screen or change browser tabs. Switching tabs or exiting full screen will trigger a warning violation. 3 warnings will result in auto-submission.
+            </div>
+
+            <div id="liveExamQuestions">
+            <div class="quiz-question">
+                <h4>Question 1: What is the primary data structure used for Breadth-First Search (BFS) traversal?</h4>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q1"> A) Stack</label>
+                    <label><input type="radio" name="q1"> B) Queue</label>
+                    <label><input type="radio" name="q1"> C) Priority Queue</label>
+                    <label><input type="radio" name="q1"> D) Hash Map</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <h4>Question 2: Which time complexity best describes Quicksort in its worst-case scenario?</h4>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q2"> A) O(N log N)</label>
+                    <label><input type="radio" name="q2"> B) O(N)</label>
+                    <label><input type="radio" name="q2"> C) O(N²)</label>
+                    <label><input type="radio" name="q2"> D) O(1)</label>
+                </div>
+            </div>
+
+            </div>
+            <button class="btn-submit-exam" onclick="submitExam(false)">Submit Paper</button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function id(e) { return document.getElementById(e); }
+
+        // Sidebar Toggle
+        const sidebar = id('sidebar');
+        const sidebarToggleBtn = id('sidebarToggleBtn');
+
+        sidebarToggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('mobile-open');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 868) {
+                if (!sidebar.contains(e.target) && !sidebarToggleBtn.contains(e.target)) {
+                    sidebar.classList.remove('mobile-open');
+                }
+            }
+        });
+
+        function showNotificationAlert() {
+            alert("Notification Center:\n1. Admit Cards released for Midterms.\n2. Exam Hall Block A updated.");
+        }
+
+        const examDataset = [];
+
+        function renderExamTable() {
+            const tbody = id('examTableBody');
+            tbody.innerHTML = '';
+            const now = new Date().getTime();
+
+            examDataset.forEach((exam, index) => {
+                const tr = document.createElement('tr');
+                const examDate = new Date(exam.startTime);
+                const dateString = examDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                
+                let statusHTML = '';
+                if (now >= exam.startTime && now <= exam.endTime) {
+                    statusHTML = `<button class="btn-start-exam" onclick="startExam('${exam.subjectTitle}', '${exam.subjectCode}')">Start Exam</button>`;
+                } else {
+                    statusHTML = `<span class="status-badge">Upcoming</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td><div class="badge-number">${index + 1}</div></td>
+                    <td class="subject-col">
+                        <strong>${exam.subjectTitle}</strong>
+                        <span>${exam.subjectCode}</span>
+                    </td>
+                    <td class="date-col">${dateString}</td>
+                    <td>${exam.day}</td>
+                    <td style="font-size: 11.5px; color: #475569;">${exam.timeFormatted}</td>
+                    <td>${exam.duration}</td>
+                    <td style="font-size: 11.5px; color: #475569;">${exam.venue}</td>
+                    <td>${statusHTML}</td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        renderExamTable();
+
+        function addQuickAction() {
+            const input = id('customActionInput');
+            const val = input.value.trim();
+            if (!val) return;
+
+            const grid = id('quickActionsGrid');
+            const a = document.createElement('a');
+            a.href = '#';
+            a.className = 'action-card-btn';
+            a.innerHTML = `<i data-lucide="star"></i>${val}`;
+            grid.appendChild(a);
+            lucide.createIcons();
+            input.value = '';
+        }
+
+        // ================= STRICT PROCTORED EXAM ENGINE =================
+        let timerInterval;
+        let isExamActive = false;
+        let violations = 0;
+
+        function startExam(title, code) {
+            isExamActive = true;
+            violations = 0;
+            id('violationCount').innerText = violations;
+
+            // Set Title
+            id('activeExamTitle').innerText = `${title} (${code})`;
+
+            // Hide Main Portal Content
+            id('portalContainer').style.display = 'none';
+
+            // Show Exam Lock Screen
+            id('examLockOverlay').style.display = 'flex';
+
+            // Request Native Fullscreen
+            enterFullscreen();
+
+            // Lock Keyboard Esc key if browser supports Keyboard Lock API
+            if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
+                navigator.keyboard.lock(['Escape', 'MetaLeft', 'MetaRight']).catch(e => {});
+            }
+
+            // Prevent tab closing
+            window.onbeforeunload = function() {
+                return "Exam in progress! Leaving will void your submission.";
+            };
+
+            // Start Timer
+            let duration = 3600;
+            timerInterval = setInterval(() => {
+                duration--;
+                let m = Math.floor(duration / 60);
+                let s = duration % 60;
+                id('examTimer').innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+                if (duration <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam(true);
+                }
+            }, 1000);
+        }
+
+        function enterFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(err => {});
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // PROCTORING VIOLATION MONITORS
+        function registerViolation(reason) {
+            if (!isExamActive) return;
+
+            violations++;
+            id('violationCount').innerText = violations;
+
+            if (violations >= 3) {
+                alert(`STRICT SECURITY VIOLATION:\n${reason}\n\nYou have reached maximum violations (3/3). Exam is being automatically submitted.`);
+                submitExam(true);
+            } else {
+                alert(`SECURITY WARNING (${violations}/3):\n${reason}\nPlease do not attempt to leave the exam window!`);
+                enterFullscreen();
+            }
+        }
+
+        // 1. Detect Fullscreen Exit (e.g. via ESC key press)
+        document.addEventListener('fullscreenchange', () => {
+            if (isExamActive && !document.fullscreenElement) {
+                window.registerViolation("Fullscreen mode exited!");
+            }
+        });
+
+        // 2. Detect Tab Switch or Minimizing Browser
+        document.addEventListener('visibilitychange', () => {
+            // Timing and submission are server-enforced. Fullscreen exits are
+            // the configured violation source for online papers.
+        });
+
+        // 3. Block Shortcuts & Context Menu
+        document.addEventListener('contextmenu', e => {
+            if (isExamActive) e.preventDefault();
+        });
+
+        document.addEventListener('keydown', e => {
+            if (!isExamActive) return;
+
+            // Block Alt+Tab, F12, Ctrl+Shift+I, Ctrl+C, Ctrl+V, Meta/Windows Key
+            if (
+                e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+                (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'u' || e.key === 't' || e.key === 'n')) ||
+                e.key === 'Meta' || e.key === 'Alt'
+            ) {
+                e.preventDefault();
+                window.registerViolation("Unauthorized key shortcut used!");
+            }
+        });
+
+        function submitExam(autoSubmitted = false) {
+            isExamActive = false;
+            clearInterval(timerInterval);
+            window.onbeforeunload = null;
+
+            // Unlock keyboard
+            if ('keyboard' in navigator && 'unlock' in navigator.keyboard) {
+                navigator.keyboard.unlock();
+            }
+
+            // Exit Fullscreen
+            if (document.fullscreenElement && document.exitFullscreen) {
+                document.exitFullscreen().catch(err => {});
+            }
+
+            id('examLockOverlay').style.display = 'none';
+            id('portalContainer').style.display = 'flex';
+
+            if (autoSubmitted) {
+                alert("Exam has been automatically submitted due to security violations or time completion.");
+            } else {
+                alert("Exam submitted successfully! Thank you.");
+            }
+        }
+    </script>
+<script>
+/* Server-backed online examination flow. */
+const ONLINE_EXAM_API=window.ACOS_CONFIG.API_BASE_URL; let onlineAttempt=null, onlineDeadline=null, fullscreenConfirmed=false, violationInFlight=false, lastViolationAt=0;
+const onlineHeaders=()=>({Authorization:`Bearer ${localStorage.getItem('access_token')||sessionStorage.getItem('access_token')}`,'Content-Type':'application/json'});
+const html=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function loadOnlineExams(){const r=await fetch(`${ONLINE_EXAM_API}/student/exams`,{headers:onlineHeaders()});if(!r.ok)throw Error();const {exams}=await r.json();id('examTableBody').innerHTML=exams.length?exams.map((x,i)=>`<tr><td><div class="badge-number">${i+1}</div></td><td class="subject-col"><strong>${html(x.title)}</strong><span>${html(x.course)} (${html(x.course_code)}) · ${html(x.type)}</span></td><td class="date-col">${new Date(x.start_at+'Z').toLocaleDateString()}</td><td>${html(x.section)}</td><td>${new Date(x.start_at+'Z').toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} - ${new Date(x.end_at+'Z').toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</td><td>${x.duration_minutes} mins</td><td>${x.total_marks} marks</td><td>${x.state==='Available'||x.state==='In Progress'?`<button class="btn-start-exam" onclick="startOnlineExam(${x.assessment_id})">Start Exam</button>`:`<span class="status-badge">${x.state}</span>`}</td></tr>`).join(''):'<tr><td colspan="8" style="text-align:center;padding:20px">No authorized online papers are available.</td></tr>'}
+async function startOnlineExam(assessmentId){if(!confirm('Do not exit fullscreen during the exam. After 3 fullscreen violations, your paper will be automatically submitted.\n\nStart now?'))return;try{await document.documentElement.requestFullscreen();fullscreenConfirmed=Boolean(document.fullscreenElement);}catch(error){alert('Fullscreen permission is required to start this online exam. Please allow it and try again.');return;}const r=await fetch(`${ONLINE_EXAM_API}/student/exams/${assessmentId}/start`,{method:'POST',headers:onlineHeaders()});const d=await r.json();if(!r.ok||!document.fullscreenElement){if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});alert(d.detail||'Unable to start');return;}onlineAttempt=d.attempt_id;onlineDeadline=new Date(d.deadline+'Z');violations=0;isExamActive=true;id('violationCount').textContent='0';id('examOverlayStudentName').textContent=d.student.name;id('examOverlayRollNumber').textContent=d.student.roll_number;id('examOverlayTerm').textContent=`Semester ${d.student.semester} · ${d.student.section}`;id('activeExamTitle').textContent=`${d.exam.title} — ${d.exam.course} (${d.exam.course_code})`;id('liveExamQuestions').innerHTML=d.questions.map((q,i)=>`<div class="quiz-question"><h4>Question ${i+1}: ${html(q.question)} <small>(${q.marks} marks)</small></h4><div class="quiz-options">${Object.entries(q.options).map(([k,v])=>`<label><input type="radio" name="q${q.question_id}" value="${k}" onchange="saveOnlineAnswer(${q.question_id},'${k}')"> ${k}) ${html(v)}</label>`).join('')}</div></div>`).join('');id('portalContainer').style.display='none';id('examLockOverlay').style.display='flex';window.onbeforeunload=()=> 'Exam in progress';clearInterval(timerInterval);timerInterval=setInterval(updateOnlineTimer,1000);updateOnlineTimer();}
+async function saveOnlineAnswer(question_id,selected_option){const r=await fetch(`${ONLINE_EXAM_API}/student/attempts/${onlineAttempt}/answer`,{method:'PATCH',headers:onlineHeaders(),body:JSON.stringify({question_id,selected_option})});if(!r.ok)alert('Answer could not be saved.');}
+function updateOnlineTimer(){const seconds=Math.max(0,Math.ceil((onlineDeadline-Date.now())/1000));id('examTimer').textContent=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;if(!seconds)submitOnlineExam('timer');}
+async function submitOnlineExam(reason=null){if(!onlineAttempt)return;const attempt=onlineAttempt;onlineAttempt=null;fullscreenConfirmed=false;clearInterval(timerInterval);isExamActive=false;window.onbeforeunload=null;if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});const r=await fetch(`${ONLINE_EXAM_API}/student/attempts/${attempt}/submit`,{method:'POST',headers:onlineHeaders(),body:JSON.stringify({auto_submit_reason:reason,fullscreen_violations:violations})});const d=await r.json();id('examLockOverlay').style.display='none';id('portalContainer').style.display='flex';if(!r.ok){alert(d.detail||'Unable to submit');return;}const wrong=(d.responses||[]).filter(x=>x.selected_option&&!x.is_correct).map(x=>`• ${x.question}\n  Your: ${x.selected_option}; Correct: ${x.correct_option}`).join('\n');alert(`${reason?'Paper auto-submitted.':'Paper submitted.'}\nScore: ${d.obtained_marks}/${d.total_marks} (${d.percentage}%)\nCorrect: ${d.correct_answers}; Incorrect: ${d.incorrect_answers}; Unanswered: ${d.unanswered_questions}${wrong?'\n\nIncorrect answers:\n'+wrong:''}`);loadOnlineExams();}
+window.startExam=startOnlineExam; window.submitExam=()=>submitOnlineExam(null);
+/* Override the sample monitor so only fullscreen exits are counted. */
+window.registerViolation=async reason=>{if(!isExamActive||!fullscreenConfirmed||violationInFlight||Date.now()-lastViolationAt<1500)return;lastViolationAt=Date.now();violationInFlight=true;try{const response=await fetch(`${ONLINE_EXAM_API}/student/attempts/${onlineAttempt}/violations`,{method:'POST',headers:onlineHeaders(),body:JSON.stringify({reason})});const result=await response.json();if(!response.ok)throw Error(result.detail||'Violation could not be recorded');violations=result.violations;id('violationCount').textContent=violations;if(result.auto_submitted){alert(`Warning 3: ${reason}. Your paper is being automatically submitted.`);submitOnlineExam('fullscreen_violation');}else{alert(`Warning ${violations}/3: ${reason}`);enterFullscreen();}}finally{violationInFlight=false;}};
+document.addEventListener('visibilitychange',()=>{if(isExamActive&&fullscreenConfirmed&&document.hidden)window.registerViolation('Tab switch or browser minimized');});
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>loadOnlineExams().catch(()=>id('examTableBody').innerHTML='<tr><td colspan="8">Unable to load online papers.</td></tr>'),0));
+</script>
+<!-- Student Topbar Hydration -->
+<script src="../shared/student-topbar.js"></script>
+<script>
+  // Also inject into exam overlay
+  document.addEventListener('DOMContentLoaded', function() {
+    const profile = JSON.parse(localStorage.getItem('student_profile') || '{}');
+    const nameEl = document.getElementById('examOverlayStudentName');
+    const rollEl = document.getElementById('examOverlayRollNumber');
+    if (nameEl && (profile.first_name || profile.name)) {
+      nameEl.textContent = profile.name || (profile.first_name + ' ' + profile.last_name);
+    }
+    if (rollEl && profile.roll_number) {
+      rollEl.textContent = profile.roll_number;
+    }
+  });
+</script>
+</body>
+</html>

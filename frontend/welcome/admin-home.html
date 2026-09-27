@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ==========================================
+         BASIC META TAGS
+    =========================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACOS | Autonomous Campus Operating System</title>
+    <meta name="description"
+        content="AI Powered Autonomous Campus Operating System using Multi-Agent Architecture, Zero Trust Security and Intelligent Automation.">
+    <meta name="keywords"
+        content="AI, Campus Management System, Agentic AI, LangGraph, FastAPI, University">
+    <meta name="author" content="Hammad Younis Abbasi">
+    <!-- ==========================================
+         Bootstrap 5
+    =========================================== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- ==========================================
+         Font Awesome
+    =========================================== -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    <!-- ==========================================
+         Google Fonts
+    =========================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+    <!-- ==========================================
+         NAVIGATION BAR
+    =========================================== -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="index.html">
+                <i class="fas fa-shield-alt text-primary fs-3 me-2"></i>
+                <div>
+                    <h5 class="mb-0 fw-bold">ACOS</h5>
+                    <small class="text-muted">
+                        Autonomous Campus Operating System admin home
+                    </small>
+                </div>
+            </a>
+            <!-- Mobile Menu -->
+            <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Menu -->
+            <div class="collapse navbar-collapse"
+                id="navbarMenu">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link px-3"
+                            href="#features">
+                            Features
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3"
+                            href="#agents">
+                            AI Agents
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3"
+                            href="#technology">
+                            Technology
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3"
+                            href="#about">
+                            About
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <a href="../Admin_dashboard/dashboard.html"
+                            class="btn btn-primary px-4">
+                            <i class="fas fa-gauge-high me-2"></i>
+                            Launch Dashboard
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- ==========================================
+         HERO SECTION
+    =========================================== -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <!-- Left Content -->
+                <div class="col-lg-6">
+                    <span class="badge bg-primary mb-3">
+                        AI Powered Campus Platform
+                    </span>
+                    <h1 class="display-4 fw-bold mb-4">
+                        Autonomous Campus Operating System
+                    </h1>
+                    <p class="lead text-muted mb-4">
+                        A research-based intelligent campus ecosystem that
+                        combines Agentic AI, Zero Trust Security,
+                        LangGraph orchestration, FastAPI backend,
+                        and autonomous decision-making to modernize
+                        university management.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="pages/dashboard.html"
+                            class="btn btn-primary btn-lg">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            Launch Dashboard
+                        </a>
+                        <a href="#features"
+                            class="btn btn-outline-primary btn-lg">
+                            Learn More
+                        </a>
+                    </div>
+                    <!-- Statistics -->
+                    <div class="row mt-5">
+                        <div class="col-4">
+                            <h2 class="fw-bold text-primary">
+                                13
+                            </h2>
+                            <p class="text-muted mb-0">
+                                AI Agents
+                            </p>
+                        </div>
+                        <div class="col-4">
+                            <h2 class="fw-bold text-success">
+                                24/7
+                            </h2>
+                            <p class="text-muted mb-0">
+                                Monitoring
+                            </p>
+                        </div>
+                        <div class="col-4">
+                            <h2 class="fw-bold text-warning">
+                                Zero
+                            </h2>
+                            <p class="text-muted mb-0">
+                                Trust Security
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Illustration -->
+                <div class="col-lg-6 text-center">
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=900"
+                        class="img-fluid rounded-4 shadow-lg"
+                        alt="AI Campus">
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ==========================================
+         NEXT MODULE STARTS HERE
+         Features Section
+    =========================================== -->
+    <!-- ==========================================
+         FEATURES SECTION
+    =========================================== -->
+    <section id="features" class="py-5 bg-white">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge bg-primary mb-3">
+                    System Features
+                </span>
+                <h2 class="fw-bold display-6">
+                    Intelligent Campus Automation
+                </h2>
+                <p class="text-muted col-lg-8 mx-auto">
+                    ACOS transforms traditional campus management into an
+                    intelligent autonomous ecosystem using Artificial
+                    Intelligence, Multi-Agent Systems, Zero Trust Security,
+                    and modern cloud-ready architecture.
+                </p>
+            </div>
+            <div class="row g-4">
+                <!-- Feature 1 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-4">
+                                <i class="fas fa-robot fa-3x text-primary"></i>
+                            </div>
+                            <h4 class="fw-bold">
+                                AI Multi-Agent System
+                            </h4>
+                            <p class="text-muted">
+                                Thirteen specialized AI agents collaborate
+                                together to automate academic, financial,
+                                security, admission and administrative tasks.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feature 2 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-4">
+                                <i class="fas fa-user-shield fa-3x text-success"></i>
+                            </div>
+                            <h4 class="fw-bold">
+                                Zero Trust Security
+                            </h4>
+                            <p class="text-muted">
+                                Every action is continuously verified,
+                                monitored and audited to eliminate data
+                                tampering and unauthorized access.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feature 3 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-4">
+                                <i class="fas fa-chart-line fa-3x text-warning"></i>
+                            </div>
+                            <h4 class="fw-bold">
+                                Live Analytics
+                            </h4>
+                            <p class="text-muted">
+                                Monitor real-time campus performance through
+                                intelligent dashboards, analytics and
+                                operational insights.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feature 4 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-4">
+                                <i class="fas fa-database fa-3x text-info"></i>
+                            </div>
+                            <h4 class="fw-bold">
+                                Secure Data Management
+                            </h4>
+                            <p class="text-muted">
+                                Academic records, finance, research,
+                                examinations and student services are
+                                managed through a centralized database.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feature 5 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-4">
+                                <i class="fas fa-network-wired fa-3x text-danger"></i>
+                            </div>
+                            <h4 class="fw-bold">
+                                LangGraph Workflow
+                            </h4>
+                            <p class="text-muted">
+                                AI agents communicate through a modern
+                                orchestration engine for autonomous
+                                decision making and collaboration.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feature 6 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-4">
+                                <i class="fas fa-graduation-cap fa-3x text-secondary"></i>
+                            </div>
+                            <h4 class="fw-bold">
+                                Smart Education
+                            </h4>
+                            <p class="text-muted">
+                                Personalized academic advising,
+                                intelligent recommendations and automated
+                                campus support improve student success.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ==========================================
+         AI AGENTS SECTION
+    =========================================== -->
+    <section id="agents" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge bg-success mb-3">
+                    Autonomous AI Agents
+                </span>
+                <h2 class="fw-bold display-6">
+                    13 Specialized AI Agents
+                </h2>
+                <p class="text-muted col-lg-8 mx-auto">
+                    Every AI agent is responsible for a specific university
+                    department while collaborating with the others through
+                    LangGraph orchestration.
+                </p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-user-graduate fa-2x text-primary mb-3"></i>
+                        <h5>Academic Advisor</h5>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-file-signature fa-2x text-success mb-3"></i>
+                        <h5>Exam Evaluation</h5>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-shield-alt fa-2x text-danger mb-3"></i>
+                        <h5>Clerk Watchdog</h5>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-video fa-2x text-warning mb-3"></i>
+                        <h5>Exam Monitoring</h5>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-users fa-2x text-info mb-3"></i>
+                        <h5>Student Services</h5>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-user-check fa-2x text-primary mb-3"></i>
+                        <h5>Admission Agent</h5>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-coins fa-2x text-success mb-3"></i>
+                        <h5>Finance Agent</h5>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-flask fa-2x text-secondary mb-3"></i>
+                        <h5>Research Agent</h5>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-book fa-2x text-warning mb-3"></i>
+                        <h5>Library Agent</h5>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-bed fa-2x text-info mb-3"></i>
+                        <h5>Hostel Agent</h5>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-lock fa-2x text-danger mb-3"></i>
+                        <h5>Security Agent</h5>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-4">
+                        <i class="fas fa-headset fa-2x text-primary mb-3"></i>
+                        <h5>IT Helpdesk</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="pages/dashboard.html" class="btn btn-primary btn-lg">
+                    <i class="fas fa-arrow-right me-2"></i>
+                    Explore Complete Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- ==========================================
+         NEXT MODULE STARTS HERE
+         Technology Stack Section
+    =========================================== -->
+    <!-- ==========================================
+         TECHNOLOGY STACK
+    =========================================== -->
+    <section id="technology" class="py-5 bg-white">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge bg-dark mb-3">
+                    Modern Technology Stack
+                </span>
+                <h2 class="fw-bold display-6">
+                    Built Using Industry Standard Technologies
+                </h2>
+                <p class="text-muted col-lg-8 mx-auto">
+                    ACOS combines Artificial Intelligence, Agentic AI,
+                    Backend Engineering, Modern Databases and Secure
+                    Architecture into one intelligent ecosystem.
+                </p>
+            </div>
+            <div class="row g-4">
+                <!-- FastAPI -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card border-0 shadow-sm text-center h-100">
+                        <div class="card-body p-4">
+                            <i class="fas fa-bolt fa-3x text-success mb-3"></i>
+                            <h5 class="fw-bold">
+                                FastAPI
+                            </h5>
+                            <p class="text-muted">
+                                High-performance backend API for secure
+                                communication between frontend and AI agents.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- LangGraph -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card border-0 shadow-sm text-center h-100">
+                        <div class="card-body p-4">
+                            <i class="fas fa-project-diagram fa-3x text-primary mb-3"></i>
+                            <h5 class="fw-bold">
+                                LangGraph
+                            </h5>
+                            <p class="text-muted">
+                                Multi-agent orchestration framework enabling
+                                autonomous collaboration between AI systems.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Ollama -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card border-0 shadow-sm text-center h-100">
+                        <div class="card-body p-4">
+                            <i class="fas fa-brain fa-3x text-danger mb-3"></i>
+                            <h5 class="fw-bold">
+                                Ollama
+                            </h5>
+                            <p class="text-muted">
+                                Local LLM execution providing privacy,
+                                security and offline AI capabilities.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- SQLite -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card border-0 shadow-sm text-center h-100">
+                        <div class="card-body p-4">
+                            <i class="fas fa-database fa-3x text-warning mb-3"></i>
+                            <h5 class="fw-bold">
+                                SQLite
+                            </h5>
+                            <p class="text-muted">
+                                Lightweight relational database for secure
+                                academic and administrative data storage.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Bootstrap -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card border-0 shadow-sm text-center h-100">
+                        <div class="card-body p-4">
+                            <i class="fab fa-bootstrap fa-3x text-purple mb-3"></i>
+                            <h5 class="fw-bold">
+                                Bootstrap 5
+                            </h5>
+                            <p class="text-muted">
+                                Responsive UI framework ensuring modern
+                                layouts across all devices.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- FAISS -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card border-0 shadow-sm text-center h-100">
+                        <div class="card-body p-4">
+                            <i class="fas fa-search fa-3x text-info mb-3"></i>
+                            <h5 class="fw-bold">
+                                FAISS
+                            </h5>
+                            <p class="text-muted">
+                                Vector database enabling semantic search
+                                and intelligent document retrieval.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Zero Trust -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card border-0 shadow-sm text-center h-100">
+                        <div class="card-body p-4">
+                            <i class="fas fa-user-shield fa-3x text-success mb-3"></i>
+                            <h5 class="fw-bold">
+                                Zero Trust
+                            </h5>
+                            <p class="text-muted">
+                                Continuous verification and security
+                                monitoring for every campus operation.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- AI -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="card border-0 shadow-sm text-center h-100">
+                        <div class="card-body p-4">
+                            <i class="fas fa-microchip fa-3x text-primary mb-3"></i>
+                            <h5 class="fw-bold">
+                                Agentic AI
+                            </h5>
+                            <p class="text-muted">
+                                Autonomous reasoning and intelligent
+                                decision making for modern universities.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ==========================================
+         PROJECT STATISTICS
+    =========================================== -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">
+                    ACOS by the Numbers
+                </h2>
+                <p>
+                    A next-generation intelligent university ecosystem.
+                </p>
+            </div>
+            <div class="row text-center gy-5">
+                <div class="col-lg-3 col-md-6">
+                    <h1 class="display-4 fw-bold">
+                        13
+                    </h1>
+                    <p>
+                        Specialized AI Agents
+                    </p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h1 class="display-4 fw-bold">
+                        100+
+                    </h1>
+                    <p>
+                        Planned System Features
+                    </p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h1 class="display-4 fw-bold">
+                        24/7
+                    </h1>
+                    <p>
+                        Autonomous Monitoring
+                    </p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h1 class="display-4 fw-bold">
+                        Zero
+                    </h1>
+                    <p>
+                        Trust Security Model
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ==========================================
+         RESEARCH HIGHLIGHTS
+    =========================================== -->
+    <section id="about" class="py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-6">
+                    <span class="badge bg-success mb-3">
+                        Research Innovation
+                    </span>
+                    <h2 class="fw-bold display-6">
+                        Beyond Traditional Campus Management
+                    </h2>
+                    <p class="text-muted">
+                        Traditional Campus Management Systems only store and
+                        display information.
+                        ACOS introduces autonomous AI agents capable of
+                        monitoring, analysing, verifying and assisting
+                        university operations in real time.
+                    </p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            ✅ AI-powered academic decision support
+                        </li>
+                        <li class="list-group-item">
+                            ✅ Intelligent fraud detection
+                        </li>
+                        <li class="list-group-item">
+                            ✅ Autonomous workflow automation
+                        </li>
+                        <li class="list-group-item">
+                            ✅ Research assistance using Agentic AI
+                        </li>
+                        <li class="list-group-item">
+                            ✅ Secure Zero Trust architecture
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card shadow border-0">
+                        <div class="card-body p-5">
+                            <h3 class="fw-bold mb-4">
+                                Project Vision
+                            </h3>
+                            <p class="text-muted">
+                                To build an intelligent autonomous campus
+                                ecosystem where Artificial Intelligence
+                                actively supports students, faculty,
+                                administration and researchers while
+                                ensuring transparency, security and
+                                operational efficiency.
+                            </p>
+                            <a href="pages/dashboard.html"
+                               class="btn btn-primary btn-lg mt-3">
+                                Launch ACOS Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ==========================================
+         NEXT MODULE
+         Footer + JS
+    =========================================== -->
+
+<!-- ===========================================================
+     NOTIFICATION CONTAINER
+=========================================================== -->
+<div id="notification-container"
+     class="position-fixed top-0 end-0 p-3"
+     style="z-index:1100;">
+</div>
+<!-- ===========================================================
+     LOADING OVERLAY
+=========================================================== -->
+<div id="loading-overlay"
+     class="d-none position-fixed top-0 start-0 w-100 h-100
+            bg-dark bg-opacity-50
+            justify-content-center
+            align-items-center"
+     style="z-index:2000;">
+    <div class="text-center text-white">
+        <div class="spinner-border text-light mb-3"
+             role="status">
+            <span class="visually-hidden">
+                Loading...
+            </span>
+        </div>
+        <h6>Loading Dashboard...</h6>
+    </div>
+</div>
+<!-- ===========================================================
+     BOOTSTRAP JAVASCRIPT
+=========================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

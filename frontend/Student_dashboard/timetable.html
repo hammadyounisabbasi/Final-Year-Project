@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable - Student Portal | The University of Haripur</title>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --sidebar-bg: #091024;
+            --sidebar-hover: #132042;
+            --sidebar-text: #94a3b8;
+            --sidebar-active-bg: #1d61f2;
+            --sidebar-active-text: #ffffff;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --primary-blue: #2563eb;
+            --primary-blue-hover: #1d4ed8;
+            --primary-blue-bg: #eff6ff;
+            
+            /* Course Subject Color Palette */
+            --ds-bg: #e0f2fe;
+            --ds-text: #0369a1;
+            --ds-border: #bae6fd;
+            
+            --db-bg: #fef9c3;
+            --db-text: #854d0e;
+            --db-border: #fef08a;
+            
+            --dm-bg: #dcfce7;
+            --dm-text: #15803d;
+            --dm-border: #bbf7d0;
+            
+            --we-bg: #fce7f3;
+            --we-text: #be185d;
+            --we-border: #fbcfe8;
+            
+            --os-bg: #ffedd5;
+            --os-text: #c2410c;
+            --os-border: #fed7aa;
+            
+            --cn-bg: #f3e8ff;
+            --cn-text: #6b21a8;
+            --cn-border: #e9d5ff;
+            
+            --isl-bg: #ecfdf5;
+            --isl-text: #047857;
+            --isl-border: #a7f3d0;
+            
+            --welab-bg: #e0f2fe;
+            --welab-text: #0284c7;
+            --welab-border: #bae6fd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* PORTAL LAYOUT CONTAINER */
+        #portalContainer {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* ---------------- SIDEBAR ---------------- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* UNIVERSITY LOGO STYLING */
+        .uoh-logo-img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: #ffffff;
+            padding: 2px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .logo-text h2 {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            color: var(--sidebar-text);
+            margin-top: 2px;
+        }
+
+        .nav-section {
+            padding: 15px 12px 5px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            letter-spacing: 0.8px;
+            padding: 0 12px 8px;
+            text-transform: uppercase;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background-color: var(--sidebar-hover);
+            color: #ffffff;
+        }
+
+        .nav-item.active {
+            background-color: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+        }
+
+        .nav-item i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .sidebar-footer {
+            padding: 18px 20px;
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.6;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* ---------------- MAIN WRAPPER ---------------- */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* ---------------- TOPBAR ---------------- */
+        .topbar {
+            height: 70px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            gap: 15px;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            max-width: 550px;
+        }
+
+        .mobile-toggle-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        .mobile-toggle-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 14px;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .search-box i {
+            color: #94a3b8;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 13.5px;
+            color: var(--text-primary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* SINGLE NOTIFICATION BELL WITH BADGE & MODAL */
+        .notification-btn {
+            position: relative;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            color: #475569;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .user-profile:hover {
+            background-color: #f8fafc;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        .user-info {
+            line-height: 1.25;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* ---------------- CONTENT AREA ---------------- */
+        .content-area {
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .page-header-flex {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .page-header-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-header-text p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* CONTROLS BAR BELOW HEADER */
+        .controls-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .controls-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .select-dropdown {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .view-switchers {
+            display: flex;
+            background-color: #f1f5f9;
+            padding: 3px;
+            border-radius: 8px;
+            gap: 2px;
+        }
+
+        .view-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background-color: #ffffff;
+            color: var(--primary-blue);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .btn-download-timetable {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            color: var(--primary-blue);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-download-timetable:hover {
+            background-color: var(--primary-blue-bg);
+            border-color: #bfdbfe;
+        }
+
+        /* METRICS STATS CARDS GRID (5 CARDS) */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+
+        .metric-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .metric-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .metric-icon.purple { background-color: #faf5ff; color: #9333ea; }
+        .metric-icon.green  { background-color: #f0fdf4; color: #16a34a; }
+        .metric-icon.orange { background-color: #fff7ed; color: #ea580c; }
+        .metric-icon.blue   { background-color: #eff6ff; color: #2563eb; }
+        .metric-icon.violet { background-color: #f3e8ff; color: #7c3aed; }
+
+        .metric-data .label {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .metric-data .value {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 2px 0 2px;
+            line-height: 1.2;
+        }
+
+        .metric-data .subtext {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* 2-COLUMN MAIN CONTENT LAYOUT */
+        .timetable-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .left-content-stack, .right-content-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .card-header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .btn-mini-action {
+            background: #f1f5f9;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-mini-action:hover {
+            background-color: #e2e8f0;
+        }
+
+        .nav-arrows {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .arrow-btn {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .arrow-btn:hover {
+            background-color: #f8fafc;
+        }
+
+        /* TIMETABLE GRID TABLE */
+        .timetable-scroll-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .timetable-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 680px;
+            table-layout: fixed;
+        }
+
+        .timetable-table th, .timetable-table td {
+            border: 1px solid var(--border-color);
+            text-align: center;
+            vertical-align: top;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        .timetable-table th {
+            background-color: #f8fafc;
+            padding: 10px 6px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .timetable-table th.highlight-day {
+            background-color: #eff6ff;
+            color: var(--primary-blue);
+        }
+
+        .th-day-date {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .time-col {
+            width: 90px;
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 11px;
+            vertical-align: middle !important;
+        }
+
+        /* CLASS CELL CARD STYLING */
+        .class-slot {
+            padding: 8px 6px;
+            border-radius: 6px;
+            text-align: left;
+            min-height: 64px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 11px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            cursor: pointer;
+        }
+
+        .class-slot:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+        }
+
+        .class-name {
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 3px;
+        }
+
+        .class-teacher {
+            font-size: 10.5px;
+            opacity: 0.85;
+        }
+
+        .class-room {
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        /* CLASS COLOR THEMES */
+        .slot-db { background-color: var(--db-bg); border: 1px solid var(--db-border); color: var(--db-text); }
+        .slot-dm { background-color: var(--dm-bg); border: 1px solid var(--dm-border); color: var(--dm-text); }
+        .slot-ds { background-color: var(--ds-bg); border: 1px solid var(--ds-border); color: var(--ds-text); }
+        .slot-we { background-color: var(--we-bg); border: 1px solid var(--we-border); color: var(--we-text); }
+        .slot-os { background-color: var(--os-bg); border: 1px solid var(--os-border); color: var(--os-text); }
+        .slot-cn { background-color: var(--cn-bg); border: 1px solid var(--cn-border); color: var(--cn-text); }
+        .slot-isl { background-color: var(--isl-bg); border: 1px solid var(--isl-border); color: var(--isl-text); }
+        .slot-welab { background-color: var(--welab-bg); border: 1px solid var(--welab-border); color: var(--welab-text); }
+
+        /* TIMETABLE LEGEND FOOTER */
+        .timetable-legend {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-color);
+            font-size: 11.5px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* BOTTOM NOTICE BANNER */
+        .help-banner {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12.5px;
+            color: #1e40af;
+        }
+
+        /* RIGHT SIDEBAR STACK */
+
+        /* ACADEMIC CALENDAR WIDGET */
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .calendar-month-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            gap: 2px;
+            font-size: 11.5px;
+        }
+
+        .cal-day-head {
+            font-weight: 700;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            font-size: 11px;
+        }
+
+        .cal-day {
+            padding: 6px 0;
+            border-radius: 50%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .cal-day.other-month {
+            color: #cbd5e1;
+        }
+
+        .cal-day.active-day {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .cal-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 2px;
+        }
+
+        .cal-dot.green { background-color: #16a34a; }
+        .cal-dot.red { background-color: #ef4444; }
+        .cal-dot.orange { background-color: #f59e0b; }
+        .cal-dot.purple { background-color: #a855f7; }
+
+        .calendar-legend-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+            font-size: 10.5px;
+            color: var(--text-secondary);
+        }
+
+        .cal-leg-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* UPCOMING CLASSES CARD */
+        .upcoming-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .upcoming-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+        }
+
+        .upcoming-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .upcoming-time {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            text-align: center;
+            line-height: 1.2;
+            width: 55px;
+            flex-shrink: 0;
+        }
+
+        .upcoming-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .upcoming-sub {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10.5px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-pill.blue { background-color: #f0f5ff; color: #1d4ed8; }
+        .status-pill.pink { background-color: #fdf2f8; color: #db2777; }
+        .status-pill.orange { background-color: #fff7ed; color: #ea580c; }
+
+        /* QUICK ACTIONS GRID & DYNAMIC INPUT */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .qa-btn-card {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .qa-btn-card:hover {
+            background-color: #ffffff;
+            border-color: var(--primary-blue);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .qa-btn-card i {
+            color: var(--primary-blue);
+            width: 18px;
+            height: 18px;
+        }
+
+        .qa-btn-card span {
+            font-size: 10px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .quick-input-box {
+            margin-top: 14px;
+            display: flex;
+            gap: 8px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 12px;
+        }
+
+        .quick-input-box input {
+            flex: 1;
+            padding: 8px 10px;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .quick-input-box button {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* TIMETABLE GUIDELINES CARD */
+        .guidelines-box {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .guidelines-icon {
+            width: 36px;
+            height: 36px;
+            background-color: #2563eb;
+            color: #ffffff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .guidelines-content h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        .guidelines-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 11.5px;
+            color: #1e40af;
+        }
+
+        .guidelines-list li {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* NOTIFICATION POPUP MODAL */
+        .notification-modal {
+            display: none;
+            position: absolute;
+            top: 65px;
+            right: 28px;
+            width: 320px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            z-index: 10000;
+            padding: 16px;
+        }
+
+        .notification-modal.show {
+            display: block;
+        }
+
+        .notification-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .notification-modal-header h4 {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            font-size: 12px;
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary-blue);
+        }
+
+        /* ---------------- RESPONSIVE MEDIA QUERIES ---------------- */
+        @media (max-width: 1280px) {
+            .timetable-main-grid {
+                grid-template-columns: 1fr;
+            }
+            .metrics-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 868px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .main-wrapper {
+                margin-left: 0;
+            }
+            .mobile-toggle-btn {
+                display: flex;
+            }
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .topbar {
+                padding: 0 16px;
+            }
+            .user-info {
+                display: none;
+            }
+            .content-area {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .quick-actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .controls-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls-left {
+                justify-content: space-between;
+            }
+            .btn-download-timetable {
+                justify-content: center;
+            }
+        }
+    </style>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+    <div id="portalContainer">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div>
+                <!-- LOGO AREA WITH EXACT RELATIVE PATH & FALLBACK CSS -->
+                <div class="sidebar-header">
+                    <img src="../login_page/uoh-logo.png" alt="The University of Haripur" class="uoh-logo-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/44?text=UOH'">
+                    <div class="logo-text">
+                        <h2>The University of Haripur</h2>
+                        <p>Intelligent Ecosystem (IES)</p>
+                    </div>
+                </div>
+
+                <!-- NAVIGATION ITEMS -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Student Portal</div>
+                    <a href="stu_dashboard.html" class="nav-item">
+                        <i data-lucide="home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="my-courses.html" class="nav-item">
+                        <i data-lucide="book-open"></i>
+                        <span>My Courses</span>
+                    </a>
+                    <a href="attendance.html" class="nav-item">
+                        <i data-lucide="user-check"></i>
+                        <span>Attendance</span>
+                    </a>
+                    <a href="assignments.html" class="nav-item">
+                        <i data-lucide="file-text"></i>
+                        <span>Assignments</span>
+                    </a>
+                    <a href="exams.html" class="nav-item">
+                        <i data-lucide="edit-3"></i>
+                        <span>Exams</span>
+                    </a>
+                    <a href="results.html" class="nav-item">
+                        <i data-lucide="bar-chart-2"></i>
+                        <span>Results & CGPA</span>
+                    </a>
+                    <a href="fees.html" class="nav-item">
+                        <i data-lucide="credit-card"></i>
+                        <span>Fees</span>
+                    </a>
+                    <a href="library.html" class="nav-item">
+                        <i data-lucide="book"></i>
+                        <span>Library</span>
+                    </a>
+                    <!-- STAYS ON THIS PAGE WHEN CLICKED -->
+                    <a href="timetable.html" class="nav-item active" onclick="event.preventDefault();">
+                        <i data-lucide="calendar"></i>
+                        <span>Timetable</span>
+                    </a>
+                    
+                    <a href="profile.html" class="nav-item">
+                        <i data-lucide="user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="settings.html" class="nav-item">
+                        <i data-lucide="settings"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="support.html" class="nav-item">
+                        <i data-lucide="help-circle"></i>
+                        <span>Support</span>
+                    </a>
+                    <a href="../landing_page/index.html" class="nav-item">
+                        <i data-lucide="log-out"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <p>© 2026 University of Haripur</p>
+                <p>All rights reserved.</p>
+                <p style="margin-top: 4px; color: #475569;">IES v1.0</p>
+            </div>
+        </aside>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+            
+            <!-- TOPBAR -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <!-- 3 DOTS MOBILE SIDEBAR TOGGLE BUTTON -->
+                    <button class="mobile-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle Navigation">
+                        <i data-lucide="more-vertical"></i>
+                    </button>
+
+                    <!-- RESPONSIVE SEARCH BOX (VISIBLE ON MOBILE & DESKTOP) -->
+                    <div class="search-box">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="globalSearchInput" placeholder="Search courses, teachers, rooms..." onkeyup="handleSearch(this.value)">
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <!-- SINGLE RESPONSIVE NOTIFICATION BELL -->
+                    
+
+                    <!-- NOTIFICATION POPUP MODAL -->
+                    <div class="notification-modal" id="notificationModal">
+                        <div class="notification-modal-header">
+                            <h4>Notifications</h4>
+                            <span style="font-size: 11px; color: var(--primary-blue); cursor: pointer;" onclick="markNotificationsRead()">Mark all read</span>
+                        </div>
+                        <div class="notification-list" id="notificationList">
+                            <div class="notification-item">Realtime Engine Connected: Live class alerts active.</div>
+                            <div class="notification-item">Next Class: Data Structures in Room CS-203.</div>
+                            <div class="notification-item">Spring Revised Timetable loaded dynamically.</div>
+                        </div>
+                    </div>
+
+                    <!-- USER PROFILE -->
+                    <div class="user-profile">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Student Profile" class="user-avatar" id="topbarUserAvatar">
+                        <div class="user-info">
+                            <div class="user-name" id="topbarUserName">Loading...</div>
+                            <div class="user-role" id="topbarUserRole">BS Computer Science</div>
+                        </div>
+                        <i data-lucide="chevron-down" style="width: 16px; height: 16px; color: #64748b;"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- CONTENT AREA -->
+            <main class="content-area">
+
+                <!-- PAGE HEADER & CONTROLS -->
+                <div class="page-header-flex">
+                    <div class="page-header-text">
+                        <h1>Timetable</h1>
+                        <p>View your class schedule, weekly timetable and academic calendar.</p>
+                    </div>
+                </div>
+
+                <!-- CONTROLS ROW -->
+                <div class="controls-bar">
+                    <div class="controls-left">
+                        <select class="select-dropdown" id="semesterSelect" onchange="changeSemester(this.value)">
+                            <option value="Spring 2026" selected>Spring 2026</option>
+                            <option value="Fall 2025">Fall 2025</option>
+                            <option value="Spring 2025">Spring 2025</option>
+                        </select>
+
+                        <div class="view-switchers">
+                            <button class="view-btn active" id="btnWeekView" onclick="switchView('week')">
+                                <i data-lucide="calendar-days" style="width: 15px; height: 15px;"></i>
+                                <span>Week View</span>
+                            </button>
+                            <button class="view-btn" id="btnDayView" onclick="switchView('day')">
+                                <i data-lucide="list" style="width: 15px; height: 15px;"></i>
+                                <span>Day View</span>
+                            </button>
+                            <button class="view-btn" id="btnListView" onclick="switchView('list')">
+                                <i data-lucide="layout-list" style="width: 15px; height: 15px;"></i>
+                                <span>List View</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn-download-timetable" onclick="downloadTimetable()">
+                        <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                        <span>Download Timetable</span>
+                    </button>
+                </div>
+
+                <!-- TOP METRICS GRID (5 CARDS) -->
+                <section class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon purple">
+                            <i data-lucide="book-open" style="width: 22px; height: 22px;"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Total Courses</div>
+                            <div class="value" id="valTotalCourses">6</div>
+                            <div class="subtext">This Semester</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon green">
+                            <i data-lucide="clock" style="width: 22px; height: 22px;"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Total Credit Hours</div>
+                            <div class="value" id="valTotalCredits">19</div>
+                            <div class="subtext">Registered</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon orange">
+                            <i data-lucide="calendar" style="width: 22px; height: 22px;"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Classes This Week</div>
+                            <div class="value" id="valClassesWeek">18</div>
+                            <div class="subtext">Scheduled</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon blue">
+                            <i data-lucide="laptop" style="width: 22px; height: 22px;"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Next Class</div>
+                            <div class="value" style="font-size: 15px; color: var(--primary-blue);" id="valNextClass">Data Structures</div>
+                            <div class="subtext" id="valNextClassTime">Today 10:00 AM</div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon violet">
+                            <i data-lucide="map-pin" style="width: 22px; height: 22px;"></i>
+                        </div>
+                        <div class="metric-data">
+                            <div class="label">Current Room</div>
+                            <div class="value" style="font-size: 16px;" id="valCurrentRoom">CS-203</div>
+                            <div class="subtext" id="valRoomLocation">2nd Floor, CS Block</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2-COLUMN MAIN LAYOUT -->
+                <div class="timetable-main-grid">
+
+                    <!-- LEFT COLUMN: WEEKLY TIMETABLE GRID -->
+                    <div class="left-content-stack">
+
+                        <div class="card-box">
+                            <div class="card-header-flex">
+                                <div class="card-title">Weekly Timetable</div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <button class="btn-mini-action" onclick="jumpToday()">Today</button>
+                                    <div class="nav-arrows">
+                                        <button class="arrow-btn" onclick="navigateWeek(-1)">
+                                            <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
+                                        </button>
+                                        <button class="arrow-btn" onclick="navigateWeek(1)">
+                                            <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TIMETABLE TABLE -->
+                            <div class="timetable-scroll-wrapper">
+                                <table class="timetable-table" id="timetableGridTable">
+                                    <thead>
+                                        <tr id="timetableHeaderRow">
+                                            <th class="time-col">Time</th>
+                                            <!-- Dynamic Dates Rendered Here -->
+                                        </tr>
+                                    </thead>
+                                    <tbody id="timetableTableBody">
+                                        <!-- Dynamic Timetable Rows rendered by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- TIMETABLE LEGEND -->
+                            <div class="timetable-legend">
+                                <div class="legend-item"><span class="legend-dot" style="background-color: var(--ds-text);"></span> Data Structures</div>
+                                <div class="legend-item"><span class="legend-dot" style="background-color: var(--db-text);"></span> Database Systems</div>
+                                <div class="legend-item"><span class="legend-dot" style="background-color: var(--dm-text);"></span> Discrete Mathematics</div>
+                                <div class="legend-item"><span class="legend-dot" style="background-color: var(--we-text);"></span> Web Engineering</div>
+                                <div class="legend-item"><span class="legend-dot" style="background-color: var(--os-text);"></span> Operating Systems</div>
+                                <div class="legend-item"><span class="legend-dot" style="background-color: var(--cn-text);"></span> Computer Networks</div>
+                                <div class="legend-item"><span class="legend-dot" style="background-color: var(--isl-text);"></span> Islamic Studies</div>
+                                <div class="legend-item"><span class="legend-dot" style="background-color: var(--welab-text);"></span> Lab</div>
+                            </div>
+                        </div>
+
+                        <!-- BOTTOM NOTICE BANNER -->
+                        <div class="help-banner">
+                            <i data-lucide="info" style="width: 20px; height: 20px; flex-shrink: 0;"></i>
+                            <span>Note: Timetable is subject to change. Please check regularly for updates.</span>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT COLUMN: ACADEMIC CALENDAR & ACTIONS -->
+                    <div class="right-content-stack">
+
+                        <!-- ACADEMIC CALENDAR (DYNAMIC REAL-WORLD ENGINE) -->
+                        <div class="card-box">
+                            <div class="card-title" style="margin-bottom: 14px;">Academic Calendar</div>
+                            
+                            <div class="calendar-header">
+                                <button class="arrow-btn" onclick="prevMonth()">
+                                    <i data-lucide="chevron-left" style="width: 15px; height: 15px;"></i>
+                                </button>
+                                <div class="calendar-month-title" id="calMonthTitle">Loading...</div>
+                                <button class="arrow-btn" onclick="nextMonth()">
+                                    <i data-lucide="chevron-right" style="width: 15px; height: 15px;"></i>
+                                </button>
+                            </div>
+
+                            <div class="calendar-grid" id="calendarDaysGrid">
+                                <div class="cal-day-head">Mon</div>
+                                <div class="cal-day-head">Tue</div>
+                                <div class="cal-day-head">Wed</div>
+                                <div class="cal-day-head">Thu</div>
+                                <div class="cal-day-head">Fri</div>
+                                <div class="cal-day-head">Sat</div>
+                                <div class="cal-day-head">Sun</div>
+                                <!-- Dynamic Days Inject Here -->
+                            </div>
+
+                            <div class="calendar-legend-row">
+                                <div class="cal-leg-item"><span style="width:6px; height:6px; border-radius:50%; background:#16a34a;"></span> Class Day</div>
+                                <div class="cal-leg-item"><span style="width:6px; height:6px; border-radius:50%; background:#ef4444;"></span> Exam</div>
+                                <div class="cal-leg-item"><span style="width:6px; height:6px; border-radius:50%; background:#f59e0b;"></span> Holiday</div>
+                                <div class="cal-leg-item"><span style="width:6px; height:6px; border-radius:50%; background:#a855f7;"></span> Event</div>
+                            </div>
+                        </div>
+
+                        <!-- UPCOMING CLASSES -->
+                        <div class="card-box">
+                            <div class="card-header-flex">
+                                <div class="card-title">Upcoming Classes</div>
+                                <a href="#" style="font-size: 12px; font-weight: 600; color: var(--primary-blue); text-decoration: none;" onclick="event.preventDefault(); alert('Opening full class schedule...');">View All</a>
+                            </div>
+
+                            <div class="upcoming-list" id="upcomingList">
+                                <!-- Dynamic Upcoming Classes rendered by JS -->
+                            </div>
+                        </div>
+
+                        <!-- QUICK ACTIONS -->
+                        <div class="card-box">
+                            <div class="card-title" style="margin-bottom: 14px;">Quick Actions</div>
+                            <div class="quick-actions-grid">
+                                <a class="qa-btn-card" onclick="alert('Printing timetable...')">
+                                    <i data-lucide="printer"></i>
+                                    <span>Print Timetable</span>
+                                </a>
+                                <a class="qa-btn-card" onclick="alert('Exporting schedule to Google Calendar...')">
+                                    <i data-lucide="calendar-plus"></i>
+                                    <span>Add to Calendar</span>
+                                </a>
+                                <a class="qa-btn-card" onclick="alert('Share link copied to clipboard!')">
+                                    <i data-lucide="share-2"></i>
+                                    <span>Share Timetable</span>
+                                </a>
+                                <a class="qa-btn-card" onclick="alert('Opening Interactive Classroom Map...')">
+                                    <i data-lucide="map"></i>
+                                    <span>Classroom Map</span>
+                                </a>
+                            </div>
+
+                            <!-- QUICK INPUT ACTION FOR STUDENT -->
+                            <div class="quick-input-box">
+                                <input type="text" id="quickNoteInput" placeholder="Add quick timetable note / search room...">
+                                <button onclick="handleQuickNoteSubmit()">Submit</button>
+                            </div>
+                        </div>
+
+                        <!-- TIMETABLE GUIDELINES -->
+                        <div class="guidelines-box">
+                            <div class="guidelines-icon">
+                                <i data-lucide="clipboard-check" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <div class="guidelines-content">
+                                <h4>Timetable Guidelines</h4>
+                                <ul class="guidelines-list">
+                                    <li><i data-lucide="check" style="width: 14px; height: 14px; color: #16a34a;"></i> Be on time for your classes.</li>
+                                    <li><i data-lucide="check" style="width: 14px; height: 14px; color: #16a34a;"></i> Check classroom changes in notices.</li>
+                                    <li><i data-lucide="check" style="width: 14px; height: 14px; color: #16a34a;"></i> Contact your department for any issues.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT — REAL BACKEND INTEGRATION -->
+    <script>
+        lucide.createIcons();
+
+        const API_BASE_URL = window.ACOS_CONFIG.API_BASE_URL;
+        let weekOffset = 0;
+        let currentCalDate = new Date();
+        const notifiedClassesToday = new Set();
+
+        // Live timetable data from backend (replaces hardcoded studentTimetableState)
+        let studentTimetableState = {
+            student: { name: "Loading...", program: "" },
+            metrics: {
+                totalCourses: 0, totalCredits: 0, classesThisWeek: 0,
+                nextClass: "Loading...", nextClassTime: "-",
+                currentRoom: "-", roomLocation: "-"
+            },
+            timeSlots: [],
+            schedule: {},
+            upcomingClasses: []
+        };
+
+        // ── SIDEBAR TOGGLE ──────────────────────────────────────
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+        sidebarToggleBtn.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 868) {
+                if (!sidebar.contains(e.target) && !sidebarToggleBtn.contains(e.target)) {
+                    sidebar.classList.remove('mobile-open');
+                }
+            }
+        });
+
+        // ── LOGOUT ──────────────────────────────────────────────
+        function handleLogout(e) {
+            if (e) e.preventDefault();
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("token_type");
+            sessionStorage.removeItem("access_token");
+            window.location.href = "../login_page/student-login.html";
+        }
+
+        // ── LOAD TIMETABLE FROM BACKEND ─────────────────────────
+        async function loadTimetable(selectedSemester = null) {
+            const token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
+            if (!token) {
+                window.location.href = "../login_page/student-login.html";
+                return;
+            }
+            try {
+                let url = `${API_BASE_URL}/student/timetable`;
+                if (selectedSemester) url += `?semester=${encodeURIComponent(selectedSemester)}`;
+
+                const resp = await fetch(url, {
+                    headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" }
+                });
+
+                if (!resp.ok) {
+                    if (resp.status === 401 || resp.status === 403) {
+                        localStorage.removeItem("access_token");
+                        sessionStorage.removeItem("access_token");
+                        window.location.href = "../login_page/student-login.html";
+                        return;
+                    }
+                    throw new Error(`HTTP ${resp.status}`);
+                }
+
+                const data = await resp.json();
+                renderTimetableUI(data);
+            } catch (err) {
+                console.error("Timetable load error:", err);
+            }
+        }
+
+        function refreshPublishedTimetable() {
+            if (!document.hidden) loadTimetable(document.getElementById('semesterSelect')?.value || null);
+        }
+        window.addEventListener('storage', event => {
+            if (event.key === 'timetable-updated') refreshPublishedTimetable();
+        });
+        window.addEventListener('focus', refreshPublishedTimetable);
+        setInterval(refreshPublishedTimetable, 30000);
+
+        // ── RENDER TIMETABLE UI ─────────────────────────────────
+        function renderTimetableUI(data) {
+            const student  = data.student;
+            const metrics  = data.metrics;
+            const slots    = data.time_slots    || [];
+            const grid     = data.timetable_grid || {};
+            const upcoming = data.upcoming_classes || [];
+            const semesters = data.available_semesters || [];
+
+            // Topbar user info
+            const nameEl = document.querySelector('.user-name');
+            const roleEl = document.querySelector('.user-role');
+            if (nameEl) nameEl.innerText = student.name;
+            if (roleEl) roleEl.innerText  = student.program || "BS Computer Science";
+
+            // Metrics cards
+            document.getElementById('valTotalCourses').innerText  = metrics.total_courses;
+            document.getElementById('valTotalCredits').innerText  = metrics.total_credits;
+            document.getElementById('valClassesWeek').innerText   = metrics.classes_per_week;
+            document.getElementById('valNextClass').innerText     = metrics.next_class;
+            document.getElementById('valNextClassTime').innerText = metrics.next_class_time;
+            document.getElementById('valCurrentRoom').innerText   = metrics.current_room;
+            document.getElementById('valRoomLocation').innerText  = metrics.room_location;
+
+            // Semester dropdown
+            const semSel = document.getElementById('semesterSelect');
+            if (semesters.length > 0) {
+                semSel.innerHTML = semesters.map(s =>
+                    `<option value="${s.semester}" ${s.semester == metrics.current_semester ? 'selected' : ''}>${s.label}</option>`
+                ).join('');
+            } else {
+                semSel.innerHTML = `<option value="${metrics.current_semester}">Semester ${metrics.current_semester}</option>`;
+            }
+
+            // Rebuild state object so renderWeeklyHeaderAndGrid() uses real data
+            studentTimetableState.metrics = {
+                totalCourses: metrics.total_courses,
+                totalCredits: metrics.total_credits,
+                classesThisWeek: metrics.classes_per_week,
+                nextClass: metrics.next_class,
+                nextClassTime: metrics.next_class_time,
+                currentRoom: metrics.current_room,
+                roomLocation: metrics.room_location
+            };
+            studentTimetableState.timeSlots = slots;
+            studentTimetableState.schedule  = grid;
+            studentTimetableState.upcomingClasses = upcoming;
+
+            // Render grid & upcoming
+            renderWeeklyHeaderAndGrid();
+            renderUpcomingClasses(upcoming);
+            renderDynamicCalendar(currentCalDate);
+            startRealtimeClassAlertEngine();
+            lucide.createIcons();
+        }
+
+        // ── UPCOMING CLASSES LIST ────────────────────────────────
+        function renderUpcomingClasses(upcomingArr) {
+            const upcomingList = document.getElementById('upcomingList');
+            upcomingList.innerHTML = '';
+            if (!upcomingArr || upcomingArr.length === 0) {
+                upcomingList.innerHTML = '<div style="padding:12px; color:#64748b;">No upcoming classes found.</div>';
+                return;
+            }
+            upcomingArr.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'upcoming-item';
+                div.innerHTML = `
+                    <div class="upcoming-left">
+                        <div class="upcoming-time">${item.time}</div>
+                        <div>
+                            <div class="upcoming-title">${item.title}</div>
+                            <div class="upcoming-sub">${item.teacher} • <span style="font-weight:600;">${item.room}</span> — ${item.day}</div>
+                        </div>
+                    </div>
+                    <span class="status-pill ${item.statusClass}">${item.statusText}</span>
+                `;
+                upcomingList.appendChild(div);
+            });
+        }
+
+        // 1. DYNAMIC WEEK & TIMETABLE RENDER
+        function renderWeeklyHeaderAndGrid() {
+            const today = new Date();
+            const currentDayOfWeek = today.getDay();
+
+            const monday = new Date(today);
+            const distToMon = (currentDayOfWeek === 0 ? -6 : 1 - currentDayOfWeek) + (weekOffset * 7);
+            monday.setDate(today.getDate() + distToMon);
+
+            const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const headerRow = document.getElementById('timetableHeaderRow');
+            headerRow.innerHTML = '<th class="time-col">Time</th>';
+
+            const weekDates = [];
+            for (let i = 0; i < 6; i++) {
+                const d = new Date(monday);
+                d.setDate(monday.getDate() + i);
+                weekDates.push(d);
+
+                const isToday = (d.toDateString() === today.toDateString());
+                const monthShort = d.toLocaleString('en-US', { month: 'short' });
+
+                const th = document.createElement('th');
+                if (isToday) th.className = 'highlight-day';
+                th.innerHTML = `${dayNames[i]} <div class="th-day-date">${d.getDate()} ${monthShort}</div>`;
+                headerRow.appendChild(th);
+            }
+
+            const tbody = document.getElementById('timetableTableBody');
+            tbody.innerHTML = '';
+
+            studentTimetableState.timeSlots.forEach((slotObj, timeIdx) => {
+                const tr = document.createElement('tr');
+
+                const tdTime = document.createElement('td');
+                tdTime.className = 'time-col';
+                tdTime.innerText = slotObj.label;
+                tr.appendChild(tdTime);
+
+                for (let dayIdx = 0; dayIdx < 6; dayIdx++) {
+                    const td = document.createElement('td');
+                    const key = `${timeIdx}-${dayIdx}`;
+                    const classData = studentTimetableState.schedule[key];
+
+                    if (classData) {
+                        const entries = Array.isArray(classData) ? classData : [classData];
+                        td.innerHTML = entries.map(entry => `
+                            <div class="class-slot ${entry.theme}" onclick="showClassInfo('${entry.name.replace(/'/g, "\\'")}', '${entry.teacher.replace(/'/g, "\\'")}', '${entry.room.replace(/'/g, "\\'")}', '${slotObj.label}')">
+                                <div>
+                                    <div class="class-name">${entry.code || ''} ${entry.name}</div>
+                                    <div class="class-teacher">${entry.teacher}</div>
+                                </div>
+                                <div class="class-room">${entry.room}</div>
+                            </div>
+                        `).join('');
+                    }
+                    tr.appendChild(td);
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 2. DYNAMIC ACADEMIC CALENDAR
+        function renderDynamicCalendar(targetDate) {
+            const year = targetDate.getFullYear();
+            const month = targetDate.getMonth();
+            const today = new Date();
+
+            const monthName = targetDate.toLocaleString('en-US', { month: 'long' });
+            document.getElementById('calMonthTitle').innerText = `${monthName} ${year}`;
+
+            const grid = document.getElementById('calendarDaysGrid');
+            grid.innerHTML = `
+                <div class="cal-day-head">Mon</div>
+                <div class="cal-day-head">Tue</div>
+                <div class="cal-day-head">Wed</div>
+                <div class="cal-day-head">Thu</div>
+                <div class="cal-day-head">Fri</div>
+                <div class="cal-day-head">Sat</div>
+                <div class="cal-day-head">Sun</div>
+            `;
+
+            const firstDayOfMonth = new Date(year, month, 1);
+            let startingDay = firstDayOfMonth.getDay() - 1;
+            if (startingDay === -1) startingDay = 6;
+
+            const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+            const prevMonthLastDate = new Date(year, month, 0).getDate();
+
+            for (let i = startingDay - 1; i >= 0; i--) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'cal-day other-month';
+                dayDiv.innerText = prevMonthLastDate - i;
+                grid.appendChild(dayDiv);
+            }
+
+            for (let day = 1; day <= totalDaysInMonth; day++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'cal-day';
+                dayDiv.innerText = day;
+
+                const thisDate = new Date(year, month, day);
+                if (thisDate.toDateString() === today.toDateString()) {
+                    dayDiv.classList.add('active-day');
+                }
+
+                if (day === 10 || day === 26) dayDiv.innerHTML += '<span class="cal-dot green"></span>';
+                if (day === 18) dayDiv.innerHTML += '<span class="cal-dot red"></span>';
+                if (day === 24) dayDiv.innerHTML += '<span class="cal-dot orange"></span>';
+
+                grid.appendChild(dayDiv);
+            }
+        }
+
+        // 3. REALTIME CLASS ALERT ENGINE
+        function startRealtimeClassAlertEngine() {
+            setInterval(() => {
+                const now = new Date();
+                const dayIndex = now.getDay() - 1;
+
+                if (dayIndex >= 0 && dayIndex <= 5) {
+                    const currentHour = now.getHours();
+                    const currentMin  = now.getMinutes();
+
+                    studentTimetableState.timeSlots.forEach((slotObj, timeIdx) => {
+                        if (currentHour === slotObj.startHour && currentMin === slotObj.startMin) {
+                            const key = `${timeIdx}-${dayIndex}`;
+                            const classData = studentTimetableState.schedule[key];
+
+                            const alertClass = Array.isArray(classData) ? classData[0] : classData;
+                            if (alertClass && !notifiedClassesToday.has(key)) {
+                                notifiedClassesToday.add(key);
+                                triggerClassStartAlert(alertClass, slotObj.label);
+                            }
+                        }
+                    });
+                }
+            }, 5000);
+        }
+
+        function triggerClassStartAlert(classData, slotLabel) {
+            alert(`🔔 LIVE CLASS ALERT!\n\nYour class "${classData.name}" has just started!\n• Room: ${classData.room}\n• Instructor: ${classData.teacher}\n• Time: ${slotLabel}`);
+
+            const notifList = document.getElementById('notificationList');
+            const newNotif = document.createElement('div');
+            newNotif.className = 'notification-item';
+            newNotif.style.borderLeftColor = '#16a34a';
+            newNotif.innerHTML = `<strong>Class Started Now:</strong> ${classData.name} in ${classData.room}.`;
+            notifList.prepend(newNotif);
+
+            const badge = document.getElementById('notifBadge');
+            badge.style.display = 'flex';
+            let count = parseInt(badge.innerText) || 0;
+            badge.innerText = count + 1;
+        }
+
+        // ── INTERACTION HANDLERS ─────────────────────────────────
+        function switchView(viewName) {
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            if (viewName === 'week') document.getElementById('btnWeekView').classList.add('active');
+            if (viewName === 'day')  document.getElementById('btnDayView').classList.add('active');
+            if (viewName === 'list') document.getElementById('btnListView').classList.add('active');
+        }
+
+        function changeSemester(val) {
+            loadTimetable(val);
+        }
+
+        function downloadTimetable() {
+            const studentName = studentTimetableState.student?.name || "Student";
+            alert(`Downloading Timetable PDF for ${studentName}...`);
+        }
+
+        function showClassInfo(name, teacher, room, time) {
+            alert(`Class Details:\n• Subject: ${name}\n• Instructor: ${teacher}\n• Venue: ${room}\n• Time Slot: ${time}`);
+        }
+
+        function jumpToday() {
+            weekOffset = 0;
+            renderWeeklyHeaderAndGrid();
+            currentCalDate = new Date();
+            renderDynamicCalendar(currentCalDate);
+        }
+
+        function navigateWeek(dir) {
+            weekOffset += dir;
+            renderWeeklyHeaderAndGrid();
+        }
+
+        function prevMonth() {
+            currentCalDate.setMonth(currentCalDate.getMonth() - 1);
+            renderDynamicCalendar(currentCalDate);
+        }
+
+        function nextMonth() {
+            currentCalDate.setMonth(currentCalDate.getMonth() + 1);
+            renderDynamicCalendar(currentCalDate);
+        }
+
+        function handleSearch(query) {
+            const q = query.toLowerCase();
+            document.querySelectorAll('.class-slot').forEach(slot => {
+                const text = slot.innerText.toLowerCase();
+                slot.style.opacity = (!q || text.includes(q)) ? '1' : '0.2';
+            });
+        }
+
+        function toggleNotifications() {
+            document.getElementById('notificationModal').classList.toggle('show');
+        }
+
+        function markNotificationsRead() {
+            document.getElementById('notifBadge').style.display = 'none';
+            document.getElementById('notificationModal').classList.remove('show');
+        }
+
+        function handleQuickNoteSubmit() {
+            const input = document.getElementById('quickNoteInput');
+            const val = input.value.trim();
+            if (val) {
+                alert(`Note saved: "${val}"`);
+                input.value = '';
+            } else {
+                alert('Please enter a note.');
+            }
+        }
+
+        // ── LOGOUT LINK UPDATE ────────────────────────────────────
+        document.querySelectorAll('a[href="logout.html"]').forEach(link => {
+            link.href = "#";
+            link.addEventListener('click', handleLogout);
+        });
+
+        // ── INITIALIZE ON LOAD ────────────────────────────────────
+        window.addEventListener('DOMContentLoaded', () => {
+            loadTimetable();
+        });
+    </script>
+<!-- Student Topbar Hydration -->
+<script src="../shared/student-topbar.js"></script>
+</body>
+</html>

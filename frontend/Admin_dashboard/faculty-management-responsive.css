@@ -1,0 +1,33 @@
+@media (max-width: 1024px) {
+  .main-wrapper,
+  .admin-main-frame {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  .admin-shell-topbar,
+  .admin-shell-topbar-left,
+  .admin-shell-page-label {
+    min-width: 0;
+  }
+
+  .admin-shell-topbar-left {
+    flex: 1;
+  }
+
+  .admin-shell-page-label {
+    max-width: calc(100vw - 125px);
+  }
+}
+
+@media (max-width: 650px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

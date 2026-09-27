@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5. Faculty Management - University of Haripur</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        :root {
+            --sidebar-bg: #090e17;
+            --sidebar-card-bg: #111827;
+            --sidebar-text: #9ca3af;
+            --sidebar-text-active: #ffffff;
+            --primary-blue: #2563eb;
+            --primary-blue-hover: #1d4ed8;
+            --body-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --success-green: #10b981;
+            --warning-amber: #f59e0b;
+            --danger-red: #ef4444;
+            --purple-accent: #8b5cf6;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ------------------ SIDEBAR STYLES ------------------ */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1050;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+
+        .sidebar-brand {
+            padding: 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* University Logo Styling */
+        .sidebar-logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 50%;
+            background-color: #ffffff;
+            padding: 2px;
+        }
+
+        .brand-text h3 {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-text p {
+            font-size: 10px;
+            color: var(--sidebar-text);
+            margin-top: 2px;
+        }
+
+        .sidebar-menu {
+            padding: 15px 0;
+            flex: 1;
+        }
+
+        .menu-category {
+            padding: 8px 20px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #475569;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 12.5px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-item i {
+            width: 16px;
+            text-align: center;
+            font-size: 13.5px;
+        }
+
+        .menu-item:hover {
+            color: var(--sidebar-text-active);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .menu-item.active {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            border-left-color: #60a5fa;
+            border-radius: 0 8px 8px 0;
+            margin-right: 12px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background-color: var(--success-green);
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .sidebar-help-card {
+            margin: 15px 15px 20px;
+            padding: 15px;
+            background-color: var(--sidebar-card-bg);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .help-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(37, 99, 235, 0.2);
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .help-info h5 {
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .help-info p {
+            color: var(--sidebar-text);
+            font-size: 10px;
+        }
+
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 1040;
+        }
+
+        /* ------------------ MAIN WRAPPER ------------------ */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* ------------------ TOPBAR STYLES ------------------ */
+        .topbar {
+            background-color: var(--card-bg);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mobile-toggle-btn {
+            display: none;
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .page-header-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header-icon {
+            width: 38px;
+            height: 38px;
+            background-color: #eff6ff;
+            color: var(--primary-blue);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .page-header-title h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .page-header-title p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 280px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: #f8fafc;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .action-icons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon-badge-btn {
+            position: relative;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .icon-badge-btn .badge-num {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            background-color: var(--danger-red);
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: bold;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid #ffffff;
+        }
+
+        .user-profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 10px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .user-avatar-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-details h5 {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .user-details p {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .date-display {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ------------------ CONTENT CONTAINER ------------------ */
+        .content {
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-box {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: -8px;
+        }
+        .breadcrumb-box a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        /* Metrics Top Row */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 14px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .metric-icon-wrapper {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .metric-data h6 {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .metric-data h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 2px 0;
+        }
+
+        .metric-data p {
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .bg-blue-light { background: #eff6ff; color: #2563eb; }
+        .bg-green-light { background: #ecfdf5; color: #10b981; }
+        .bg-purple-light { background: #f5f3ff; color: #8b5cf6; }
+        .bg-orange-light { background: #fff7ed; color: #f97316; }
+        .bg-indigo-light { background: #e0e7ff; color: #4338ca; }
+
+        .text-green { color: var(--success-green); }
+        .text-red { color: var(--danger-red); }
+        .text-muted { color: var(--text-muted); }
+
+        /* Generic Panel/Card Container */
+        .panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .panel-header h4 {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .panel-header select, .panel-header a {
+            font-size: 11px;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Grids for Cards */
+        .grid-3-col {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            gap: 18px;
+        }
+
+        .grid-3-equal {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr 0.9fr;
+            gap: 18px;
+        }
+
+        .grid-4-col {
+            display: grid;
+            grid-template-columns: 1fr 1.1fr 1.1fr 0.9fr;
+            gap: 18px;
+        }
+
+        /* Chart Heights */
+        .chart-box {
+            position: relative;
+            width: 100%;
+            height: 190px;
+        }
+
+        /* Faculty Overview Extra Layout */
+        .faculty-overview-split {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .dept-bars-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .dept-bar-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 10.5px;
+            color: #475569;
+        }
+
+        .progress-line-bg {
+            height: 5px;
+            background-color: #f1f5f9;
+            border-radius: 4px;
+            width: 100%;
+            margin-top: 2px;
+            overflow: hidden;
+        }
+
+        .progress-line-fill {
+            height: 100%;
+            background-color: var(--primary-blue);
+            border-radius: 4px;
+        }
+
+        /* Faculty Directory Table */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .custom-table th {
+            text-align: left;
+            padding: 8px 10px;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 9.5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .custom-table td {
+            padding: 9px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        .badge-pill {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 9.5px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-active { background-color: #d1fae5; color: #065f46; }
+        .badge-leave { background-color: #ffedd5; color: #9a3412; }
+        .badge-pending { background-color: #fef3c7; color: #92400e; }
+        .badge-approved { background-color: #d1fae5; color: #065f46; }
+
+        .table-action-btn {
+            color: var(--primary-blue);
+            margin-right: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        /* List Styling (Performance / Leave / Evaluations) */
+        .list-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .list-item-row:last-child {
+            border-bottom: none;
+        }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar-sm {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #475569;
+        }
+
+        .user-meta-text h5 {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .user-meta-text p {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .star-rating {
+            color: #f59e0b;
+            font-size: 9px;
+        }
+
+        /* AI Insights List */
+        .ai-insight-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 10px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .ai-insight-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            background-color: #f3e8ff;
+            color: var(--purple-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .ai-insight-text h6 {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .ai-insight-text p {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* Quick Action Grid */
+        .quick-actions-3col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .qa-action-box {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #334155;
+            transition: all 0.2s ease;
+        }
+
+        .qa-action-box:hover {
+            background-color: #ffffff;
+            border-color: var(--primary-blue);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .qa-action-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .qa-action-box span {
+            font-size: 9.5px;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        /* System Footer */
+        .system-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            font-size: 10px;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .footer-badges {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-badge-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* ------------------ RESPONSIVE BREAKPOINTS ------------------ */
+        @media (max-width: 1100px) {
+            .grid-3-col, .grid-3-equal, .grid-4-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .sidebar-backdrop.active {
+                display: block;
+            }
+            .main-wrapper {
+                margin-left: 0;
+            }
+            .mobile-toggle-btn {
+                display: flex;
+            }
+            .search-container {
+                width: 180px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .topbar-right {
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+            }
+            .search-container {
+                width: 100%;
+                max-width: 260px;
+            }
+            .user-profile-btn,
+            .date-display {
+                display: none;
+            }
+            .content {
+                padding: 15px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="admin-shell.css">
+    <link rel="stylesheet" href="../Student_dashboard/fee-assistant.css">
+    <link rel="stylesheet" href="faculty-management-dynamic.css">
+    <link rel="stylesheet" href="faculty-management-responsive.css">
+    <script src="admin-shell.js" defer></script>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+    <!-- Sidebar Backdrop for Mobile Click-outside Close -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+    <!-- ------------------ SIDEBAR ------------------ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <!-- Provided Logo Image path -->
+            <img src="../login_page/uoh-logo.png" alt="University Logo" class="sidebar-logo-img" onerror="this.src='https://via.placeholder.com/40/ffffff/000000?text=UOH'">
+            <div class="brand-text">
+                <h3>UNIVERSITY OF HARIPUR</h3>
+                <p>Intelligent Ecosystem (UIES)</p>
+            </div>
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="menu-category">AI AGENT MODULES</div>
+            
+            <a href="academic-integrity.html" class="menu-item">
+                <div class="menu-item-left"><i class="fa-solid fa-user-shield"></i> 1. Academic Integrity</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            <a href="clerk-watchdog.html" class="menu-item">
+                <div class="menu-item-left"><i class="fa-solid fa-user-gear"></i> 2. Clerk Watchdog</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            <a href="exam-monitoring.html" class="menu-item">
+                <div class="menu-item-left"><i class="fa-solid fa-file-signature"></i> 3. Exam Monitoring</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            <a href="student-management.html" class="menu-item">
+                <div class="menu-item-left"><i class="fa-solid fa-user-graduate"></i> 4. Student Management</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            <!-- Faculty Management (Current Page - Stays on page) -->
+            <a href="javascript:void(0)" class="menu-item active">
+                <div class="menu-item-left"><i class="fa-solid fa-chalkboard-user"></i> 5. Faculty Management</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            <a href="finance-agent.html" class="menu-item">
+                <div class="menu-item-left"><i class="fa-solid fa-wallet"></i> 6. Finance Agent</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            <a href="ai-timetable-creator.html" class="menu-item">
+                <div class="menu-item-left"><i class="fa-solid fa-flask"></i> 7. Research Agent (ORIC)</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            <a href="library-agent.html" class="menu-item">
+                <div class="menu-item-left"><i class="fa-solid fa-book-bookmark"></i> 8. Library Agent</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            <a href="hostel-agent.html" class="menu-item">
+                <div class="menu-item-left"><i class="fa-solid fa-building-user"></i> 9. Hostel Agent</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            <a href="security-agent.html" class="menu-item">
+                <div class="menu-item-left"><i class="fa-solid fa-shield-halved"></i> 10. Security Agent</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            <a href="coming-soon.html?feature=IT%20Helpdesk" class="menu-item">
+                <div class="menu-item-left"><i class="fa-solid fa-headset"></i> 11. IT Helpdesk</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            <a href="hr-administration.html" class="menu-item">
+                <div class="menu-item-left"><i class="fa-solid fa-users-gear"></i> 12. HR Administration</div>
+                <span class="status-dot"></span>
+            </a>
+            
+            
+
+            <div class="menu-category" style="margin-top: 10px;">SYSTEM</div>
+            
+            <a href="coming-soon.html?feature=Reports" class="menu-item"><div class="menu-item-left"><i class="fa-solid fa-chart-line"></i> Reports</div></a>
+            <a href="coming-soon.html?feature=Analytics" class="menu-item"><div class="menu-item-left"><i class="fa-solid fa-chart-pie"></i> Analytics</div></a>
+            <a href="coming-soon.html?feature=Audit%20Logs" class="menu-item"><div class="menu-item-left"><i class="fa-solid fa-list-check"></i> Audit Logs</div></a>
+            <a href="coming-soon.html?feature=Settings" class="menu-item"><div class="menu-item-left"><i class="fa-solid fa-gear"></i> Settings</div></a>
+            <a href="coming-soon.html?feature=Support" class="menu-item"><div class="menu-item-left"><i class="fa-regular fa-circle-question"></i> Help & Support</div></a>
+        </div>
+
+        <div class="sidebar-help-card">
+            <div class="help-icon"><i class="fa-solid fa-headset"></i></div>
+            <div class="help-info">
+                <h5>Need Help?</h5>
+                <p>Contact Support Center</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ------------------ MAIN CONTENT AREA ------------------ -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <!-- Mobile 3-Dots Menu Button -->
+                <button class="mobile-toggle-btn" onclick="toggleSidebar()" title="Toggle Menu">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+
+                <div class="page-header-box">
+                    <div class="page-header-icon"><i class="fa-regular fa-user"></i></div>
+                    <div class="page-header-title">
+                        <h2>5. Faculty Management</h2>
+                        <p>AI Agent for faculty administration, performance and workload management</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search faculty, departments, courses...">
+                </div>
+
+                <div class="action-icons">
+                    
+                    
+                </div>
+
+                <div class="user-profile-btn">
+                    <div class="user-avatar-circle">AD</div>
+                    <div class="user-details">
+                        <h5>Admin User</h5>
+                        <p>Super Administrator</p>
+                    </div>
+                </div>
+
+                <div class="date-display">
+                    <i class="fa-regular fa-calendar"></i> 07 June 2024 <br> 09:55 AM
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="content">
+            <!-- Breadcrumb Navigation -->
+            <div class="breadcrumb-box">
+                <a href="javascript:void(0)">AI Agents</a> &gt; <span>Faculty Management</span>
+            </div>
+
+            <!-- Top Metric Cards -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon-wrapper bg-blue-light"><i class="fa-regular fa-user"></i></div>
+                    <div class="metric-data">
+                        <h6>Total Faculty</h6>
+                        <h3 id="facultyTotal">—</h3>
+                        <p class="text-muted">Current database</p>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon-wrapper bg-green-light"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="metric-data">
+                        <h6>Active Faculty</h6>
+                        <h3 id="facultyActive">—</h3>
+                        <p class="text-muted">Faculty status</p>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon-wrapper bg-purple-light"><i class="fa-solid fa-building-user"></i></div>
+                    <div class="metric-data">
+                        <h6>Departments</h6>
+                        <h3 id="facultyDepartments">—</h3>
+                        <p class="text-muted">With faculty records</p>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon-wrapper bg-orange-light"><i class="fa-regular fa-file-lines"></i></div>
+                    <div class="metric-data">
+                        <h6>On Leave</h6>
+                        <h3 id="facultyOnLeave">—</h3>
+                        <p class="text-muted">Current faculty status</p>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon-wrapper bg-indigo-light"><i class="fa-solid fa-bullseye"></i></div>
+                    <div class="metric-data">
+                        <h6>Assigned Courses</h6>
+                        <h3 id="facultyCourses">—</h3>
+                        <p class="text-muted">Database assignments</p>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon-wrapper bg-blue-light"><i class="fa-solid fa-award"></i></div>
+                    <div class="metric-data">
+                        <h6>Scheduled Faculty</h6>
+                        <h3 id="facultyScheduled">—</h3>
+                        <p class="text-muted">Active timetable</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 1: Faculty Overview, Workload Overview & Workload Compliance Trend -->
+            <div class="grid-3-col">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>Faculty Overview</h4>
+                        <a href="javascript:void(0)">View All</a>
+                    </div>
+                    <div class="faculty-overview-split">
+                        <div style="width: 140px; height: 140px; position: relative;">
+                            <canvas id="facultyOverviewChart"></canvas>
+                        </div>
+                        <div class="dept-bars-list">
+                            <div class="dept-bar-row">
+                                <span>Computer Science</span> <strong>68</strong>
+                            </div>
+                            <div class="progress-line-bg"><div class="progress-line-fill" style="width: 80%;"></div></div>
+
+                            <div class="dept-bar-row">
+                                <span>Management Sciences</span> <strong>45</strong>
+                            </div>
+                            <div class="progress-line-bg"><div class="progress-line-fill" style="width: 60%;"></div></div>
+
+                            <div class="dept-bar-row">
+                                <span>Education</span> <strong>38</strong>
+                            </div>
+                            <div class="progress-line-bg"><div class="progress-line-fill" style="width: 50%;"></div></div>
+
+                            <div class="dept-bar-row">
+                                <span>Electrical Engineering</span> <strong>32</strong>
+                            </div>
+                            <div class="progress-line-bg"><div class="progress-line-fill" style="width: 42%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>Workload Overview <span style="font-size:10px; color:#94a3b8; font-weight:normal;">(This Semester)</span></h4>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="workloadOverviewChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>Workload Compliance Trend</h4>
+                        <select><option>This Semester</option></select>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="complianceTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: Faculty Directory, Performance & Leave Requests -->
+            <div class="grid-3-equal">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>Faculty Directory</h4>
+                        <div style="display:flex; gap:8px;">
+                            <input type="text" placeholder="Search faculty..." style="padding:4px 8px; border:1px solid #e2e8f0; border-radius:4px; font-size:10px;">
+                            <button style="border:1px solid #e2e8f0; background:#fff; padding:4px 8px; border-radius:4px;"><i class="fa-solid fa-filter"></i></button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Faculty ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Status</th>
+                                    <th>Workload</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>F-1012</td>
+                                    <td>Dr. Muhammad Ali</td>
+                                    <td>Computer Science</td>
+                                    <td>Professor</td>
+                                    <td><span class="badge-pill badge-active">Active</span></td>
+                                    <td>18 / 18</td>
+                                    <td><a href="#" class="table-action-btn"><i class="fa-regular fa-eye"></i></a> <a href="#" class="table-action-btn"><i class="fa-regular fa-pen-to-square"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>F-1023</td>
+                                    <td>Dr. Zainab Fatima</td>
+                                    <td>Management Sciences</td>
+                                    <td>Associate Professor</td>
+                                    <td><span class="badge-pill badge-active">Active</span></td>
+                                    <td>15 / 18</td>
+                                    <td><a href="#" class="table-action-btn"><i class="fa-regular fa-eye"></i></a> <a href="#" class="table-action-btn"><i class="fa-regular fa-pen-to-square"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>F-1034</td>
+                                    <td>Dr. Usman Tariq</td>
+                                    <td>Electrical Engineering</td>
+                                    <td>Assistant Professor</td>
+                                    <td><span class="badge-pill badge-active">Active</span></td>
+                                    <td>16 / 18</td>
+                                    <td><a href="#" class="table-action-btn"><i class="fa-regular fa-eye"></i></a> <a href="#" class="table-action-btn"><i class="fa-regular fa-pen-to-square"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>F-1045</td>
+                                    <td>Dr. Ayesha Noor</td>
+                                    <td>Education</td>
+                                    <td>Assistant Professor</td>
+                                    <td><span class="badge-pill badge-active">Active</span></td>
+                                    <td>14 / 18</td>
+                                    <td><a href="#" class="table-action-btn"><i class="fa-regular fa-eye"></i></a> <a href="#" class="table-action-btn"><i class="fa-regular fa-pen-to-square"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>F-1056</td>
+                                    <td>Dr. Hassan Raza</td>
+                                    <td>Islamic Studies</td>
+                                    <td>Associate Professor</td>
+                                    <td><span class="badge-pill badge-leave">On Leave</span></td>
+                                    <td>0 / 18</td>
+                                    <td><a href="#" class="table-action-btn"><i class="fa-regular fa-eye"></i></a> <a href="#" class="table-action-btn"><i class="fa-regular fa-pen-to-square"></i></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>Faculty Performance <span style="font-size:10px; color:#94a3b8; font-weight:normal;">(This Semester)</span></h4>
+                        <a href="javascript:void(0)">View All</a>
+                    </div>
+                    
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm"><i class="fa-regular fa-user"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Dr. Muhammad Ali</h5>
+                                <p>Computer Science</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="font-size: 11px;">4.85</strong>
+                            <div class="star-rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm"><i class="fa-regular fa-user"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Dr. Zainab Fatima</h5>
+                                <p>Management Sciences</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="font-size: 11px;">4.62</strong>
+                            <div class="star-rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm"><i class="fa-regular fa-user"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Dr. Usman Tariq</h5>
+                                <p>Electrical Engineering</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="font-size: 11px;">4.35</strong>
+                            <div class="star-rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm"><i class="fa-regular fa-user"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Dr. Ayesha Noor</h5>
+                                <p>Education</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="font-size: 11px;">4.28</strong>
+                            <div class="star-rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm"><i class="fa-regular fa-user"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Dr. Hassan Raza</h5>
+                                <p>Islamic Studies</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="font-size: 11px;">4.10</strong>
+                            <div class="star-rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>Leave Requests</h4>
+                        <a href="javascript:void(0)">View All</a>
+                    </div>
+
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm"><i class="fa-regular fa-user"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Dr. Ali Hassan</h5>
+                                <p>Casual Leave</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 10px; color: #94a3b8; display: block;">10 Jun 2024</span>
+                            <span class="badge-pill badge-pending">Pending</span>
+                        </div>
+                    </div>
+
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm"><i class="fa-regular fa-user"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Dr. Sara Khan</h5>
+                                <p>Medical Leave</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 10px; color: #94a3b8; display: block;">12 Jun 2024</span>
+                            <span class="badge-pill badge-pending">Pending</span>
+                        </div>
+                    </div>
+
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm"><i class="fa-regular fa-user"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Dr. Bilal Ahmed</h5>
+                                <p>Casual Leave</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 10px; color: #94a3b8; display: block;">15 Jun 2024</span>
+                            <span class="badge-pill badge-approved">Approved</span>
+                        </div>
+                    </div>
+
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm"><i class="fa-regular fa-user"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Dr. Ayesha Noor</h5>
+                                <p>Academic Leave</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 10px; color: #94a3b8; display: block;">18 Jun 2024</span>
+                            <span class="badge-pill badge-pending">Pending</span>
+                        </div>
+                    </div>
+
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm"><i class="fa-regular fa-user"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Dr. Usman Tariq</h5>
+                                <p>Medical Leave</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 10px; color: #94a3b8; display: block;">20 Jun 2024</span>
+                            <span class="badge-pill badge-approved">Approved</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3: Upcoming Evaluations, Professional Dev, AI Insights, Quick Actions -->
+            <div class="grid-4-col">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>Upcoming Evaluations</h4>
+                        <a href="javascript:void(0)">View All</a>
+                    </div>
+                    
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm bg-blue-light"><i class="fa-regular fa-calendar"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Teaching Evaluation</h5>
+                                <p>BS CS - 6th Semester</p>
+                            </div>
+                        </div>
+                        <span style="font-size: 10px; color: #94a3b8;">15 Jun 2024</span>
+                    </div>
+
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm bg-purple-light"><i class="fa-regular fa-calendar"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Research Evaluation</h5>
+                                <p>All Faculty</p>
+                            </div>
+                        </div>
+                        <span style="font-size: 10px; color: #94a3b8;">20 Jun 2024</span>
+                    </div>
+
+                    <div class="list-item-row">
+                        <div class="user-meta">
+                            <div class="user-avatar-sm bg-orange-light"><i class="fa-regular fa-calendar"></i></div>
+                            <div class="user-meta-text">
+                                <h5>Peer Review</h5>
+                                <p>Departments</p>
+                            </div>
+                        </div>
+                        <span style="font-size: 10px; color: #94a3b8;">25 Jun 2024</span>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>Professional Development</h4>
+                        <a href="javascript:void(0)">View All</a>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="width:100px; height:100px;">
+                            <canvas id="profDevChart"></canvas>
+                        </div>
+                        <div style="flex:1; font-size:10.5px; display:flex; flex-direction:column; gap:6px;">
+                            <div style="display:flex; justify-content:space-between;"><span>• Workshops</span> <strong>18</strong></div>
+                            <div style="display:flex; justify-content:space-between;"><span>• Conferences</span> <strong>12</strong></div>
+                            <div style="display:flex; justify-content:space-between;"><span>• Training Programs</span> <strong>24</strong></div>
+                            <div style="display:flex; justify-content:space-between;"><span>• Certifications</span> <strong>16</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>AI Insights</h4>
+                        <a href="javascript:void(0)">View All</a>
+                    </div>
+
+                    <div class="ai-insight-card">
+                        <div class="ai-insight-icon"><i class="fa-solid fa-brain"></i></div>
+                        <div class="ai-insight-text">
+                            <h6>5 faculty members are overloaded</h6>
+                            <p>Recommend workload redistribution</p>
+                        </div>
+                    </div>
+
+                    <div class="ai-insight-card">
+                        <div class="ai-insight-icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <div class="ai-insight-text">
+                            <h6>Teaching scores improved by 0.18</h6>
+                            <p>This semester vs last semester</p>
+                        </div>
+                    </div>
+
+                    <div class="ai-insight-card">
+                        <div class="ai-insight-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <div class="ai-insight-text">
+                            <h6>3 faculty members need course training</h6>
+                            <p>Based on student feedback</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h4>Quick Actions</h4>
+                    </div>
+
+                    <div class="quick-actions-3col">
+                        <a href="#" class="qa-action-box">
+                            <div class="qa-action-icon bg-blue-light"><i class="fa-solid fa-user-plus"></i></div>
+                            <span>Add New Faculty</span>
+                        </a>
+
+                        <a href="#" class="qa-action-box">
+                            <div class="qa-action-icon bg-green-light"><i class="fa-solid fa-tasks"></i></div>
+                            <span>Assign Workload</span>
+                        </a>
+
+                        <a href="#" class="qa-action-box">
+                            <div class="qa-action-icon bg-purple-light"><i class="fa-solid fa-calendar-days"></i></div>
+                            <span>Manage Timetable</span>
+                        </a>
+
+                        <a href="#" class="qa-action-box">
+                            <div class="qa-action-icon bg-green-light"><i class="fa-solid fa-check-circle"></i></div>
+                            <span>Approve Leaves</span>
+                        </a>
+
+                        <a href="#" class="qa-action-box">
+                            <div class="qa-action-icon bg-blue-light"><i class="fa-solid fa-chart-user"></i></div>
+                            <span>Performance Review</span>
+                        </a>
+
+                        <a href="#" class="qa-action-box">
+                            <div class="qa-action-icon bg-indigo-light"><i class="fa-solid fa-file-export"></i></div>
+                            <span>Generate Reports</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="system-footer">
+                <div>© 2024 University of Haripur. All rights reserved.</div>
+                <div class="footer-badges">
+                    <div class="footer-badge-item"><i class="fa-solid fa-lock"></i> Secure Access</div>
+                    <div class="footer-badge-item"><i class="fa-solid fa-robot"></i> AI Powered</div>
+                    <div class="footer-badge-item"><i class="fa-solid fa-shield-halved"></i> Privacy Protected</div>
+                    <div class="footer-badge-item"><i class="fa-solid fa-clipboard-check"></i> Audit Ready</div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script src="faculty-management.js" defer></script>
+</body>
+</html>

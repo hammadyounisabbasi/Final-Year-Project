@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments - Intelligent Ecosystem (IES) | University of Haripur</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Responsive Interactive Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --sidebar-bg: #0d1527;
+            --sidebar-hover: #19233c;
+            --sidebar-active: #2563eb;
+            --sidebar-text: #94a3b8;
+            --sidebar-text-white: #ffffff;
+            --main-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --primary-blue: #2563eb;
+            --primary-blue-bg: #eff6ff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --green-success: #16a34a;
+            --green-bg: #f0fdf4;
+            --orange-pending: #d97706;
+            --orange-bg: #fffbeb;
+            --red-overdue: #dc2626;
+            --red-bg: #fef2f2;
+            --purple-accent: #9333ea;
+            --purple-bg: #faf5ff;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--main-bg);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ---------------- APP CONTAINER LAYOUT ---------------- */
+        .app-wrapper {
+            display: flex;
+            width: 100%;
+            position: relative;
+        }
+
+        /* ---------------- SIDEBAR STYLING ---------------- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px 18px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Custom University Logo CSS Styling */
+        .sidebar-logo-img {
+            height: 40px;
+            width: 40px;
+            object-fit: contain;
+            margin-right: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .sidebar-title-group h2 {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .sidebar-title-group p {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            padding: 15px 12px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .nav-section-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #475569;
+            font-weight: 700;
+            margin: 15px 0 8px 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-size: 13.5px;
+            font-weight: 500;
+            margin-bottom: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item i {
+            width: 22px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .nav-item:hover {
+            background-color: var(--sidebar-hover);
+            color: #ffffff;
+        }
+
+        .nav-item.active {
+            background-color: var(--sidebar-active);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .sidebar-footer {
+            padding: 18px 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 11px;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        /* ---------------- MAIN CONTENT WRAPPER ---------------- */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        /* ---------------- TOPBAR STYLING ---------------- */
+        .topbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mobile-toggle-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        .mobile-toggle-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .page-heading h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .page-heading p {
+            font-size: 12.5px;
+            color: var(--text-muted);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 280px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: #f8fafc;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-blue);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .icon-btn {
+            position: relative;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #475569;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+        }
+
+        .badge {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            background-color: var(--red-overdue);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 10px;
+            border-left: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .user-info {
+            line-height: 1.2;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ---------------- CONTROL SUB-BAR ---------------- */
+        .content-subbar {
+            padding: 16px 28px 0 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .term-select {
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background-color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .primary-btn {
+            background-color: var(--primary-blue);
+            color: #ffffff;
+            border: none;
+            padding: 9px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+            transition: background 0.2s;
+        }
+
+        .primary-btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* ---------------- DASHBOARD CONTENT CONTAINER ---------------- */
+        .dashboard-container {
+            padding: 20px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Top 5 Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+        }
+
+        .metric-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .metric-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .metric-info h3 {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-weight: 600;
+        }
+
+        .metric-info .value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 2px 0;
+        }
+
+        .metric-info .subtext {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Main Split Layout */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 2.1fr 1fr;
+            gap: 20px;
+        }
+
+        .left-column, .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Card Component */
+        .content-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-header h2 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .card-header-link {
+            font-size: 12px;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .card-header-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Filters Bar */
+        .filter-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tabs-group {
+            display: flex;
+            background-color: #f1f5f9;
+            padding: 4px;
+            border-radius: var(--radius-sm);
+            gap: 4px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background-color: #ffffff;
+            color: var(--primary-blue);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .filter-dropdowns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: #ffffff;
+            font-size: 12px;
+            color: var(--text-main);
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ---------------- TABLE STYLING ---------------- */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .assignments-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .assignments-table th {
+            padding: 10px 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .assignments-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .assignment-title {
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .type-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .course-tag {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-submitted { background-color: var(--green-bg); color: var(--green-success); }
+        .status-pending { background-color: var(--orange-bg); color: var(--orange-pending); }
+        .status-overdue { background-color: var(--red-bg); color: var(--red-overdue); }
+
+        .grade-badge {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Middle Row Split (Progress & Submissions) */
+        .middle-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Donut Chart Block */
+        .donut-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .chart-box {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .donut-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .legend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .legend-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* Recent Submissions List */
+        .submissions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .submission-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            background-color: #f8fafc;
+            border: 1px solid #f1f5f9;
+        }
+
+        .submission-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .submission-title {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .submission-date {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Statistics Chart */
+        .stats-wrapper {
+            display: grid;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: #f8fafc;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* Deadlines List */
+        .deadlines-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .deadline-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .deadline-item:last-child { border-bottom: none; }
+
+        .deadline-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .deadline-title {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .deadline-course {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .deadline-right {
+            text-align: right;
+        }
+
+        .deadline-date {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .deadline-days {
+            font-size: 10.5px;
+            color: var(--orange-pending);
+            font-weight: 600;
+        }
+
+        /* Calendar Widget */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .cal-day-name {
+            font-weight: 700;
+            color: var(--text-muted);
+            padding-bottom: 6px;
+        }
+
+        .cal-date {
+            padding: 6px 0;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .cal-date:hover { background-color: #f1f5f9; }
+        .cal-date.has-submitted { background-color: var(--green-success); color: white; font-weight: 700; }
+        .cal-date.has-pending { background-color: var(--orange-pending); color: white; font-weight: 700; }
+        .cal-date.has-overdue { background-color: var(--red-overdue); color: white; font-weight: 700; }
+        .cal-date.has-multiple { background-color: var(--purple-accent); color: white; font-weight: 700; }
+
+        /* Banner Overview Card */
+        .overview-banner {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 1px solid #bbf7d0;
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .overview-banner i {
+            color: var(--green-success);
+            font-size: 20px;
+            margin-top: 2px;
+        }
+
+        /* Quick Action Grid */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .quick-btn {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            background-color: #ffffff;
+            border-color: var(--primary-blue);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            color: var(--primary-blue);
+        }
+
+        .quick-btn i {
+            font-size: 14px;
+        }
+
+        /* ---------------- MODALS / NOTIFICATION POPUP ---------------- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            width: 90%;
+            max-width: 500px;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-group input:focus { border-color: var(--primary-blue); }
+
+        /* Notifications Popover */
+        .notification-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 320px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            z-index: 500;
+            padding: 12px;
+        }
+
+        .notif-item {
+            padding: 8px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 12px;
+        }
+
+        .notif-item:last-child { border-bottom: none; }
+        .notif-item strong { color: var(--text-main); display: block; }
+        .notif-item span { color: var(--text-muted); font-size: 11px; }
+
+        /* ---------------- RESPONSIVE MEDIA QUERIES ---------------- */
+        @media (max-width: 1200px) {
+            .metrics-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                transform: translateX(-100%);
+                box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .mobile-toggle-btn {
+                display: block;
+            }
+
+            .topbar {
+                padding: 12px 16px;
+            }
+
+            .search-box {
+                width: 140px;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .middle-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-container {
+                padding: 16px;
+            }
+
+            .content-subbar {
+                padding: 12px 16px 0 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+            .search-box {
+                display: block;
+                width: 120px;
+            }
+        }
+    </style>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+<div class="app-wrapper">
+    <!-- ---------------- SIDEBAR ---------------- -->
+    <aside class="sidebar" id="sidebar">
+        <div>
+            <div class="sidebar-header">
+                <!-- Exact image path required with fallback -->
+                <img src="../login_page/uoh-logo.png" alt="UOH Logo" class="sidebar-logo-img" onerror="this.src='https://via.placeholder.com/40/2563eb/ffffff?text=UOH'">
+                <div class="sidebar-title-group">
+                    <h2>The University of Haripur</h2>
+                    <p>Intelligent Ecosystem (IES)</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Student Portal</div>
+                <a href="stu_dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-border-all"></i> Dashboard
+                </a>
+                <a href="my-courses.html" class="nav-item">
+                    <i class="fa-solid fa-book-open"></i> My Courses
+                </a>
+                <a href="attendance.html" class="nav-item">
+                    <i class="fa-regular fa-calendar-check"></i> Attendance
+                </a>
+                <!-- Current Page keeps student here -->
+                <a href="#" class="nav-item active">
+                    <i class="fa-regular fa-file-lines"></i> Assignments
+                </a>
+                <a href="exams.html" class="nav-item">
+                    <i class="fa-solid fa-pen-ruler"></i> Exams
+                </a>
+                <a href="results.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i> Results & CGPA
+                </a>
+                <a href="fees.html" class="nav-item">
+                    <i class="fa-solid fa-wallet"></i> Fees
+                </a>
+                <a href="library.html" class="nav-item">
+                    <i class="fa-solid fa-book"></i> Library
+                </a>
+                <a href="timetable.html" class="nav-item">
+                    <i class="fa-regular fa-clock"></i> Timetable
+                </a>
+                
+                <a href="profile.html" class="nav-item">
+                    <i class="fa-regular fa-user"></i> Profile
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </a>
+
+                <div class="nav-section-title">System</div>
+                <a href="support.html" class="nav-item">
+                    <i class="fa-regular fa-life-ring"></i> Support
+                </a>
+                <a href="../landing_page/index.html" class="nav-item">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </a>
+            </nav>
+        </div>
+
+        <div class="sidebar-footer">
+            <p>© 2024 University of Haripur</p>
+            <p>All rights reserved.</p>
+            <p style="margin-top: 4px; color: #64748b;">IES v1.0</p>
+        </div>
+    </aside>
+
+    <!-- ---------------- MAIN CONTENT AREA ---------------- -->
+    <main class="main-content">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <!-- Mobile 3-Dots / Hamburger Menu Toggle -->
+                <button class="mobile-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+                <div class="page-heading">
+                    <h1>Assignments</h1>
+                    <p>View, submit and track all your course assignments.</p>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <!-- Search bar visible in desktop & mobile topbar -->
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Search courses, assignments...">
+                </div>
+
+                <!-- Single Responsive Notification Icon with Dropdown Alert -->
+                <div style="position: relative;">
+                    
+
+                    <!-- Notifications Dropdown -->
+                    <div class="notification-dropdown" id="notifDropdown">
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:6px; margin-bottom:8px;">
+                            <strong style="font-size:13px;">Notifications</strong>
+                            <span style="font-size:10px; color:var(--primary-blue); cursor:pointer;" onclick="clearNotifs()">Mark all read</span>
+                        </div>
+                        <div class="notif-item">
+                            <strong>Database Design Due Soon</strong>
+                            <span>Due in 2 days - CSC-304</span>
+                        </div>
+                        <div class="notif-item">
+                            <strong>New Feedback Received</strong>
+                            <span>Grade 92/100 on Lab Report</span>
+                        </div>
+                        <div class="notif-item">
+                            <strong>Discrete Math Assignment Posted</strong>
+                            <span>MTH-201 Problem Set 3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Profile -->
+                <div class="user-profile" onclick="window.location.href='profile.html'">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Student Profile" class="user-avatar" id="topbarUserAvatar">
+                    <div class="user-info">
+                        <div class="user-name" id="topbarUserName">Loading...</div>
+                        <div class="user-role" id="topbarUserRole">BS Computer Science</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: #94a3b8;"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- SUBBAR CONTROLS -->
+        <div class="content-subbar">
+            <select class="term-select">
+                <option>Spring 2024</option>
+                <option>Fall 2023</option>
+            </select>
+            <button class="primary-btn" onclick="openUploadModal()">
+                <i class="fa-solid fa-upload"></i> Upload Assignment
+            </button>
+        </div>
+
+        <!-- MAIN DASHBOARD CONTENT -->
+        <div class="dashboard-container">
+            
+            <!-- 5 METRICS CARDS -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon" style="background-color: var(--primary-blue-bg); color: var(--primary-blue);">
+                        <i class="fa-regular fa-folder-open"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Total Assignments</h3>
+                        <div class="value" id="countTotal">18</div>
+                        <div class="subtext" style="color: var(--text-muted);">This Semester</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background-color: var(--green-bg); color: var(--green-success);">
+                        <i class="fa-regular fa-circle-check"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Submitted</h3>
+                        <div class="value" id="countSubmitted">11</div>
+                        <div class="subtext" style="color: var(--green-success);">61% of total</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background-color: var(--orange-bg); color: var(--orange-pending);">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Pending</h3>
+                        <div class="value" id="countPending">5</div>
+                        <div class="subtext" style="color: var(--orange-pending);">Due Soon</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background-color: var(--purple-bg); color: var(--purple-accent);">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Overdue</h3>
+                        <div class="value" id="countOverdue">2</div>
+                        <div class="subtext" style="color: var(--red-overdue);">Needs Attention</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background-color: #f0fdf4; color: #15803d;">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h3>Average Score</h3>
+                        <div class="value">87%</div>
+                        <div class="subtext" style="color: var(--green-success);">Across Completed</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAYOUT GRID -->
+            <div class="layout-grid">
+                
+                <!-- LEFT COLUMN -->
+                <div class="left-column">
+                    
+                    <!-- ALL ASSIGNMENTS CARD & TABLE -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h2>All Assignments</h2>
+                        </div>
+
+                        <!-- Responsive Filters -->
+                        <div class="filter-controls">
+                            <div class="tabs-group">
+                                <button class="tab-btn active" onclick="filterTab('all', this)">All (18)</button>
+                                <button class="tab-btn" onclick="filterTab('submitted', this)">Submitted (11)</button>
+                                <button class="tab-btn" onclick="filterTab('pending', this)">Pending (5)</button>
+                                <button class="tab-btn" onclick="filterTab('overdue', this)">Overdue (2)</button>
+                            </div>
+
+                            <div class="filter-dropdowns">
+                                <select class="filter-btn" id="courseFilter" onchange="renderAssignmentsTable()">
+                                    <option value="all">All Courses</option>
+                                    <option value="CSC-302">CSC-302 Data Structures</option>
+                                    <option value="CSC-304">CSC-304 Database Systems</option>
+                                    <option value="CSC-306">CSC-306 Software Eng.</option>
+                                    <option value="MTH-201">MTH-201 Discrete Math</option>
+                                    <option value="ENG-201">ENG-201 Tech Writing</option>
+                                    <option value="PHY-201">PHY-201 Applied Physics</option>
+                                </select>
+                                <button class="filter-btn"><i class="fa-solid fa-filter"></i> Filter</button>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="table-responsive">
+                            <table class="assignments-table">
+                                <thead>
+                                    <tr>
+                                        <th>Assignment</th>
+                                        <th>Course</th>
+                                        <th>Teacher Reference</th>
+                                        <th>Due Date</th>
+                                        <th>Status & Remarks</th>
+                                        <th>Grade</th>
+                                        <th style="text-align:right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="assignmentsTableBody">
+                                    <!-- Dynamic rows rendered by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="margin-top: 15px; text-align: center;">
+                            <a class="card-header-link" onclick="filterTab('all', document.querySelectorAll('.tab-btn')[0])">View All Assignments <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- MIDDLE SPLIT: PROGRESS & RECENT SUBMISSIONS -->
+                    <div class="middle-grid">
+                        
+                        <!-- Assignment Progress Card -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Assignment Progress</h2>
+                            </div>
+                            <div class="donut-container">
+                                <div class="chart-box">
+                                    <canvas id="progressDonutChart"></canvas>
+                                </div>
+                                <div class="donut-legend">
+                                    <div class="legend-item">
+                                        <span class="legend-label"><span class="dot" style="background:var(--green-success);"></span> Submitted</span>
+                                        <strong>11 (61%)</strong>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-label"><span class="dot" style="background:var(--orange-pending);"></span> Pending</span>
+                                        <strong>5 (28%)</strong>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-label"><span class="dot" style="background:var(--red-overdue);"></span> Overdue</span>
+                                        <strong>2 (11%)</strong>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-label"><span class="dot" style="background:var(--purple-accent);"></span> Not Started</span>
+                                        <strong>0 (0%)</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Submissions Card -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Recent Submissions</h2>
+                                <a class="card-header-link" onclick="openSubmissionsModal()">View All</a>
+                            </div>
+                            <div class="submissions-list" id="recentSubmissionsContainer">
+                                <!-- Dynamic JS -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ASSIGNMENT STATISTICS -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h2>Assignment Statistics</h2>
+                        </div>
+                        <div class="stats-wrapper">
+                            <div style="height: 180px;">
+                                <canvas id="statisticsLineChart"></canvas>
+                            </div>
+                            <div class="stats-summary">
+                                <div class="stat-row">
+                                    <div class="stat-icon" style="background:#eff6ff; color:var(--primary-blue);"><i class="fa-solid fa-bullseye"></i></div>
+                                    <div>
+                                        <div style="font-size:11px; color:var(--text-muted);">Average Score</div>
+                                        <strong style="font-size:15px;">87%</strong>
+                                    </div>
+                                </div>
+                                <div class="stat-row">
+                                    <div class="stat-icon" style="background:#f0fdf4; color:var(--green-success);"><i class="fa-solid fa-award"></i></div>
+                                    <div>
+                                        <div style="font-size:11px; color:var(--text-muted);">Highest Score</div>
+                                        <strong style="font-size:15px;">98%</strong>
+                                    </div>
+                                </div>
+                                <div class="stat-row">
+                                    <div class="stat-icon" style="background:#fef2f2; color:var(--red-overdue);"><i class="fa-solid fa-arrow-down-long"></i></div>
+                                    <div>
+                                        <div style="font-size:11px; color:var(--text-muted);">Lowest Score</div>
+                                        <strong style="font-size:15px;">62%</strong>
+                                    </div>
+                                </div>
+                                <div style="font-size:11px; color:var(--green-success); font-weight:600; margin-top:4px;">
+                                    <i class="fa-solid fa-trend-up"></i> ↑ 5% this week
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN -->
+                <div class="right-column">
+                    
+                    <!-- UPCOMING DEADLINES -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h2>Upcoming Deadlines</h2>
+                            <a class="card-header-link" onclick="openDeadlinesModal()">View All</a>
+                        </div>
+                        <div class="deadlines-list" id="deadlinesContainer">
+                            <!-- Dynamic JS -->
+                        </div>
+                    </div>
+
+                    <!-- ASSIGNMENT CALENDAR -->
+                    <div class="content-card">
+                        <div class="calendar-header">
+                            <h2 style="font-size: 14px;">Assignment Calendar</h2>
+                            <strong style="font-size: 13px; color: var(--primary-blue);">May 2024</strong>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="cal-day-name">Su</div>
+                            <div class="cal-day-name">Mo</div>
+                            <div class="cal-day-name">Tu</div>
+                            <div class="cal-day-name">We</div>
+                            <div class="cal-day-name">Th</div>
+                            <div class="cal-day-name">Fr</div>
+                            <div class="cal-day-name">Sa</div>
+
+                            <div class="cal-date" style="color:#cbd5e1;">28</div>
+                            <div class="cal-date" style="color:#cbd5e1;">29</div>
+                            <div class="cal-date" style="color:#cbd5e1;">30</div>
+                            <div class="cal-date">1</div>
+                            <div class="cal-date">2</div>
+                            <div class="cal-date">3</div>
+                            <div class="cal-date">4</div>
+
+                            <div class="cal-date">5</div>
+                            <div class="cal-date">6</div>
+                            <div class="cal-date">7</div>
+                            <div class="cal-date">8</div>
+                            <div class="cal-date">9</div>
+                            <div class="cal-date has-overdue" title="Technical Writing Overdue">10</div>
+                            <div class="cal-date">11</div>
+
+                            <div class="cal-date has-submitted" title="Lab Report Submitted">12</div>
+                            <div class="cal-date">13</div>
+                            <div class="cal-date has-submitted">14</div>
+                            <div class="cal-date has-submitted">15</div>
+                            <div class="cal-date">16</div>
+                            <div class="cal-date">17</div>
+                            <div class="cal-date has-pending" title="Database Design Due">18</div>
+
+                            <div class="cal-date has-submitted">19</div>
+                            <div class="cal-date has-pending">20</div>
+                            <div class="cal-date">21</div>
+                            <div class="cal-date has-submitted">22</div>
+                            <div class="cal-date">23</div>
+                            <div class="cal-date">24</div>
+                            <div class="cal-date has-multiple" title="Multiple Tasks">25</div>
+
+                            <div class="cal-date">26</div>
+                            <div class="cal-date">27</div>
+                            <div class="cal-date">28</div>
+                            <div class="cal-date">29</div>
+                            <div class="cal-date">30</div>
+                            <div class="cal-date">31</div>
+                            <div class="cal-date" style="color:#cbd5e1;">1</div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:12px; font-size:10px; color:var(--text-muted);">
+                            <span><span class="dot" style="background:var(--green-success);"></span> Submitted</span>
+                            <span><span class="dot" style="background:var(--orange-pending);"></span> Pending</span>
+                            <span><span class="dot" style="background:var(--red-overdue);"></span> Overdue</span>
+                            <span><span class="dot" style="background:var(--purple-accent);"></span> Multiple</span>
+                        </div>
+                    </div>                    <!-- SUBMISSION OVERVIEW BANNER -->
+                    <div class="overview-banner">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div>
+                            <strong style="font-size:13px; color:#14532d; display:block; margin-bottom:2px;">Great job!</strong>
+                            <p style="font-size:11.5px; color:#166534; line-height:1.4;">
+                                You are maintaining excellent consistency in submitting your assignments on time.
+                            </p>
+                            <a href="#" style="font-size:11px; color:var(--primary-blue); font-weight:700; margin-top:6px; display:inline-block;" onclick="openSubmissionsModal()">View Report</a>
+                        </div>
+                    </div>
+
+                    <!-- QUICK ACTIONS -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h2>Quick Actions</h2>
+                        </div>
+                        <div class="quick-actions-grid">
+                            <button class="quick-btn" onclick="openUploadModal()">
+                                <i class="fa-solid fa-file-arrow-up" style="color:var(--primary-blue);"></i> Upload Assignment
+                            </button>
+                            <button class="quick-btn" onclick="triggerQuickAction('Rubrics')">
+                                <i class="fa-solid fa-list-check" style="color:var(--purple-accent);"></i> View Rubrics
+                            </button>
+                            <button class="quick-btn" onclick="openSubmissionsModal()">
+                                <i class="fa-solid fa-folder-closed" style="color:var(--green-success);"></i> My Submissions
+                            </button>
+                            <button class="quick-btn" onclick="triggerQuickAction('Guidelines')">
+                                <i class="fa-solid fa-book-bookmark" style="color:var(--orange-pending);"></i> Guidelines
+                            </button>
+                            <button class="quick-btn" onclick="openExtensionModal()">
+                                <i class="fa-solid fa-calendar-plus" style="color:var(--red-overdue);"></i> Extension Request
+                            </button>
+                            <button class="quick-btn" onclick="triggerQuickAction('Feedback')">
+                                <i class="fa-solid fa-comment-dots" style="color:var(--primary-blue);"></i> View Feedback
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ---------------- MODAL INPUT DIALOGS ---------------- -->
+<div class="modal-overlay" id="genericModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle" style="font-size: 16px; font-weight:700;">Submit Assignment</h3>
+            <button onclick="closeModal()" style="background:none; border:none; font-size:16px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Dynamic Form Insertion -->
+        </div>
+    </div>
+</div>
+
+<!-- ---------------- JAVASCRIPT STATE & INTERACTION ---------------- -->
+<script>
+    let assignments = [];
+    let currentFilter = 'all';
+
+    const modal = document.getElementById('genericModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+
+    function filterTab(status, element) {
+        currentFilter = status;
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        if (element) element.classList.add('active');
+        renderAssignmentsTable();
+    }
+
+    function renderAssignmentsTable() {
+        const tbody = document.getElementById('assignmentsTableBody');
+        if (!tbody) return;
+
+        let filtered = assignments.filter(item => {
+            return currentFilter === 'all' || item.status === currentFilter;
+        });
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--text-muted);">No assignments found.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = filtered.map(item => {
+            const statusClass = item.status === 'submitted' ? 'status-submitted' : (item.status === 'overdue' ? 'status-overdue' : 'status-pending');
+            const hasRef = Boolean(item.attachmentPath);
+            const refHtml = hasRef ? `
+                <a href="${item.attachmentPath}" target="_blank" download class="filter-btn" style="display:inline-flex; font-size:11px; padding:4px 8px; text-decoration:none; color:var(--primary-blue);">
+                    <i class="fa-solid fa-paperclip"></i> ${item.attachmentName || 'Download Task'}
+                </a>
+            ` : `<span style="font-size:11px; color:#94a3b8;">No file attached</span>`;
+
+            const feedbackPreview = item.teacherFeedback ? `<div style="font-size:11px; color:#047857; margin-top:3px; max-width:220px; line-height:1.2;"><strong>Feedback:</strong> ${item.teacherFeedback}</div>` : '';
+
+            return `
+                <tr>
+                    <td>
+                        <div class="assignment-title">
+                            <div class="type-icon" style="background-color:${item.iconBg || '#eff6ff'}; color:${item.iconColor || '#2563eb'};">
+                                <i class="fa-solid ${item.icon || 'fa-file-lines'}"></i>
+                            </div>
+                            <div>
+                                <div>${item.title}</div>
+                                <div class="course-tag">${item.category || 'Assignment'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><strong style="color:var(--text-main); font-size:12px;">${item.course}</strong><div style="font-size:11px; color:var(--text-muted);">${item.courseName || ''}</div></td>
+                    <td>${refHtml}</td>
+                    <td style="font-size:12px;">${item.dueDate}</td>
+                    <td>
+                        <span class="status-badge ${statusClass}">${item.statusText || item.status}</span>
+                        ${feedbackPreview}
+                    </td>
+                    <td>
+                        <span class="grade-badge" style="font-size:13px; color:${item.grade && item.grade !== '—' ? '#047857' : 'var(--text-muted)'}; font-weight:700;">
+                            ${item.grade || '—'}
+                        </span>
+                    </td>
+                    <td style="text-align:right;">
+                        <button onclick="openUploadModalFor(${item.id})" class="${item.status === 'submitted' ? 'filter-btn' : 'primary-btn'}" style="font-size:11px; padding:4px 10px;">
+                            <i class="fa-solid ${item.status === 'submitted' ? 'fa-rotate-right' : 'fa-upload'}"></i> ${item.status === 'submitted' ? 'Re-attempt' : 'Submit'}
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function renderDeadlines() {
+        const container = document.getElementById('deadlinesContainer');
+        if (!container) return;
+        const upcoming = assignments.filter(a => a.status === 'pending' || a.status === 'overdue').slice(0, 4);
+        container.innerHTML = upcoming.map(item => `
+            <div class="deadline-item">
+                <div>
+                    <div class="deadline-title">${item.title}</div>
+                    <div class="deadline-course">${item.course}</div>
+                </div>
+                <div class="deadline-date">${item.dueDate}</div>
+            </div>
+        `).join('') || '<div style="text-align:center; padding:10px; color:var(--text-muted);">No upcoming deadlines</div>';
+    }
+
+    function renderRecentSubmissions() {
+        const container = document.getElementById('recentSubmissionsContainer');
+        if (!container) return;
+        const submitted = assignments.filter(a => a.status === 'submitted').slice(0, 3);
+        container.innerHTML = submitted.map(item => `
+            <div class="submission-item">
+                <div>
+                    <div class="submission-title">${item.title}</div>
+                    <div class="submission-date">${item.course} • Grade: <strong>${item.grade || 'Pending'}</strong></div>
+                </div>
+            </div>
+        `).join('') || '<div style="text-align:center; padding:10px; color:var(--text-muted);">No recent submissions</div>';
+    }
+
+    function triggerQuickAction(actionName) {
+        modalTitle.innerText = actionName;
+        modalBody.innerHTML = `<p style="font-size:13px;">Details for ${actionName} loading...</p>`;
+        modal.style.display = 'flex';
+    }
+
+    function openUploadModalFor(assignmentId) {
+        modalTitle.innerText = "Submit Assignment";
+        modalBody.innerHTML = `<form><input type="file" /><button class="primary-btn">Submit</button></form>`;
+        modal.style.display = 'flex';
+    }
+
+    function openExtensionModal() {
+        modalTitle.innerText = "Request Extension";
+        modalBody.innerHTML = `<form><textarea placeholder="Reason..."></textarea><button class="primary-btn">Request</button></form>`;
+        modal.style.display = 'flex';
+    }
+
+    function openDeadlinesModal() { triggerQuickAction('All Deadlines'); }
+    function openSubmissionsModal() { triggerQuickAction('My Submissions'); }
+
+    function initCharts() {
+        const donutCtx = document.getElementById('progressDonutChart')?.getContext('2d');
+        if (donutCtx) {
+            new Chart(donutCtx, {
+                type: 'doughnut',
+                data: { labels: ['Submitted', 'Pending', 'Overdue'], datasets: [{ data: [11, 5, 2], backgroundColor: ['#16a34a', '#d97706', '#dc2626'] }] },
+                options: { cutout: '75%', plugins: { legend: { display: false } }, maintainAspectRatio: false }
+            });
+        }
+    }
+
+    window.onload = function() {
+        renderAssignmentsTable();
+        renderDeadlines();
+        renderRecentSubmissions();
+        initCharts();
+    };
+</script>
+
+<script src="../shared/student-topbar.js"></script>
+<script src="student-assignments.js"></script>
+</body>
+</html>

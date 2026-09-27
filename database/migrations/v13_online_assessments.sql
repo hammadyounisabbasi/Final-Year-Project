@@ -1,0 +1,14 @@
+-- Additive online examination entities. This file intentionally does not alter
+-- or delete existing university data.
+CREATE TABLE IF NOT EXISTS Assessments (
+ assessment_id INTEGER PRIMARY KEY AUTOINCREMENT, course_id INTEGER NOT NULL REFERENCES Courses(course_id), teacher_id INTEGER NOT NULL REFERENCES Teachers(teacher_id), academic_year TEXT NOT NULL, semester INTEGER NOT NULL, section TEXT NOT NULL, title TEXT NOT NULL, assessment_type TEXT NOT NULL CHECK(assessment_type IN ('Quiz','Midterm','Final')), start_at DATETIME NOT NULL, end_at DATETIME NOT NULL, duration_minutes INTEGER NOT NULL CHECK(duration_minutes > 0), total_marks REAL NOT NULL CHECK(total_marks > 0), status TEXT NOT NULL DEFAULT 'Draft' CHECK(status IN ('Draft','Published','Closed')), created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS Assessment_Questions (
+ question_id INTEGER PRIMARY KEY AUTOINCREMENT, assessment_id INTEGER NOT NULL REFERENCES Assessments(assessment_id) ON DELETE CASCADE, question_text TEXT NOT NULL, option_a TEXT NOT NULL, option_b TEXT NOT NULL, option_c TEXT NOT NULL, option_d TEXT NOT NULL, correct_option TEXT NOT NULL CHECK(correct_option IN ('A','B','C','D')), marks REAL NOT NULL CHECK(marks > 0), position INTEGER NOT NULL, UNIQUE(assessment_id, position));
+CREATE TABLE IF NOT EXISTS Assessment_Attempts (
+ attempt_id INTEGER PRIMARY KEY AUTOINCREMENT, assessment_id INTEGER NOT NULL REFERENCES Assessments(assessment_id), student_id INTEGER NOT NULL REFERENCES Students(student_id), enrollment_id INTEGER NOT NULL REFERENCES Enrollments(enrollment_id), started_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, submitted_at DATETIME, status TEXT NOT NULL DEFAULT 'In Progress' CHECK(status IN ('In Progress','Submitted','Auto Submitted')), fullscreen_violations INTEGER NOT NULL DEFAULT 0 CHECK(fullscreen_violations >= 0), obtained_marks REAL NOT NULL DEFAULT 0, total_marks REAL NOT NULL DEFAULT 0, auto_submit_reason TEXT, UNIQUE(assessment_id, student_id));
+CREATE TABLE IF NOT EXISTS Assessment_Responses (
+ response_id INTEGER PRIMARY KEY AUTOINCREMENT, attempt_id INTEGER NOT NULL REFERENCES Assessment_Attempts(attempt_id) ON DELETE CASCADE, question_id INTEGER NOT NULL REFERENCES Assessment_Questions(question_id), selected_option TEXT CHECK(selected_option IN ('A','B','C','D')), is_correct INTEGER, awarded_marks REAL NOT NULL DEFAULT 0, UNIQUE(attempt_id, question_id));
+CREATE TABLE IF NOT EXISTS Assessment_Target_Students (
+ assessment_id INTEGER NOT NULL REFERENCES Assessments(assessment_id) ON DELETE CASCADE, student_id INTEGER NOT NULL REFERENCES Students(student_id), PRIMARY KEY (assessment_id, student_id));
+CREATE INDEX IF NOT EXISTS idx_assessments_teacher ON Assessments(teacher_id, start_at);
+CREATE INDEX IF NOT EXISTS idx_assessments_course_section ON Assessments(course_id, academic_year, semester, section);

@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Courses - The University of Haripur</title>
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --sidebar-bg: #0b132b;
+      --sidebar-hover: #1c2a4f;
+      --sidebar-active: #2563eb;
+      --sidebar-text: #94a3b8;
+      --sidebar-text-white: #ffffff;
+      --body-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      --purple: #8b5cf6;
+      --purple-light: #f5f3ff;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      --radius: 12px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--body-bg);
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* --- SIDEBAR --- */
+    .sidebar {
+      width: 270px;
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 10000;
+      transition: var(--transition);
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .sidebar-header {
+      padding: 20px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .uoh-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: #ffffff;
+      padding: 2px;
+    }
+
+    .brand-titles h2 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--sidebar-text-white);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .brand-titles p {
+      font-size: 0.68rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .menu-section-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #475569;
+      padding: 16px 20px 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      padding: 0 10px;
+    }
+
+    .nav-item {
+      margin-bottom: 3px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--sidebar-text);
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .nav-link i {
+      width: 24px;
+      font-size: 1rem;
+      margin-right: 10px;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      background-color: var(--sidebar-hover);
+      color: var(--sidebar-text-white);
+    }
+
+    .nav-link.active {
+      background-color: var(--sidebar-active);
+      color: var(--sidebar-text-white);
+      font-weight: 600;
+    }
+
+    .badge-count {
+      margin-left: auto;
+      background-color: var(--danger);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    /* Sidebar Footer Profile */
+    .sidebar-user {
+      margin-top: auto;
+      padding: 16px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .user-profile-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar-wrap {
+      position: relative;
+    }
+
+    .user-avatar-wrap img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      background-color: var(--success);
+      border: 2px solid var(--sidebar-bg);
+      border-radius: 50%;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+
+    .user-info h4 {
+      font-size: 0.82rem;
+      color: var(--sidebar-text-white);
+      font-weight: 600;
+    }
+
+    .user-info p {
+      font-size: 0.7rem;
+      color: #64748b;
+    }
+
+    /* --- MAIN WRAPPER --- */
+    .main-wrapper {
+      margin-left: 270px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      transition: var(--transition);
+    }
+
+    /* --- TOPBAR --- */
+    .topbar {
+      height: 70px;
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--text-main);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: var(--transition);
+    }
+
+    .mobile-menu-btn:hover {
+      background-color: var(--body-bg);
+    }
+
+    .page-title-box h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .page-title-box p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 320px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 9px 14px 9px 38px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      background-color: var(--body-bg);
+      font-size: 0.82rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .icon-action-btn {
+      position: relative;
+      background: var(--body-bg);
+      border: 1px solid var(--border-color);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: var(--transition);
+    }
+
+    .icon-action-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .icon-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background-color: var(--danger);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white;
+    }
+
+    .user-profile-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 20px;
+      transition: var(--transition);
+    }
+
+    .user-profile-pill:hover {
+      background-color: var(--body-bg);
+    }
+
+    .user-profile-pill img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .user-profile-pill span {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* Notification Dropdown Panel */
+    .notification-dropdown {
+      position: absolute;
+      top: 65px;
+      right: 80px;
+      width: 320px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      border: 1px solid var(--border-color);
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .notification-dropdown.show {
+      display: flex;
+    }
+
+    .noti-header {
+      padding: 14px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .noti-header h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .noti-list {
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .noti-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      gap: 10px;
+      font-size: 0.8rem;
+    }
+
+    .noti-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    /* --- DASHBOARD CONTENT --- */
+    .dashboard-content {
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* 5 Stat Cards Row */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .stat-blue { background-color: var(--primary-light); color: var(--primary); }
+    .stat-green { background-color: var(--success-light); color: var(--success); }
+    .stat-purple { background-color: var(--purple-light); color: var(--purple); }
+    .stat-orange { background-color: var(--warning-light); color: var(--warning); }
+    .stat-teal { background-color: #f0fdf4; color: #059669; }
+
+    .stat-info h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .stat-info p {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 3px;
+    }
+
+    .stat-info span {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    /* Layout Sections */
+    .main-grid-row {
+      display: grid;
+      grid-template-columns: 2.2fr 1fr;
+      gap: 20px;
+    }
+
+    .bottom-grid-row {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 20px;
+    }
+
+    /* General Card */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .card-header h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .select-dropdown {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      font-size: 0.78rem;
+      background: var(--body-bg);
+      color: var(--text-main);
+      outline: none;
+      font-weight: 500;
+    }
+
+    .btn-primary-sm {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .btn-primary-sm:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* Table Styling */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .courses-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+
+    .courses-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .courses-table td {
+      padding: 14px 10px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    .course-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .course-icon-bg {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .course-info h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .course-info p {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .schedule-info {
+      line-height: 1.3;
+    }
+
+    .schedule-info strong {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--text-main);
+    }
+
+    .schedule-info span {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .schedule-list { display: grid; gap: 8px; min-width: 220px; }
+    .schedule-session { padding: 8px 9px; border: 1px solid #dbe7ff; border-left: 3px solid var(--primary); border-radius: 7px; background: #f8fbff; }
+    .schedule-session p { margin: 0; line-height: 1.35; }
+    .schedule-term { font-size: 0.67rem; font-weight: 700; color: #315b9a; }
+    .schedule-time { margin-top: 3px !important; font-size: 0.72rem; font-weight: 700; color: var(--text-main); }
+    .schedule-time span, .schedule-room span { color: var(--text-muted); }
+    .schedule-room { margin-top: 2px !important; font-size: 0.67rem; color: var(--text-muted); }
+    .schedule-empty { font-size: 0.72rem; color: var(--text-muted); }
+
+    .action-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .icon-btn-sm {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: var(--transition);
+    }
+
+    .icon-btn-sm:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .table-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .pagination {
+      display: flex;
+      gap: 4px;
+    }
+
+    .page-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .page-num.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Quick Actions List */
+    .quick-actions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quick-action-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .quick-action-item:hover {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .qa-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .qa-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
+    .qa-text h4 {
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .qa-text p {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .qa-arrow {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    /* Donut Chart Workload */
+    .chart-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .donut-wrapper {
+      position: relative;
+      width: 140px;
+      height: 140px;
+    }
+
+    .donut-center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .donut-center-text span {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .donut-center-text h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .donut-center-text p {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    .legend-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.75rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .legend-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Upcoming Deadlines */
+    .deadline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .deadline-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+    }
+
+    .deadline-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .deadline-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
+    .deadline-info h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .deadline-info p {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .tag-due {
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .due-today { color: var(--danger); }
+    .due-tomorrow { color: var(--warning); }
+    .due-later { color: var(--text-muted); }
+
+    /* Yellow Sticky Note Card */
+    .notes-card {
+      background-color: #fef9c3 !important;
+      border-color: #fef08a !important;
+      color: #713f12;
+      position: relative;
+    }
+
+    .notes-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .notes-header h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #713f12;
+    }
+
+    .notes-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.78rem;
+      line-height: 1.4;
+    }
+
+    .notes-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .notes-list li i {
+      font-size: 0.6rem;
+      margin-top: 5px;
+      color: #a16207;
+    }
+
+    .notes-lined-bg {
+      margin-top: auto;
+      padding-top: 15px;
+      border-bottom: 1px solid #fef08a;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20000;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-card {
+      background: white;
+      width: 90%;
+      max-width: 480px;
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h3 { font-size: 1rem; font-weight: 700; }
+    .close-modal { cursor: pointer; font-size: 1.1rem; color: var(--text-muted); }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 4px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 9px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.8rem; outline: none;
+    }
+
+    .btn-submit {
+      width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    }
+
+    /* Mobile Overlay */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      display: none;
+    }
+
+    .sidebar-overlay.mobile-open { display: block !important; }
+
+    /* --- RESPONSIVE BREAKPOINTS --- */
+    @media (max-width: 1200px) {
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+      .bottom-grid-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 992px) {
+      .main-grid-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.mobile-open { transform: translateX(0) !important; }
+      .main-wrapper { margin-left: 0; }
+      .mobile-menu-btn { display: inline-block !important; }
+      
+      .topbar { padding: 0 16px; }
+      .search-box { width: 160px; }
+      .user-profile-pill span { display: none; }
+      
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .dashboard-content { padding: 16px; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .search-box { width: 120px; }
+      .page-title-box h1 { font-size: 1.1rem; }
+    }
+  </style>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+  <!-- Overlay for Mobile Sidebar Menu -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- --- SIDEBAR NAVIGATION --- -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img src="../login_page/uoh-logo.png" alt="UOH Logo" class="uoh-logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/42/2563eb/ffffff?text=UOH';">
+      <div class="brand-titles">
+        <h2>The University of Haripur</h2>
+        <p>Intelligent Ecosystem (IES)</p>
+      </div>
+    </div>
+
+    <div class="menu-section-title">Teacher Portal</div>
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="dashboard.html" class="nav-link" onclick="navigateTo('tea-dashboard.html', event)">
+          <i class="fa-solid fa-house"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="my_courses.html" class="nav-link active" onclick="navigateTo('my_courses.html', event)">
+          <i class="fa-solid fa-book-open"></i>
+          <span>My Courses</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="classes_schedule.html" class="nav-link" onclick="navigateTo('classes_schedule.html', event)">
+          <i class="fa-regular fa-calendar-days"></i>
+          <span>Classes & Schedule</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="attendance.html" class="nav-link" onclick="navigateTo('attendance.html', event)">
+          <i class="fa-solid fa-user-check"></i>
+          <span>Attendance</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="assignments.html" class="nav-link" onclick="navigateTo('assignments.html', event)">
+          <i class="fa-solid fa-file-pen"></i>
+          <span>Assignments</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="assessments.html" class="nav-link" onclick="navigateTo('assessments.html', event)">
+          <i class="fa-solid fa-list-check"></i>
+          <span>Assessments</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="gradebook.html" class="nav-link" onclick="navigateTo('gradebook.html', event)">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Gradebook</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="students.html" class="nav-link" onclick="navigateTo('students.html', event)">
+          <i class="fa-solid fa-users"></i>
+          <span>Students</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="library.html" class="nav-link" onclick="navigateTo('library.html', event)">
+          <i class="fa-solid fa-book"></i>
+          <span>Library</span>
+        </a>
+      </li>
+      
+    </ul>
+
+    <div class="menu-section-title">System</div>
+      <li class="nav-item">
+        <a href="../landing_page/index.html" class="nav-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- Sidebar Footer Profile -->
+    <div class="sidebar-user">
+      <div class="user-profile-left">
+        <div class="user-avatar-wrap">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Dr. Usman Tariq">
+          <div class="status-indicator"></div>
+        </div>
+        <div class="user-info">
+          <h4>Dr. Usman Tariq</h4>
+          <p>Assistant Professor<br>Computer Science</p>
+        </div>
+      </div>
+      <i class="fa-solid fa-chevron-up" style="font-size:0.75rem; color:#64748b; cursor:pointer;"></i>
+    </div>
+  </aside>
+
+  <!-- --- MAIN WRAPPER --- -->
+  <div class="main-wrapper">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <!-- 3 dots button for Mobile Toggle -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn" title="Toggle Sidebar">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <div class="page-title-box">
+          <h1>My Courses</h1>
+          <p>View and manage all courses assigned to you.</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Search Box (Responsive) -->
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="courseSearchInput" placeholder="Search courses by name or code...">
+        </div>
+
+        <!-- Single Responsive Notification Alert Icon -->
+        
+
+        <!-- User Profile Pill -->
+        <div class="user-profile-pill">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Dr. Usman">
+          <span>Dr. Usman Tariq</span>
+          <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; color: var(--text-muted);"></i>
+        </div>
+      </div>
+
+      <!-- Notification Dropdown Panel -->
+      <div class="notification-dropdown" id="notificationDropdown">
+        <div class="noti-header">
+          <h3>System Alerts & Notifications</h3>
+          <span style="font-size:0.72rem; color:var(--primary); cursor:pointer;" onclick="clearNotis()">Clear all</span>
+        </div>
+        <div class="noti-list">
+          <div class="noti-item">
+            <i class="fa-solid fa-file-circle-check" style="color:var(--primary)"></i>
+            <div>
+              <strong>12 New Submissions</strong>
+              <p>Data Structures Assignment 2</p>
+            </div>
+          </div>
+          <div class="noti-item">
+            <i class="fa-solid fa-triangle-exclamation" style="color:var(--warning)"></i>
+            <div>
+              <strong>Attendance Pending</strong>
+              <p>CS-302 Database Systems class</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD CONTENT AREA -->
+    <main class="dashboard-content">
+
+      <!-- Stat Cards Row (5 Cards) -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon stat-blue">
+            <i class="fa-solid fa-book-open"></i>
+          </div>
+          <div class="stat-info">
+            <h3>04</h3>
+            <p>Total Courses</p>
+            <span>Assigned</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-green">
+            <i class="fa-solid fa-user-group"></i>
+          </div>
+          <div class="stat-info">
+            <h3>128</h3>
+            <p>Total Students</p>
+            <span>Across Courses</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-purple">
+            <i class="fa-regular fa-calendar-days"></i>
+          </div>
+          <div class="stat-info">
+            <h3>24</h3>
+            <p>Classes This Week</p>
+            <span>Across All Courses</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-orange">
+            <i class="fa-solid fa-clipboard-list"></i>
+          </div>
+          <div class="stat-info">
+            <h3>16</h3>
+            <p>Pending Tasks</p>
+            <span>(Assignments/Assessments)</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-teal">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div class="stat-info">
+            <h3>A</h3>
+            <p>Average Rating</p>
+            <span>By Students</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Row: Table + Quick Actions -->
+      <div class="main-grid-row">
+        <!-- All Assigned Courses Table Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2>All Assigned Courses</h2>
+            <div class="header-actions">
+              <select class="select-dropdown" id="courseTermFilter" disabled title="Showing the university-wide current academic year">
+                <option value="current">Current Academic Year</option>
+              </select>
+              <button class="btn-primary-sm" onclick="openAnalyticsModal()">
+                <i class="fa-solid fa-plus"></i> View Course Analytics
+              </button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="courses-table" id="coursesTable">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Code</th>
+                  <th>Program</th>
+                  <th>Section</th>
+                  <th>Students</th>
+                  <th>Schedule</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="course-cell">
+                      <div class="course-icon-bg" style="background-color: var(--primary);">
+                        <i class="fa-solid fa-code"></i>
+                      </div>
+                      <div class="course-info">
+                        <h4>Data Structures</h4>
+                        <p>Undergraduate</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td><strong>CS-301</strong></td>
+                  <td>BSCS</td>
+                  <td>A</td>
+                  <td>32</td>
+                  <td>
+                    <div class="schedule-info">
+                      <strong>Mon, Wed</strong>
+                      <span>09:00 AM – 10:00 AM<br>CS Lab 1</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="action-btn-group">
+                      <button class="icon-btn-sm" title="View Course" onclick="viewCourseDetails('CS-301')"><i class="fa-regular fa-eye"></i></button>
+                      <button class="icon-btn-sm" title="Options" onclick="openCourseOptions('CS-301')"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="course-cell">
+                      <div class="course-icon-bg" style="background-color: var(--success);">
+                        <i class="fa-solid fa-square-root-variable"></i>
+                      </div>
+                      <div class="course-info">
+                        <h4>Algorithms</h4>
+                        <p>Undergraduate</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td><strong>CS-401</strong></td>
+                  <td>BSCS</td>
+                  <td>B</td>
+                  <td>28</td>
+                  <td>
+                    <div class="schedule-info">
+                      <strong>Tue, Thu</strong>
+                      <span>10:15 AM – 11:15 AM<br>Room 305</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="action-btn-group">
+                      <button class="icon-btn-sm" title="View Course" onclick="viewCourseDetails('CS-401')"><i class="fa-regular fa-eye"></i></button>
+                      <button class="icon-btn-sm" title="Options" onclick="openCourseOptions('CS-401')"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="course-cell">
+                      <div class="course-icon-bg" style="background-color: var(--warning);">
+                        <i class="fa-solid fa-database"></i>
+                      </div>
+                      <div class="course-info">
+                        <h4>Database Systems</h4>
+                        <p>Undergraduate</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td><strong>CS-302</strong></td>
+                  <td>BSCS</td>
+                  <td>A</td>
+                  <td>34</td>
+                  <td>
+                    <div class="schedule-info">
+                      <strong>Mon, Wed</strong>
+                      <span>12:00 PM – 01:00 PM<br>CS Lab 2</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="action-btn-group">
+                      <button class="icon-btn-sm" title="View Course" onclick="viewCourseDetails('CS-302')"><i class="fa-regular fa-eye"></i></button>
+                      <button class="icon-btn-sm" title="Options" onclick="openCourseOptions('CS-302')"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="course-cell">
+                      <div class="course-icon-bg" style="background-color: var(--purple);">
+                        <i class="fa-solid fa-globe"></i>
+                      </div>
+                      <div class="course-info">
+                        <h4>Web Engineering</h4>
+                        <p>Undergraduate</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td><strong>CS-303</strong></td>
+                  <td>BSCS</td>
+                  <td>C</td>
+                  <td>34</td>
+                  <td>
+                    <div class="schedule-info">
+                      <strong>Tue, Thu</strong>
+                      <span>02:00 PM – 03:00 PM<br>Lab 4</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="action-btn-group">
+                      <button class="icon-btn-sm" title="View Course" onclick="viewCourseDetails('CS-303')"><i class="fa-regular fa-eye"></i></button>
+                      <button class="icon-btn-sm" title="Options" onclick="openCourseOptions('CS-303')"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-footer">
+            <span>Showing 1 to 4 of 4 courses</span>
+            <div class="pagination">
+              <div class="page-num"><i class="fa-solid fa-chevron-left" style="font-size:0.65rem;"></i></div>
+              <div class="page-num active">1</div>
+              <div class="page-num"><i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Quick Actions</h2>
+          </div>
+
+          <div class="quick-actions-list">
+            <div class="quick-action-item" onclick="openQuickActionModal('Create New Course')">
+              <div class="qa-left">
+                <div class="qa-icon" style="background-color:var(--primary-light); color:var(--primary);"><i class="fa-solid fa-plus"></i></div>
+                <div class="qa-text">
+                  <h4>Create New Course</h4>
+                  <p>Add a new course</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right qa-arrow"></i>
+            </div>
+
+            <div class="quick-action-item" onclick="openQuickActionModal('Course Materials')">
+              <div class="qa-left">
+                <div class="qa-icon" style="background-color:var(--success-light); color:var(--success);"><i class="fa-solid fa-file-arrow-up"></i></div>
+                <div class="qa-text">
+                  <h4>Course Materials</h4>
+                  <p>Upload and manage materials</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right qa-arrow"></i>
+            </div>
+
+            <div class="quick-action-item" onclick="navigateTo('assignments.html', event)">
+              <div class="qa-left">
+                <div class="qa-icon" style="background-color:var(--danger-light); color:var(--danger);"><i class="fa-solid fa-clipboard-check"></i></div>
+                <div class="qa-text">
+                  <h4>Assignment Overview</h4>
+                  <p>View all assignments</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right qa-arrow"></i>
+            </div>
+
+            <div class="quick-action-item" onclick="navigateTo('assessments.html', event)">
+              <div class="qa-left">
+                <div class="qa-icon" style="background-color:var(--warning-light); color:var(--warning);"><i class="fa-regular fa-calendar-check"></i></div>
+                <div class="qa-text">
+                  <h4>Assessment Overview</h4>
+                  <p>View all assessments</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right qa-arrow"></i>
+            </div>
+
+            <div class="quick-action-item" onclick="navigateTo('gradebook.html', event)">
+              <div class="qa-left">
+                <div class="qa-icon" style="background-color:var(--primary-light); color:var(--primary);"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div class="qa-text">
+                  <h4>Gradebook</h4>
+                  <p>Enter and manage grades</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right qa-arrow"></i>
+            </div>
+
+            <div class="quick-action-item" onclick="navigateTo('reports_analytics.html', event)">
+              <div class="qa-left">
+                <div class="qa-icon" style="background-color:var(--purple-light); color:var(--purple);"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="qa-text">
+                  <h4>Course Analytics</h4>
+                  <p>View performance insights</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right qa-arrow"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Workload + Deadlines + Notes -->
+      <div class="bottom-grid-row">
+        <!-- Donut Chart Workload -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Course Workload Overview</h2>
+            <select class="select-dropdown">
+              <option>This Semester</option>
+            </select>
+          </div>
+
+          <div class="chart-container">
+            <div class="donut-wrapper">
+              <!-- Inline SVG Donut Chart -->
+              <svg width="100%" height="100%" viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#e2e8f0" stroke-width="5"></circle>
+                <!-- Assignments 50% Blue -->
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#2563eb" stroke-width="5" stroke-dasharray="50 50" stroke-dashoffset="25"></circle>
+                <!-- Assessments 31% Green -->
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#10b981" stroke-width="5" stroke-dasharray="31 69" stroke-dashoffset="75"></circle>
+                <!-- Quizzes 13% Orange -->
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#f59e0b" stroke-width="5" stroke-dasharray="13 87" stroke-dashoffset="44"></circle>
+                <!-- Other 6% Purple -->
+                <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#8b5cf6" stroke-width="5" stroke-dasharray="6 94" stroke-dashoffset="31"></circle>
+              </svg>
+
+              <div class="donut-center-text">
+                <span>Total</span>
+                <h2>16</h2>
+                <p>Tasks</p>
+              </div>
+            </div>
+
+            <div class="legend-list">
+              <div class="legend-item">
+                <div class="legend-left">
+                  <div class="legend-dot" style="background-color: var(--primary);"></div>
+                  <span>Assignments</span>
+                </div>
+                <strong>8 (50%)</strong>
+              </div>
+              <div class="legend-item">
+                <div class="legend-left">
+                  <div class="legend-dot" style="background-color: var(--success);"></div>
+                  <span>Assessments</span>
+                </div>
+                <strong>5 (31%)</strong>
+              </div>
+              <div class="legend-item">
+                <div class="legend-left">
+                  <div class="legend-dot" style="background-color: var(--warning);"></div>
+                  <span>Quizzes</span>
+                </div>
+                <strong>2 (13%)</strong>
+              </div>
+              <div class="legend-item">
+                <div class="legend-left">
+                  <div class="legend-dot" style="background-color: var(--purple);"></div>
+                  <span>Other Tasks</span>
+                </div>
+                <strong>1 (6%)</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Deadlines Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Upcoming Deadlines</h2>
+            <a href="assignments.html" style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">View All</a>
+          </div>
+
+          <div class="deadline-list">
+            <div class="deadline-item">
+              <div class="deadline-left">
+                <div class="deadline-icon" style="background-color: var(--success-light); color: var(--success);"><i class="fa-regular fa-file-code"></i></div>
+                <div class="deadline-info">
+                  <h4>Lab Assignment 2</h4>
+                  <p>Data Structures (CS-301)</p>
+                </div>
+              </div>
+              <span class="tag-due due-today">Due Today</span>
+            </div>
+
+            <div class="deadline-item">
+              <div class="deadline-left">
+                <div class="deadline-icon" style="background-color: var(--warning-light); color: var(--warning);"><i class="fa-solid fa-pen-to-square"></i></div>
+                <div class="deadline-info">
+                  <h4>Quiz 2</h4>
+                  <p>Algorithms (CS-401)</p>
+                </div>
+              </div>
+              <span class="tag-due due-tomorrow">Due Tomorrow</span>
+            </div>
+
+            <div class="deadline-item">
+              <div class="deadline-left">
+                <div class="deadline-icon" style="background-color: var(--purple-light); color: var(--purple);"><i class="fa-solid fa-file-lines"></i></div>
+                <div class="deadline-info">
+                  <h4>Project Proposal</h4>
+                  <p>Web Engineering (CS-303)</p>
+                </div>
+              </div>
+              <span class="tag-due due-later">2 Days Left</span>
+            </div>
+
+            <div class="deadline-item">
+              <div class="deadline-left">
+                <div class="deadline-icon" style="background-color: var(--primary-light); color: var(--primary);"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div class="deadline-info">
+                  <h4>Midterm Exam</h4>
+                  <p>Database Systems (CS-302)</p>
+                </div>
+              </div>
+              <span class="tag-due due-later">5 Days Left</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sticky Note Pad Card -->
+        <div class="card notes-card">
+          <div class="notes-header">
+            <i class="fa-solid fa-thumbtack"></i>
+            <h2>Notes</h2>
+          </div>
+
+          <ul class="notes-list" id="notesList">
+            <li><i class="fa-solid fa-circle"></i> Check lab attendance for CS-301 before next class.</li>
+            <li><i class="fa-solid fa-circle"></i> Review quiz submissions for Algorithms.</li>
+            <li><i class="fa-solid fa-circle"></i> Midterm exams start from 20th May.</li>
+            <li><i class="fa-solid fa-circle"></i> Upload project guidelines for Web Engineering.</li>
+          </ul>
+
+          <div class="notes-lined-bg"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- --- QUICK ACTION INPUT MODAL --- -->
+  <div class="modal-overlay" id="quickModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">Quick Input Action</h3>
+        <span class="close-modal" id="closeQuickModal">&times;</span>
+      </div>
+      <form id="quickForm">
+        <div class="form-group">
+          <label>Course Title / Code</label>
+          <input type="text" placeholder="e.g. CS-301 Data Structures" required>
+        </div>
+        <div class="form-group">
+          <label>Action Details</label>
+          <textarea rows="3" placeholder="Enter notes, material link or submission detail..." required></textarea>
+        </div>
+        <button type="submit" class="btn-submit">Submit Action</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- --- JAVASCRIPT LOGIC --- -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      
+      // 1. Navigation Logic
+      window.navigateTo = function(targetUrl, event) {
+        if(event) event.preventDefault();
+        if (targetUrl === 'my_courses.html') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+        window.location.href = targetUrl;
+      };
+
+      // 2. Mobile Sidebar Toggle (3-dots icon)
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+      function toggleMobileSidebar(e) {
+        if (e) e.stopPropagation();
+        sidebar.classList.toggle('mobile-open');
+        sidebarOverlay.classList.toggle('mobile-open');
+      }
+
+      if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', toggleMobileSidebar);
+      if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleMobileSidebar);
+
+      // 3. Notification Dropdown Toggle
+      const notificationBtn = document.getElementById('notificationBtn');
+      const notificationDropdown = document.getElementById('notificationDropdown');
+
+      if (notificationBtn && notificationDropdown) {
+        notificationBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          notificationDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!notificationDropdown.contains(e.target) && e.target !== notificationBtn) {
+            notificationDropdown.classList.remove('show');
+          }
+        });
+      }
+
+      window.clearNotis = function() {
+        if (notificationDropdown) {
+          notificationDropdown.querySelector('.noti-list').innerHTML = '<div style="padding:15px; text-align:center; font-size:0.8rem; color:#64748b;">No new notifications</div>';
+          const badge = document.querySelector('.icon-badge');
+          if (badge) badge.style.display = 'none';
+        }
+      };
+
+      // 4. Search Filter for Courses
+      const searchInput = document.getElementById('courseSearchInput');
+      const tableRows = document.querySelectorAll('#coursesTable tbody tr');
+
+      if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+          const query = searchInput.value.toLowerCase();
+          tableRows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+          });
+        });
+      }
+
+      // 5. Quick Action Modal Handling
+      const quickModal = document.getElementById('quickModal');
+      const closeQuickModal = document.getElementById('closeQuickModal');
+      const modalTitle = document.getElementById('modalTitle');
+
+      window.openQuickActionModal = function(actionName) {
+        modalTitle.textContent = actionName;
+        quickModal.classList.add('active');
+      };
+
+      window.openAnalyticsModal = function() {
+        openQuickActionModal('View Course Analytics');
+      };
+
+      if (closeQuickModal) {
+        closeQuickModal.addEventListener('click', () => quickModal.classList.remove('active'));
+      }
+
+      document.getElementById('quickForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Action saved successfully! Ready for Backend API endpoint.');
+        quickModal.classList.remove('active');
+        this.reset();
+      });
+
+      // 6. Table Button Handlers
+      window.viewCourseDetails = function(code) {
+        alert('Navigating to course details for: ' + code);
+      };
+
+      window.openCourseOptions = function(code) {
+        alert('Opening menu options for: ' + code);
+      };
+
+    });
+  </script>
+  <script src="teacher-courses.js"></script>
+  <script src="teacher-auth.js"></script>
+</body>
+</html>

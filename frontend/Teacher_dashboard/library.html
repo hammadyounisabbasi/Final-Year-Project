@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library - Teacher Portal | The University of Haripur</title>
+  <link rel="stylesheet" href="../shared/library.css">
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f8fafc;font-family:'Plus Jakarta Sans',Arial,sans-serif;color:#172238;overflow-x:hidden}
+    .teacher-library-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999}.teacher-library-overlay.mobile-open{display:block}
+    .teacher-library-sidebar{position:fixed;inset:0 auto 0 0;width:270px;padding:20px 14px;background:#0b132b;color:#cbd5e1;z-index:10000;overflow-y:auto;transition:transform .25s ease}
+    .teacher-library-brand{display:flex;align-items:center;gap:10px;padding:0 8px 24px;color:#fff}.teacher-library-brand img{width:40px;height:40px;object-fit:contain}.teacher-library-brand strong{display:block;font-size:15px}.teacher-library-brand small{display:block;margin-top:4px;color:#94a3b8;font-size:10px;font-weight:400}
+    .teacher-library-section{margin:10px 8px 8px;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.teacher-library-sidebar nav{display:grid;gap:4px}.teacher-library-sidebar a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:8px;color:#cbd5e1;text-decoration:none;font-size:13px;font-weight:600}.teacher-library-sidebar a:hover{background:#1c2a4f;color:#fff}.teacher-library-sidebar a.active{background:#2563eb;color:#fff}.teacher-library-sidebar a span:first-child{width:20px;text-align:center;font-size:15px}.teacher-library-profile{display:flex;align-items:center;gap:10px;margin:24px 6px 0;padding:16px 6px 0;border-top:1px solid rgba(255,255,255,.08)}.teacher-library-profile img{width:36px;height:36px;border-radius:50%;object-fit:cover}.teacher-library-profile strong{display:block;color:#fff;font-size:11px}.teacher-library-profile small{color:#64748b;font-size:9px}
+    .teacher-library-main{margin-left:270px;min-height:100vh}.teacher-library-topbar{height:70px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:900}.teacher-library-topbar-left{display:flex;align-items:center;gap:14px}.teacher-library-topbar h1{font-size:20px;margin:0;color:#0f172a}.teacher-library-breadcrumb{font-size:12px;color:#64748b;margin-top:3px}.teacher-library-mobile-toggle{display:none;border:0;background:transparent;color:#0f172a;padding:8px;font-size:20px;cursor:pointer}.teacher-library-topbar-right{display:flex;align-items:center;gap:16px}.teacher-library-search{position:relative;width:260px}.teacher-library-search input{width:100%;padding:9px 12px 9px 34px;border:1px solid #e2e8f0;border-radius:20px;background:#f8fafc}.teacher-library-search span{position:absolute;left:13px;top:8px;color:#64748b}.teacher-library-user{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700}.teacher-library-user .profile-meta{display:flex;flex-direction:column;gap:2px}.teacher-library-user .profile-meta small{font-size:10px;color:#64748b;font-weight:400}.teacher-library-user img{width:34px;height:34px;border-radius:50%;object-fit:cover}.teacher-library-shell{max-width:1400px;margin:0 auto;padding:28px 36px 48px}.teacher-library-nav{display:none}
+    @media(max-width:768px){.teacher-library-sidebar{transform:translateX(-100%)}.teacher-library-sidebar.mobile-open{transform:translateX(0)}.teacher-library-main{margin-left:0}.teacher-library-mobile-toggle{display:inline-block}.teacher-library-topbar{padding:0 16px}.teacher-library-topbar-right{gap:8px}.teacher-library-search{width:170px}.teacher-library-user span{display:none}.teacher-library-shell{padding:16px}.teacher-library-nav{display:none}}
+    @media(max-width:480px){.teacher-library-search{width:130px}.teacher-library-topbar h1{font-size:17px}.teacher-library-breadcrumb{font-size:10px}}
+  </style>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+  <div class="teacher-library-overlay" id="teacherLibraryOverlay"></div>
+  <aside class="teacher-library-sidebar">
+    <div class="teacher-library-brand"><img src="../login_page/uoh-logo.png" alt="UOH Logo"><div><strong>The University of Haripur</strong><small>Intelligent Ecosystem (IES)</small></div></div>
+    <div class="teacher-library-section">Teacher Portal</div>
+    <nav aria-label="Teacher portal navigation">
+      <a href="tea-dashboard.html"><span>⌂</span>Dashboard</a>
+      <a href="my_courses.html"><span>▣</span>My Courses</a>
+      <a href="classes_schedule.html"><span>◷</span>Classes &amp; Schedule</a>
+      <a href="attendance.html"><span>✓</span>Attendance</a>
+      <a href="assignments.html"><span>✎</span>Assignments</a>
+      <a href="assessments.html"><span>☷</span>Assessments</a>
+      <a href="gradebook.html"><span>◆</span>Gradebook</a>
+      <a href="students.html"><span>♙</span>Students</a>
+      <a class="active" href="library.html" aria-current="page"><span>▤</span>Library</a>
+    </nav>
+    <div class="teacher-library-section">System</div>
+    <nav><a href="../landing_page/index.html"><span>↪</span>Logout</a></nav>
+    <div class="teacher-library-profile sidebar-user"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Teacher profile"><div class="user-info"><h4>Loading teacher...</h4><p>Loading profile...</p></div></div>
+  </aside>
+  <div class="teacher-library-main">
+    <header class="teacher-library-topbar">
+      <div class="teacher-library-topbar-left"><button class="teacher-library-mobile-toggle" id="teacherLibraryMobileToggle" type="button" aria-label="Open teacher portal menu">⋮</button><div><h1>Library</h1><div class="teacher-library-breadcrumb">Home &gt; Library</div></div></div>
+      <div class="teacher-library-topbar-right"><label class="teacher-library-search"><span>⌕</span><input id="globalSearchInput" type="search" placeholder="Search books, topics..."></label><div class="teacher-library-user user-profile-pill"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Teacher profile"><div class="profile-meta"><span>Loading teacher...</span><small>Teacher</small></div></div></div>
+    </header>
+    <main class="teacher-library-shell">
+      <div id="libraryApp" data-role="teacher"></div>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const sidebar = document.querySelector('.teacher-library-sidebar');
+      const overlay = document.getElementById('teacherLibraryOverlay');
+      const toggle = document.getElementById('teacherLibraryMobileToggle');
+      const setOpen = open => { sidebar.classList.toggle('mobile-open', open); overlay.classList.toggle('mobile-open', open); };
+      toggle.addEventListener('click', () => setOpen(true));
+      overlay.addEventListener('click', () => setOpen(false));
+      sidebar.addEventListener('click', event => { if (event.target.closest('a')) setOpen(false); });
+    })();
+  </script>
+  <script src="../shared/library.js?v=20260921-reply-visibility"></script>
+  <script src="teacher-auth.js?v=20260918-library-profile"></script>
+</body>
+</html>

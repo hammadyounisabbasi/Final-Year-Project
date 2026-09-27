@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard - The University of Haripur</title>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --sidebar-bg: #0b132b;
+      --sidebar-hover: #1c2a4f;
+      --sidebar-active: #2563eb;
+      --sidebar-text: #94a3b8;
+      --sidebar-text-white: #ffffff;
+      --body-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      --purple: #8b5cf6;
+      --purple-light: #f5f3ff;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      --radius: 12px;
+      --transition: all 0.25s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--body-bg);
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* --- SIDEBAR --- */
+    .sidebar {
+      width: 270px;
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 10000;
+      transition: var(--transition);
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .sidebar-header {
+      padding: 20px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .uoh-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: #fff;
+      padding: 2px;
+    }
+
+    .brand-titles h2 {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--sidebar-text-white);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .brand-titles p {
+      font-size: 0.68rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .menu-section-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #475569;
+      padding: 16px 20px 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      padding: 0 10px;
+    }
+
+    .nav-item {
+      margin-bottom: 3px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--sidebar-text);
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .nav-link i {
+      width: 24px;
+      font-size: 1rem;
+      margin-right: 10px;
+      text-align: center;
+    }
+
+    .nav-link:hover {
+      background-color: var(--sidebar-hover);
+      color: var(--sidebar-text-white);
+    }
+
+    .nav-link.active {
+      background-color: var(--sidebar-active);
+      color: var(--sidebar-text-white);
+      font-weight: 600;
+    }
+
+    .badge-count {
+      margin-left: auto;
+      background-color: var(--danger);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .ai-assistant-btn {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(139, 92, 246, 0.25));
+      border: 1px solid rgba(139, 92, 246, 0.5);
+      color: #c084fc !important;
+    }
+
+    .ai-assistant-btn:hover {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.5), rgba(139, 92, 246, 0.5));
+      color: #ffffff !important;
+    }
+
+    /* Sidebar Teacher Footer Profile */
+    .sidebar-user {
+      margin-top: auto;
+      padding: 16px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar-wrap {
+      position: relative;
+    }
+
+    .user-avatar-wrap img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      background-color: var(--success);
+      border: 2px solid var(--sidebar-bg);
+      border-radius: 50%;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+
+    .user-info h4 {
+      font-size: 0.85rem;
+      color: var(--sidebar-text-white);
+      font-weight: 600;
+    }
+
+    .user-info p {
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+
+    /* --- MAIN CONTAINER --- */
+    .main-wrapper {
+      margin-left: 270px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      transition: var(--transition);
+    }
+
+    /* --- TOPBAR --- */
+    .topbar {
+      height: 70px;
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.35rem;
+      color: var(--text-main);
+      cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 6px;
+    }
+
+    .mobile-menu-btn:hover {
+      background-color: var(--body-bg);
+    }
+
+    .page-title-box h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .page-title-box p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 280px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      background-color: var(--body-bg);
+      font-size: 0.82rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .icon-action-btn {
+      position: relative;
+      background: var(--body-bg);
+      border: 1px solid var(--border-color);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: var(--transition);
+    }
+
+    .icon-action-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .icon-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background-color: var(--danger);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white;
+    }
+
+    /* Quick Action Button for Admin/Teacher Input */
+    .quick-action-trigger {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .quick-action-trigger:hover {
+      background-color: #1d4ed8;
+    }
+
+    /* Notification Dropdown Panel */
+    .notification-dropdown {
+      position: absolute;
+      top: 60px;
+      right: 28px;
+      width: 330px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--border-color);
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .notification-dropdown.show {
+      display: flex;
+    }
+
+    .noti-header {
+      padding: 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .noti-header h3 {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .noti-list {
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .noti-item {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      gap: 10px;
+      font-size: 0.8rem;
+    }
+
+    .noti-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .noti-item i {
+      color: var(--primary);
+      margin-top: 2px;
+    }
+
+    /* --- DASHBOARD CONTENT --- */
+    .dashboard-content {
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .stat-blue { background-color: var(--primary-light); color: var(--primary); }
+    .stat-green { background-color: var(--success-light); color: var(--success); }
+    .stat-orange { background-color: var(--warning-light); color: var(--warning); }
+    .stat-purple { background-color: var(--purple-light); color: var(--purple); }
+    .stat-red { background-color: var(--danger-light); color: var(--danger); }
+
+    .stat-info h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .stat-info p {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-top: 2px;
+    }
+
+    .stat-info span {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    /* Grid Sections */
+    .grid-2-col {
+      display: grid;
+      grid-template-columns: 1.6fr 1.1fr;
+      gap: 20px;
+    }
+
+    .grid-3-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* General Card Layout */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-header h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-header .header-date {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .link-action {
+      font-size: 0.75rem;
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .link-action:hover {
+      text-decoration: underline;
+    }
+
+    /* Schedule List */
+    .schedule-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .schedule-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border-left: 3px solid var(--primary);
+      font-size: 0.8rem;
+    }
+
+    .schedule-time {
+      font-weight: 600;
+      color: var(--text-main);
+      min-width: 140px;
+    }
+
+    .schedule-details h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .schedule-details p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .tag-status {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+
+    .tag-live { background-color: var(--success-light); color: var(--success); }
+    .tag-upcoming { background-color: var(--primary-light); color: var(--primary); }
+    .tag-appointment { background-color: var(--purple-light); color: var(--purple); }
+
+    /* Tasks List */
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .task-check {
+      color: var(--primary);
+      font-size: 1rem;
+    }
+
+    .task-info h4 {
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .task-info p {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .due-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .due-today { color: var(--danger); }
+    .due-tomorrow { color: var(--warning); }
+    .due-later { color: var(--text-muted); }
+
+    /* Courses Table */
+    .courses-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .courses-table th {
+      text-align: left;
+      padding: 8px 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+
+    .courses-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .course-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+
+    .course-icon-bg {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.75rem;
+    }
+
+    .badge-active {
+      background-color: var(--success-light);
+      color: var(--success);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+
+    /* Announcements & Events */
+    .notice-item, .event-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .notice-item:last-child, .event-item:last-child {
+      border-bottom: none;
+    }
+
+    .notice-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .notice-content h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .notice-content p {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .event-date-box {
+      width: 44px;
+      height: 44px;
+      background: var(--primary-light);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .event-date-box .date-num {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .event-date-box .date-month {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+
+    /* Footer */
+    .dashboard-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 28px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      margin-top: auto;
+      background-color: var(--card-bg);
+    }
+
+    /* --- QUICK ACTION MODAL --- */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: white;
+      width: 90%;
+      max-width: 450px;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .modal-header h3 { font-size: 1rem; }
+    .close-modal { cursor: pointer; font-size: 1.1rem; color: var(--text-muted); }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 9px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* --- AI CHATBOT WIDGET --- */
+    .ai-chatbot-window {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 360px;
+      height: 480px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      display: none;
+      flex-direction: column;
+      z-index: 30000;
+      overflow: hidden;
+      animation: popupSlide 0.3s ease;
+    }
+
+    @keyframes popupSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .ai-chatbot-window.show {
+      display: flex !important;
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #0b132b, #1c2a4f);
+      color: white;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-header-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-header-info i {
+      color: #c084fc;
+      font-size: 1.1rem;
+    }
+
+    .chat-header h4 {
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .chat-header p {
+      font-size: 0.65rem;
+      color: #94a3b8;
+    }
+
+    .close-chat {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.8rem;
+    }
+
+    .chat-msg {
+      max-width: 80%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      line-height: 1.4;
+    }
+
+    .chat-msg.agent {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+    }
+
+    .chat-msg.user {
+      background: var(--primary);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+
+    .chat-footer {
+      padding: 10px 12px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 8px;
+      background: white;
+    }
+
+    .chat-footer input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .chat-footer button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Overlay for Mobile Sidebar */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      display: none;
+    }
+
+    .sidebar-overlay.mobile-open {
+      display: block !important;
+    }
+
+    /* --- RESPONSIVE BREAKPOINTS --- */
+    @media (max-width: 1024px) {
+      .grid-2-col, .grid-3-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.mobile-open {
+        transform: translateX(0) !important;
+      }
+
+      .main-wrapper {
+        margin-left: 0;
+      }
+
+      .mobile-menu-btn {
+        display: inline-block !important;
+      }
+
+      .topbar {
+        padding: 0 16px;
+      }
+
+      .topbar-right {
+        gap: 10px;
+      }
+
+      .search-box {
+        width: 150px;
+      }
+
+      .dashboard-content {
+        padding: 16px;
+      }
+
+      .dashboard-footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+
+      .ai-chatbot-window {
+        width: calc(100% - 30px);
+        right: 15px;
+        bottom: 15px;
+        height: 420px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .search-box {
+        display: block;
+        width: 120px;
+      }
+      .quick-action-text {
+        display: none;
+      }
+      .page-title-box h1 {
+        font-size: 1rem;
+      }
+      .page-title-box p {
+        font-size: 0.68rem;
+      }
+    }
+  </style>
+  <script src="../shared/config.js"></script>
+</head>
+<body>
+
+  <!-- Overlay for Mobile Sidebar Menu -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- --- SIDEBAR NAVIGATION --- -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <!-- University Logo with requested custom path & style fallback -->
+      <img src="../login_page/uoh-logo.png" alt="UOH Logo" class="uoh-logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/2563eb/ffffff?text=UOH';">
+      <div class="brand-titles">
+        <h2>The University of Haripur</h2>
+        <p>Intelligent Ecosystem (IES)</p>
+      </div>
+    </div>
+
+    <div class="menu-section-title">Teacher Portal</div>
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="#" class="nav-link active" onclick="navigateTo('dashboard.html', event)">
+          <i class="fa-solid fa-house"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" onclick="navigateTo('my_courses.html', event)">
+          <i class="fa-solid fa-book-open"></i>
+          <span>My Courses</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" onclick="navigateTo('classes_schedule.html', event)">
+          <i class="fa-regular fa-calendar-days"></i>
+          <span>Classes & Schedule</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" onclick="navigateTo('attendance.html', event)">
+          <i class="fa-solid fa-user-check"></i>
+          <span>Attendance</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" onclick="navigateTo('assignments.html', event)">
+          <i class="fa-solid fa-file-pen"></i>
+          <span>Assignments</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" onclick="navigateTo('assessments.html', event)">
+          <i class="fa-solid fa-list-check"></i>
+          <span>Assessments</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" onclick="navigateTo('gradebook.html', event)">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Gradebook</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" onclick="navigateTo('students.html', event)">
+          <i class="fa-solid fa-users"></i>
+          <span>Students</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" onclick="navigateTo('library.html', event)">
+          <i class="fa-solid fa-book"></i>
+          <span>Library</span>
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a href="#" class="nav-link ai-assistant-btn" id="aiAssistantTrigger">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>AI Academic Assistant</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="menu-section-title">System</div>
+      <li class="nav-item">
+        <a href="../landing_page/index.html" class="nav-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- Sidebar Footer Profile -->
+    <div class="sidebar-user">
+      <div class="user-avatar-wrap">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Dr. Usman Tariq">
+        <div class="status-indicator"></div>
+      </div>
+      <div class="user-info">
+        <h4>Dr. Usman Tariq</h4>
+        <p>Assistant Professor<br>Computer Science</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- --- MAIN WRAPPER --- -->
+  <div class="main-wrapper">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <!-- 3 dots / Hamburger menu for Mobile Toggle -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn" title="Toggle Sidebar">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <div class="page-title-box">
+          <h1>Good Morning, Dr. Usman Tariq 👋</h1>
+          <p>Teacher Dashboard &bull; Here's an overview of your teaching activities.</p>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Search Option (Responsive on Mobile) -->
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Search students, courses, classes...">
+        </div>
+
+        <!-- Single Responsive Notification Icon -->
+        
+
+        <!-- Quick Input Action for Teacher / Admin -->
+        <button class="quick-action-trigger" id="openQuickModal">
+          <i class="fa-solid fa-plus"></i>
+          <span class="quick-action-text">Quick Input</span>
+        </button>
+      </div>
+
+      <!-- Notification Dropdown Panel -->
+      <div class="notification-dropdown" id="notificationDropdown">
+        <div class="noti-header">
+          <h3>Notifications Alert</h3>
+          <span class="link-action" onclick="clearNotis()">Clear all</span>
+        </div>
+        <div class="noti-list">
+          <div class="noti-item">
+            <i class="fa-solid fa-circle-info"></i>
+            <div>
+              <strong>Department Meeting scheduled</strong>
+              <p>Faculty room at 2:00 PM today.</p>
+            </div>
+          </div>
+          <div class="noti-item">
+            <i class="fa-solid fa-file-arrow-up"></i>
+            <div>
+              <strong>Quiz Submissions Pending</strong>
+              <p>28 new submissions in Algorithms.</p>
+            </div>
+          </div>
+          <div class="noti-item">
+            <i class="fa-solid fa-bullhorn"></i>
+            <div>
+              <strong>Exam Schedule Update</strong>
+              <p>Midterm dates released by Admin.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD CONTENT AREA -->
+    <main class="dashboard-content">
+
+      <!-- Stat Cards -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon stat-blue">
+            <i class="fa-solid fa-book-bookmark"></i>
+          </div>
+          <div class="stat-info">
+            <h3>04</h3>
+            <p>Courses Assigned</p>
+            <span>This Semester</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-green">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="stat-info">
+            <h3>128</h3>
+            <p>Students Assigned</p>
+            <span>Across All Courses</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-orange">
+            <i class="fa-regular fa-calendar-check"></i>
+          </div>
+          <div class="stat-info">
+            <h3>12</h3>
+            <p>Classes Today</p>
+            <span>Upcoming</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-purple">
+            <i class="fa-solid fa-clipboard-check"></i>
+          </div>
+          <div class="stat-info">
+            <h3>08</h3>
+            <p>Pending Tasks</p>
+            <span>To Review</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-red">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div class="stat-info">
+            <h3>A</h3>
+            <p>Average Rating</p>
+            <span>By Students</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Row 1: Today's Schedule & Tasks -->
+      <div class="grid-2-col">
+        <!-- Today's Schedule Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2><i class="fa-regular fa-calendar-days" style="color:var(--primary)"></i> Today's Schedule</h2>
+              <span class="header-date" id="liveRealDate">Loading live date...</span>
+            </div>
+            <a href="#" class="link-action" onclick="navigateTo('classes_schedule.html', event)">View Full Schedule</a>
+          </div>
+
+          <div class="schedule-list">
+            <div class="schedule-item">
+              <div class="schedule-time">09:00 AM - 10:00 AM</div>
+              <div class="schedule-details">
+                <h4>Data Structures</h4>
+                <p>CS-301 &bull; Section A &bull; <i class="fa-solid fa-location-dot"></i> CS Lab 1</p>
+              </div>
+              <span class="tag-status tag-live">In 15 min</span>
+            </div>
+
+            <div class="schedule-item">
+              <div class="schedule-time">10:15 AM - 11:15 AM</div>
+              <div class="schedule-details">
+                <h4>Algorithms</h4>
+                <p>CS-401 &bull; Section B &bull; <i class="fa-solid fa-location-dot"></i> Room 305</p>
+              </div>
+              <span class="tag-status tag-upcoming">Upcoming</span>
+            </div>
+
+            <div class="schedule-item">
+              <div class="schedule-time">12:00 PM - 01:00 PM</div>
+              <div class="schedule-details">
+                <h4>Database Systems</h4>
+                <p>CS-302 &bull; Section A &bull; <i class="fa-solid fa-location-dot"></i> CS Lab 2</p>
+              </div>
+              <span class="tag-status tag-upcoming">Upcoming</span>
+            </div>
+
+            <div class="schedule-item">
+              <div class="schedule-time">02:00 PM - 03:00 PM</div>
+              <div class="schedule-details">
+                <h4>Office Hour</h4>
+                <p>Student Consultation &bull; <i class="fa-solid fa-location-dot"></i> Office</p>
+              </div>
+              <span class="tag-status tag-appointment">Appointment</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tasks & Activities -->
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-list-check" style="color:var(--purple)"></i> Tasks & Activities</h2>
+            <a href="#" class="link-action" onclick="navigateTo('assignments.html', event)">View All</a>
+          </div>
+
+          <div class="task-list" id="dynamicTaskList">
+            <div class="task-item">
+              <div class="task-left">
+                <i class="fa-regular fa-square-check task-check"></i>
+                <div class="task-info">
+                  <h4>Grade 12 Assignments</h4>
+                  <p>Data Structures</p>
+                </div>
+              </div>
+              <span class="due-tag due-today">Due Today</span>
+            </div>
+
+            <div class="task-item">
+              <div class="task-left">
+                <i class="fa-regular fa-square-check task-check"></i>
+                <div class="task-info">
+                  <h4>Review Quiz Submissions</h4>
+                  <p>Algorithms</p>
+                </div>
+              </div>
+              <span class="due-tag due-tomorrow">Due Tomorrow</span>
+            </div>
+
+            <div class="task-item">
+              <div class="task-left">
+                <i class="fa-regular fa-square-check task-check"></i>
+                <div class="task-info">
+                  <h4>Upload Lecture Slides</h4>
+                  <p>Database Systems</p>
+                </div>
+              </div>
+              <span class="due-tag due-later">2 Days Left</span>
+            </div>
+
+            <div class="task-item">
+              <div class="task-left">
+                <i class="fa-regular fa-square-check task-check"></i>
+                <div class="task-info">
+                  <h4>Prepare Midterm Paper</h4>
+                  <p>Web Engineering</p>
+                </div>
+              </div>
+              <span class="due-tag due-later">5 Days Left</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: My Courses, Recent Announcements, Upcoming Events -->
+      <div class="grid-3-col">
+        <!-- My Courses Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2>My Courses</h2>
+            <a href="#" class="link-action" onclick="navigateTo('my_courses.html', event)">View All Courses</a>
+          </div>
+          <table class="courses-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Code</th>
+                <th>Students</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="course-cell">
+                    <div class="course-icon-bg" style="background-color: var(--primary);"><i class="fa-solid fa-code"></i></div>
+                    Data Structures
+                  </div>
+                </td>
+                <td>CS-301</td>
+                <td>32</td>
+                <td><span class="badge-active">Active</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="course-cell">
+                    <div class="course-icon-bg" style="background-color: var(--success);"><i class="fa-solid fa-diagram-project"></i></div>
+                    Algorithms
+                  </div>
+                </td>
+                <td>CS-401</td>
+                <td>28</td>
+                <td><span class="badge-active">Active</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="course-cell">
+                    <div class="course-icon-bg" style="background-color: var(--warning);"><i class="fa-solid fa-database"></i></div>
+                    Database Systems
+                  </div>
+                </td>
+                <td>CS-302</td>
+                <td>34</td>
+                <td><span class="badge-active">Active</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="course-cell">
+                    <div class="course-icon-bg" style="background-color: var(--purple);"><i class="fa-solid fa-globe"></i></div>
+                    Web Engineering
+                  </div>
+                </td>
+                <td>CS-303</td>
+                <td>34</td>
+                <td><span class="badge-active">Active</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Recent Announcements -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Recent Announcements</h2>
+            
+          </div>
+
+          <div class="notice-item">
+            <div class="notice-icon"><i class="fa-solid fa-bullhorn"></i></div>
+            <div class="notice-content">
+              <h4>Lab Schedule Update</h4>
+              <p>CS Lab timing updated for Data Structures (CS-301).</p>
+              <small style="color:var(--text-muted); font-size:0.65rem;">08 May 2026</small>
+            </div>
+          </div>
+
+          <div class="notice-item">
+            <div class="notice-icon"><i class="fa-solid fa-file-lines"></i></div>
+            <div class="notice-content">
+              <h4>Assignment 3 Released</h4>
+              <p>New assignment uploaded for Algorithms (CS-401).</p>
+              <small style="color:var(--text-muted); font-size:0.65rem;">07 May 2026</small>
+            </div>
+          </div>
+
+          <div class="notice-item">
+            <div class="notice-icon"><i class="fa-solid fa-calendar-minus"></i></div>
+            <div class="notice-content">
+              <h4>Midterm Examination Notice</h4>
+              <p>Midterm exams will start from 20th May 2026.</p>
+              <small style="color:var(--text-muted); font-size:0.65rem;">05 May 2026</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Upcoming Events</h2>
+            <a href="#" class="link-action" onclick="navigateTo('classes_schedule.html', event)">View Calendar</a>
+          </div>
+
+          <div class="event-item">
+            <div class="event-date-box">
+              <span class="date-num">20</span>
+              <span class="date-month">MAY</span>
+            </div>
+            <div class="notice-content">
+              <h4>Midterm Exams Start</h4>
+              <p>All Courses &bull; Tue, 20 May 2026</p>
+            </div>
+          </div>
+
+          <div class="event-item">
+            <div class="event-date-box">
+              <span class="date-num">15</span>
+              <span class="date-month">MAY</span>
+            </div>
+            <div class="notice-content">
+              <h4>Department Meeting</h4>
+              <p>CS Department &bull; Thu, 15 May 2026</p>
+            </div>
+          </div>
+
+          <div class="event-item">
+            <div class="event-date-box">
+              <span class="date-num">18</span>
+              <span class="date-month">MAY</span>
+            </div>
+            <div class="notice-content">
+              <h4>Research Seminar</h4>
+              <p>Computer Science &bull; Sun, 18 May 2026</p>
+            </div>
+          </div>
+
+          <div class="event-item">
+            <div class="event-date-box">
+              <span class="date-num">10</span>
+              <span class="date-month">JUN</span>
+            </div>
+            <div class="notice-content">
+              <h4>Final Exams Start</h4>
+              <p>All Courses &bull; Tue, 10 June 2026</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="dashboard-footer">
+      <div>&copy; 2026 University of Haripur. All rights reserved.</div>
+      <div>Zero-Trust Autonomous Campus Ecosystem Using Multi-Agent AI</div>
+    </footer>
+  </div>
+
+  <!-- --- QUICK ACTION INPUT MODAL --- -->
+  <div class="modal-overlay" id="quickModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Quick Action Input (Admin/Teacher)</h3>
+        <span class="close-modal" id="closeQuickModal">&times;</span>
+      </div>
+      <form id="quickInputForm">
+        <div class="form-group">
+          <label>Category</label>
+          <select id="quickType">
+            <option value="task">New Task</option>
+            <option value="announcement">New Announcement</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="quickTitle" placeholder="e.g. Grade Lab Reports" required>
+        </div>
+        <div class="form-group">
+          <label>Details / Deadline</label>
+          <input type="text" id="quickDetail" placeholder="e.g. Data Structures - Due Tomorrow">
+        </div>
+        <button type="submit" class="btn-submit">Add to Dashboard</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- --- AI ACADEMIC ASSISTANT CHATBOT WIDGET --- -->
+  <div class="ai-chatbot-window" id="aiChatWindow">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <i class="fa-solid fa-robot"></i>
+        <div>
+          <h4>AI Academic Assistant</h4>
+          <p>Autonomous Agent Center</p>
+        </div>
+      </div>
+      <button class="close-chat" id="closeAiChat"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="chat-body" id="chatBody">
+      <div class="chat-msg agent" id="aiGreetingMsg">
+        <span class="typing-dots">&#8226;&#8226;&#8226;</span>
+      </div>
+    </div>
+    <div class="chat-footer">
+      <input type="text" id="chatInput" placeholder="Ask AI Assistant...">
+      <button id="sendChatBtn"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <!-- --- JAVASCRIPT LOGIC --- -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      
+      // 1. Navigation Logic
+      window.navigateTo = function(targetUrl, event) {
+        if(event) event.preventDefault();
+        
+        // If user clicks on Dashboard, stay on current page
+        if (targetUrl === 'dashboard.html' || targetUrl === '#') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+        // Redirect to target HTML page
+        window.location.href = targetUrl;
+      };
+
+      // 2. Real Date & Time Display
+      function updateRealDateTime() {
+        const dateElement = document.getElementById('liveRealDate');
+        if (dateElement) {
+          const now = new Date();
+          const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
+          dateElement.textContent = now.toLocaleDateString('en-US', options);
+        }
+      }
+      updateRealDateTime();
+
+      // 3. Mobile Sidebar Toggle (3 dots button)
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+      function toggleMobileSidebar(e) {
+        if (e) e.stopPropagation();
+        sidebar.classList.toggle('mobile-open');
+        sidebarOverlay.classList.toggle('mobile-open');
+      }
+
+      if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', toggleMobileSidebar);
+      }
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', toggleMobileSidebar);
+      }
+
+      // 4. Single Notification Icon Toggle
+      const notificationBtn = document.getElementById('notificationBtn');
+      const notificationDropdown = document.getElementById('notificationDropdown');
+
+      if (notificationBtn && notificationDropdown) {
+        notificationBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          notificationDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!notificationDropdown.contains(e.target) && e.target !== notificationBtn) {
+            notificationDropdown.classList.remove('show');
+          }
+        });
+      }
+
+      window.clearNotis = function() {
+        if (notificationDropdown) {
+          const notiList = notificationDropdown.querySelector('.noti-list');
+          if (notiList) {
+            notiList.innerHTML = '<div style="padding:15px; text-align:center; font-size:0.8rem; color:#64748b;">No new notifications</div>';
+          }
+          const badge = document.querySelector('.icon-badge');
+          if (badge) badge.style.display = 'none';
+        }
+      };
+
+      // 5. Quick Input Action Modal Logic
+      const openQuickModal = document.getElementById('openQuickModal');
+      const closeQuickModal = document.getElementById('closeQuickModal');
+      const quickModal = document.getElementById('quickModal');
+      const quickInputForm = document.getElementById('quickInputForm');
+
+      if (openQuickModal && quickModal) {
+        openQuickModal.addEventListener('click', () => quickModal.classList.add('active'));
+      }
+      if (closeQuickModal && quickModal) {
+        closeQuickModal.addEventListener('click', () => quickModal.classList.remove('active'));
+      }
+
+      if (quickInputForm) {
+        quickInputForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const title = document.getElementById('quickTitle').value;
+          const detail = document.getElementById('quickDetail').value;
+
+          const taskList = document.getElementById('dynamicTaskList');
+          if (taskList) {
+            const newTask = document.createElement('div');
+            newTask.className = 'task-item';
+            newTask.innerHTML = `
+              <div class="task-left">
+                <i class="fa-regular fa-square-check task-check"></i>
+                <div class="task-info">
+                  <h4>${title}</h4>
+                  <p>${detail || 'General Task'}</p>
+                </div>
+              </div>
+              <span class="due-tag due-today">New</span>
+            `;
+            taskList.prepend(newTask);
+          }
+
+          if (quickModal) quickModal.classList.remove('active');
+          quickInputForm.reset();
+          alert('New entry added successfully!');
+        });
+      }
+
+      // 6. AI Academic Assistant — Real Agent (Backend Connected)
+      const API_BASE = window.ACOS_CONFIG.API_BASE_URL;
+      const aiAssistantTrigger = document.getElementById('aiAssistantTrigger');
+      const aiChatWindow = document.getElementById('aiChatWindow');
+      const closeAiChat = document.getElementById('closeAiChat');
+      const chatInput = document.getElementById('chatInput');
+      const sendChatBtn = document.getElementById('sendChatBtn');
+      const chatBody = document.getElementById('chatBody');
+      const aiGreetingMsg = document.getElementById('aiGreetingMsg');
+
+      // Conversation history for multi-turn context (last 6 turns)
+      let chatHistory = [];
+
+      // --- Helpers ---
+      function getToken() {
+        return localStorage.getItem('access_token') || '';
+      }
+
+      function appendMessage(text, role) {
+        const div = document.createElement('div');
+        div.className = 'chat-msg ' + (role === 'user' ? 'user' : 'agent');
+        // Render simple markdown bold (**text**) and newlines
+        div.innerHTML = text
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\n/g, '<br>');
+        chatBody.appendChild(div);
+        chatBody.scrollTop = chatBody.scrollHeight;
+        return div;
+      }
+
+      function appendTypingIndicator() {
+        const div = document.createElement('div');
+        div.className = 'chat-msg agent';
+        div.id = 'typingIndicator';
+        div.innerHTML = '<span class="typing-dots">&#8226;&#8226;&#8226;</span>';
+        chatBody.appendChild(div);
+        chatBody.scrollTop = chatBody.scrollHeight;
+        return div;
+      }
+
+      function removeTypingIndicator() {
+        const el = document.getElementById('typingIndicator');
+        if (el) el.remove();
+      }
+
+      // --- Load dynamic greeting from backend ---
+      async function loadTeacherGreeting() {
+        const token = getToken();
+        if (!token) {
+          aiGreetingMsg.textContent = 'Hello! I am your AI Academic Agent. Please log in to use all features.';
+          return;
+        }
+        try {
+          const res = await fetch(API_BASE + '/teacher/ai/greeting', {
+            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.greeting) {
+              aiGreetingMsg.innerHTML = data.greeting
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+            } else {
+              aiGreetingMsg.textContent = 'Hello! I am your AI Academic Agent.';
+            }
+          } else {
+            aiGreetingMsg.textContent = 'Hello! I am your AI Academic Agent. How can I help you today?';
+          }
+        } catch (err) {
+          console.error('Failed to load AI greeting:', err);
+          aiGreetingMsg.textContent = 'Hello! I am your AI Academic Agent. How can I help you today?';
+        }
+      }
+
+      // --- Send message to AI backend ---
+      async function handleSendMessage() {
+        if (!chatInput || !chatBody) return;
+        const query = chatInput.value.trim();
+        if (!query) return;
+
+        const token = getToken();
+        if (!token) {
+          appendMessage('You are not logged in. Please log in to use the AI Assistant.', 'agent');
+          return;
+        }
+
+        // Append user message
+        appendMessage(query, 'user');
+        chatInput.value = '';
+        chatInput.disabled = true;
+        sendChatBtn.disabled = true;
+
+        // Add to history
+        chatHistory.push({ role: 'user', content: query });
+        if (chatHistory.length > 12) chatHistory = chatHistory.slice(-12);
+
+        // Show loading indicator
+        appendTypingIndicator();
+
+        try {
+          const res = await fetch(API_BASE + '/teacher/ai/chat', {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + token,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              message: query,
+              history: chatHistory.slice(0, -1)  // all turns before current user msg
+            })
+          });
+
+          removeTypingIndicator();
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.response) {
+              appendMessage(data.response, 'agent');
+              chatHistory.push({ role: 'assistant', content: data.response });
+            } else {
+              appendMessage('Sorry, I could not get a response. Please try again.', 'agent');
+            }
+          } else if (res.status === 401) {
+            appendMessage('Session expired. Please log in again.', 'agent');
+          } else {
+            appendMessage('I encountered an error. Please try again in a moment.', 'agent');
+          }
+        } catch (err) {
+          removeTypingIndicator();
+          console.error('AI chat error:', err);
+          appendMessage('Network error. Please check your connection and try again.', 'agent');
+        } finally {
+          chatInput.disabled = false;
+          sendChatBtn.disabled = false;
+          chatInput.focus();
+        }
+      }
+
+      // --- Widget open/close ---
+      if (aiAssistantTrigger && aiChatWindow) {
+        aiAssistantTrigger.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          aiChatWindow.classList.add('show');
+          if (sidebar.classList.contains('mobile-open')) {
+            sidebar.classList.remove('mobile-open');
+            sidebarOverlay.classList.remove('mobile-open');
+          }
+        });
+      }
+
+      if (closeAiChat && aiChatWindow) {
+        closeAiChat.addEventListener('click', function () {
+          aiChatWindow.classList.remove('show');
+        });
+      }
+
+      if (sendChatBtn) {
+        sendChatBtn.addEventListener('click', handleSendMessage);
+      }
+      if (chatInput) {
+        chatInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) handleSendMessage();
+        });
+      }
+
+      // Load greeting on page load
+      loadTeacherGreeting();
+
+    });
+  </script>
+  <script src="teacher-auth.js"></script>
+</body>
+</html>
